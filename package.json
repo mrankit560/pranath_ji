@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "preview": "npx opennextjs-cloudflare build && npx wrangler dev",
-    "deploy": "npx opennextjs-cloudflare build && npx wrangler deploy",
-    "build:cf": "npx opennextjs-cloudflare build"
+    "build:worker": "npx @opennextjs/cloudflare build --dangerouslyUseUnsupportedNextVersion",
+    "preview": "npm run build:worker && npx wrangler dev",
+    "deploy": "npm run build:worker && npx wrangler deploy"
   },
   "dependencies": {
     "clsx": "^2.1.1",

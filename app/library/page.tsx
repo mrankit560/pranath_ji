@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -23,7 +23,7 @@ import {
   Info,
 } from "lucide-react";
 
-export default function LibraryPage() {
+function LibraryContent() {
   const { t, language } = useI18n();
   const isEn = language === "en";
   const searchParams = useSearchParams();
@@ -263,5 +263,13 @@ export default function LibraryPage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function LibraryPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-spiritual-dark flex items-center justify-center text-gold-300">Loading...</div>}>
+      <LibraryContent />
+    </Suspense>
   );
 }

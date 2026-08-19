@@ -6,6 +6,7 @@ import { LanguageWelcomeModal } from "@/components/header/LanguageWelcomeModal";
 import { PersistentAudioPlayer } from "@/components/audio/PersistentAudioPlayer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sadhaulidham.org"),
   title: "श्री प्राणनाथ जी परमधाम | Shri Prannath Ji Paramdham",
   description:
     "Shri Nijanand Ashram Sadhauli Dham, Haridwar — A Full-Stack Multilingual Spiritual Knowledge & Digital Library Platform for Tartam Vani, Paramdham Wisdom, Satsang, Pravachan, Audio & Meditation.",

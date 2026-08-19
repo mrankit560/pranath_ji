@@ -602,7 +602,24 @@ class DataStore {
   }
 
   // ==========================================
-  // 9. BOOKMARKS & READING HISTORY
+  // 9. SPIRITUAL TOPICS (Philosophy)
+  // ==========================================
+  public getSpiritualTopics(): SpiritualTopic[] {
+    this.ensureLoaded();
+    return [...(this.topics || initialSpiritualTopics)];
+  }
+
+  public getSpiritualTopicById(id: string): SpiritualTopic | undefined {
+    this.ensureLoaded();
+    return (this.topics || initialSpiritualTopics).find((t) => t.id === id);
+  }
+
+  public getNextUpcomingEvent(): EventItem | null {
+    return this.getEarliestUpcomingEvent();
+  }
+
+  // ==========================================
+  // 10. BOOKMARKS & READING HISTORY
   // ==========================================
   public getBookmarks(): string[] {
     this.ensureLoaded();
@@ -642,3 +659,4 @@ class DataStore {
 }
 
 export const store = new DataStore();
+

@@ -1,0 +1,10 @@
+{
+  "/events/page": "app/events/page.js",
+  "/library/page": "app/library/page.js",
+  "/page": "app/page.js",
+  "/meditation/page": "app/meditation/page.js",
+  "/media/page": "app/media/page.js",
+  "/library/tartam-vani/page": "app/library/tartam-vani/page.js",
+  "/admin/about/page": "app/admin/about/page.js",
+  "/admin/page": "app/admin/page.js"
+}

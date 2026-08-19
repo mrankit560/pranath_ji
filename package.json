@@ -6,7 +6,10 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "npx opennextjs-cloudflare build && npx wrangler dev",
+    "deploy": "npx opennextjs-cloudflare build && npx wrangler deploy",
+    "build:cf": "npx opennextjs-cloudflare build"
   },
   "dependencies": {
     "clsx": "^2.1.1",

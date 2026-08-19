@@ -320,6 +320,10 @@ class DataStore {
     return this.articles.find((a) => a.id === id || a.slug === id);
   }
 
+  public getArticleBySlug(slug: string): Article | undefined {
+    return this.getArticleById(slug);
+  }
+
   public addArticle(art: Omit<Article, "id" | "publishedAt">): Article {
     this.ensureLoaded();
     const newArticle: Article = {

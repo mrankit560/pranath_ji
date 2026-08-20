@@ -108,13 +108,25 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
         e.location.toLowerCase().includes(q)
     );
 
+  const dhams = store
+    .getDhams()
+    .filter(
+      (d) =>
+        d.nameHi.toLowerCase().includes(q) ||
+        d.nameEn.toLowerCase().includes(q) ||
+        d.location.toLowerCase().includes(q) ||
+        d.descriptionHi.toLowerCase().includes(q) ||
+        d.descriptionEn.toLowerCase().includes(q)
+    );
+
   const hasResults =
     scriptures.length > 0 ||
     books.length > 0 ||
     videos.length > 0 ||
     audio.length > 0 ||
     articles.length > 0 ||
-    events.length > 0;
+    events.length > 0 ||
+    dhams.length > 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-spiritual-dark/85 backdrop-blur-xl animate-fade-in">
@@ -156,6 +168,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
             { id: "audio", label: t("search.categories.audio", "ऑडियो") },
             { id: "articles", label: t("search.categories.articles", "लेख") },
             { id: "events", label: t("search.categories.events", "इवेंट्स") },
+            { id: "dhams", label: language === "hi" ? "धाम" : "Dhams" },
           ].map((item) => (
             <button
               key={item.id}
@@ -314,6 +327,36 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose })
                           {e.location}
                         </div>
                       </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Holy Dhams */}
+              {(filter === "all" || filter === "dhams") && dhams.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-bold text-gold-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Compass className="w-3.5 h-3.5" />
+                    {language === "hi" ? "पावन धाम व आश्रम" : "Holy Dhams & Ashrams"} ({dhams.length})
+                  </h4>
+                  <div className="space-y-1.5">
+                    {dhams.map((d) => (
+                      <a
+                        key={d.id}
+                        href={d.mapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={onClose}
+                        className="block p-2.5 rounded-xl bg-spiritual-card hover:bg-gold-500/15 border border-gold-500/20 transition-colors"
+                      >
+                        <div className="text-xs sm:text-sm font-bold text-spiritual-ivory flex items-center justify-between">
+                          <span>{language === "hi" ? d.nameHi : d.nameEn}</span>
+                          <span className="text-[10px] text-amber-300 font-normal">Google Maps ↗</span>
+                        </div>
+                        <div className="text-[11px] text-spiritual-ivory/60">
+                          {d.location}
+                        </div>
+                      </a>
                     ))}
                   </div>
                 </div>

@@ -102,7 +102,22 @@ class DataStore {
       if (storedArticles) this.articles = JSON.parse(storedArticles);
 
       const storedDhams = localStorage.getItem("prannath_dhams_v2");
-      if (storedDhams) this.dhams = JSON.parse(storedDhams);
+      if (storedDhams) {
+        try {
+          const parsed: HolyDham[] = JSON.parse(storedDhams);
+          this.dhams = parsed.map((d) => {
+            const seed = initialDhams.find((s) => s.id === d.id);
+            const images = d.images && d.images.length > 0 ? d.images : seed?.images || [d.imageUrl || "/assets/sadhauli-dham-2.jpg"];
+            return {
+              ...d,
+              imageUrl: d.imageUrl || seed?.imageUrl || images[0],
+              images,
+            };
+          });
+        } catch {
+          this.dhams = [...initialDhams];
+        }
+      }
 
       const storedAbout = localStorage.getItem("prannath_about_v2");
       if (storedAbout) this.aboutContent = JSON.parse(storedAbout);

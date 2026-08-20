@@ -128,6 +128,7 @@ export interface HolyDham {
   location: string;
   mapUrl: string;
   imageUrl: string;
+  images?: string[]; // Array of multiple photos for slider/carousel
   phone?: string;
   order: number;
   featured: boolean;

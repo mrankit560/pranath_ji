@@ -126,14 +126,14 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Title: श्री प्राणनाथ जी */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gold-gradient font-spiritual-heading tracking-tight leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] mb-2">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gold-gradient font-spiritual-heading tracking-normal leading-normal py-1.5 mb-2 overflow-visible">
               {language === "hi" ? "श्री प्राणनाथ जी" : "Shri Prannath Ji"}
             </h1>
 
             {/* Subtitle with Ornamental Flourish: परमधाम */}
             <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-gold-300 mb-3">
               <span className="text-gold-500/80 text-xs sm:text-sm">❖ ────</span>
-              <h2 className="text-xl sm:text-3xl font-extrabold tracking-widest text-gold-gradient font-spiritual-heading uppercase">
+              <h2 className="text-xl sm:text-3xl font-extrabold tracking-widest text-gold-gradient font-spiritual-heading uppercase leading-normal py-1 overflow-visible">
                 {t("hero.portal", "परमधाम")}
               </h2>
               <span className="text-gold-500/80 text-xs sm:text-sm">──── ❖</span>

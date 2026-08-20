@@ -10,15 +10,8 @@ import {
   Menu,
   X,
   Search,
-  BookOpen,
-  Play,
-  Flower2,
-  Calendar,
-  Sparkles,
   ChevronDown,
   ExternalLink,
-  Feather,
-  Flame,
 } from "lucide-react";
 
 interface NavbarProps {
@@ -114,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg sm:text-xl font-black text-gold-gradient font-spiritual-heading leading-none tracking-wide">
+              <span className="text-base sm:text-xl font-black text-gold-gradient font-spiritual-heading leading-normal py-0.5 tracking-wide overflow-visible">
                 {isEn ? "Shri Prannath Ji" : "श्री प्राणनाथ जी"}
               </span>
               <span className="text-[10px] sm:text-xs text-gold-muted/90 font-bold tracking-widest uppercase">
@@ -145,7 +138,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     }`}
                   >
                     <span>{link.name}</span>
-                    {hasSub && <ChevronDown className="w-3.5 h-3.5 text-gold-400 opacity-70 group-hover:rotate-180 transition-transform" />}
+                    {hasSub && (
+                      <ChevronDown className="w-3.5 h-3.5 text-gold-400 opacity-70 group-hover:rotate-180 transition-transform" />
+                    )}
                   </Link>
 
                   {/* Desktop Dropdown */}
@@ -182,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             })}
           </nav>
 
-          {/* Right Action Icons: Language Selector, Search, Admin */}
+          {/* Right Action Icons: Language Selector, Search */}
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSelector />
 
@@ -194,18 +189,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Search className="w-4 h-4" />
             </button>
 
-            <Link
-              href="/admin"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gold-500/15 border border-gold-400/40 text-gold-300 text-xs font-bold hover:bg-gold-500 hover:text-spiritual-dark transition-all shadow-gold-sm"
-            >
-              <Sparkles className="w-3 h-3 text-gold-400" />
-              <span>{isEn ? "Admin" : "एडमिन"}</span>
-            </Link>
-
             {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="xl:hidden p-2 rounded-xl bg-gold-500/10 border border-gold-400/30 text-gold-300"
+              aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -253,17 +241,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ))}
-
-          <div className="pt-4 border-t border-gold-500/20 flex items-center justify-between">
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-xs font-bold text-gold-300 flex items-center gap-1"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{isEn ? "Admin CMS Control" : "एडमिन CMS कंट्रोल"}</span>
-            </Link>
-          </div>
         </div>
       )}
     </header>

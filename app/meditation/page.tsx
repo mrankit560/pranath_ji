@@ -86,7 +86,7 @@ function MeditationContent() {
             {isEn ? "Chitwani & Dhyan Sanctuary" : "चितवनी एवं ध्यान साधना"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
             {isEn ? "Chitwani & Meditation Portal" : "चितवनी साधना — विधि, ग्रन्थ एवं वीडियो"}
           </h1>
 
@@ -261,8 +261,8 @@ function MeditationContent() {
       {activeTab === "books" && (
         <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading mb-2">
-              {isEn ? "Chitwani Books & Meditation Manuals" : "चितवनी ग्रन्थ — अध्ययन व डाउनलोड"}
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
+              {isEn ? "2. Chitwani Books & Meditation Texts" : "२. चितवनी ग्रन्थ एवं साधना पुस्तकें"}
             </h2>
             <p className="text-xs sm:text-sm text-gold-muted/80">
               {isEn
@@ -333,8 +333,8 @@ function MeditationContent() {
       {activeTab === "videos" && (
         <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading mb-2">
-              {isEn ? "Chitwani Video Guides & Guided Sessions" : "चितवनी वीडियो मार्गदर्शिका"}
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
+              {isEn ? "1. Chitwani Method & Step-by-Step Guidance" : "१. चितवनी विधि एवं मार्गदर्शिका"}
             </h2>
             <p className="text-xs sm:text-sm text-gold-muted/80">
               {isEn
@@ -403,7 +403,7 @@ function MeditationContent() {
                 <Flower2 className="w-3.5 h-3.5" />
                 <span>{isEn ? "Chitwani Guide" : "चितवनी साधना विधि"}</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
                 {isEn ? selectedArticle.titleEn || selectedArticle.titleHi : selectedArticle.titleHi}
               </h2>
               <div className="text-xs text-gold-muted/80">
@@ -423,7 +423,7 @@ function MeditationContent() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in">
           <div className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-3xl w-full p-6 shadow-2xl relative space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-gold-500/20">
-              <h3 className="text-base font-bold text-gold-gradient font-spiritual-heading truncate pr-4">
+              <h3 className="text-base font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible truncate pr-4">
                 {isEn ? playingVideo.titleEn || playingVideo.titleHi : playingVideo.titleHi}
               </h3>
               <button

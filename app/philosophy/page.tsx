@@ -38,7 +38,7 @@ export default function PhilosophyPage() {
             {language === "hi" ? "ब्रह्मज्ञान तत्व दर्शन" : "Brahm Gyan & Spiritual Philosophy"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-3">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-3">
             {language === "hi" ? "आत्मज्ञान एवं मूल सिद्धांत" : "Self Realization & Core Principles"}
           </h1>
 
@@ -89,7 +89,7 @@ export default function PhilosophyPage() {
               <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-gold-400">
                 तत्व मीमांसा
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading mt-1">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mt-1">
                 {language === "hi" ? selectedTopic.titleHi : selectedTopic.titleEn}
               </h2>
               <p className="text-xs sm:text-sm text-gold-muted/90 mt-1">

@@ -245,3 +245,11 @@ export interface SiteSettings {
   instagramUrl: string;
   whatsappUrl: string;
 }
+
+export interface AdminCredentials {
+  username: string;
+  email: string;
+  password: string;
+  updatedAt?: string;
+}
+

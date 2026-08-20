@@ -57,7 +57,7 @@ export default function PrannathJiPage() {
             {isEn ? "Divine Biography & Leela Portal" : "महामति श्री प्राणनाथ जी पावन चरित्र"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
             {isEn ? "Shree Prannath Ji — Divine Life & Teachings" : "श्री प्राणनाथ जी — दिव्य जीवन व उपदेश"}
           </h1>
 
@@ -158,7 +158,7 @@ export default function PrannathJiPage() {
                 <span>{selectedArticle.category}</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
                 {isEn ? selectedArticle.titleEn || selectedArticle.titleHi : selectedArticle.titleHi}
               </h2>
 

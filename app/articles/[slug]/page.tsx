@@ -76,7 +76,7 @@ export default function ArticleDetailPage() {
             {article.category}
           </span>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible">
             {language === "hi" ? article.titleHi : article.titleEn}
           </h1>
 

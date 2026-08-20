@@ -42,7 +42,7 @@ export const Footer: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-black text-gold-gradient font-spiritual-heading leading-tight">
+                <span className="text-xl font-black text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                   {language === "hi" ? "श्री प्राणनाथ जी" : "Shri Prannath Ji"}
                 </span>
                 <span className="text-xs text-gold-muted font-bold tracking-widest uppercase">
@@ -214,9 +214,6 @@ export const Footer: React.FC = () => {
             </Link>
             <Link href="/contact" className="hover:text-gold-300">
               {t("nav.contact", "संपर्क")}
-            </Link>
-            <Link href="/admin" className="text-gold-400/80 hover:text-gold-300 font-semibold">
-              {t("nav.admin", "एडमिन लॉगिन")}
             </Link>
           </div>
         </div>

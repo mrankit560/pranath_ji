@@ -73,7 +73,7 @@ export default function HomePage() {
               <Sparkles className="w-3.5 h-3.5 text-gold-400" />
               {isEn ? "Divine Leelas & Teachings" : "श्री प्राणनाथ जी पावन दर्शन"}
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
               {isEn ? "Shree Prannath Ji — Life & Leelas" : "श्री प्राणनाथ जी — दिव्य जीवन व उपदेश"}
             </h2>
             <p className="text-xs sm:text-sm text-spiritual-ivory/70 max-w-2xl mt-1">
@@ -138,7 +138,7 @@ export default function HomePage() {
               <Compass className="w-3.5 h-3.5" />
               {isEn ? "Spiritual Wisdom & Philosophy" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान"}
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
               {isEn ? "Aadhyatmik Gyan — Spiritual Blogs" : "आध्यात्मिक ज्ञान — सत्संग व ब्लॉग"}
             </h2>
             <p className="text-xs sm:text-sm text-spiritual-ivory/70 max-w-2xl mt-1">
@@ -203,7 +203,7 @@ export default function HomePage() {
               <BookOpen className="w-3.5 h-3.5" />
               {isEn ? "Sacred PDF Books & Granths" : "ई-ग्रंथालय व PDF पुस्तकें"}
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
               {isEn ? "PDF Library — Read Online & Download" : "PDF लाइब्रेरी — ऑनलाइन पढ़ें व डाउनलोड करें"}
             </h2>
             <p className="text-xs sm:text-sm text-spiritual-ivory/70 max-w-2xl mt-1">

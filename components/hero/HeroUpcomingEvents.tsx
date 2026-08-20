@@ -116,7 +116,7 @@ export const HeroUpcomingEvents: React.FC = () => {
           </div>
 
           {/* Event Title */}
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-snug">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
             {isEn ? nextEvent.titleEn || nextEvent.titleHi : nextEvent.titleHi}
           </h2>
 

@@ -29,7 +29,7 @@ export const HolyDhamsSection: React.FC = () => {
             {isEn ? "Holy Dham Locations" : "पवित्र आश्रम एवं धाम स्थान"}
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-3">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-3">
             {isEn ? "Sacred Pilgrimages of Nijanand Sampradaya" : "श्री निजानंद सम्प्रदाय के पावन धाम"}
           </h2>
 
@@ -71,7 +71,7 @@ export const HolyDhamsSection: React.FC = () => {
                     <span>{dham.location}</span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-gold-gradient font-spiritual-heading leading-snug">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                     {isEn ? dham.nameEn : dham.nameHi}
                   </h3>
 

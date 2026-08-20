@@ -34,7 +34,7 @@ export const AboutSection: React.FC = () => {
               <span>{isEn ? "About the Ashram" : "आश्रम परिचय"}</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible">
               {isEn ? content.titleEn : content.titleHi}
             </h2>
 
@@ -51,7 +51,7 @@ export const AboutSection: React.FC = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-gold-300">
               <span className="text-gold-400 text-lg">✦</span>
-              <h3 className="text-xl sm:text-2xl font-bold text-gold-gradient font-spiritual-heading">
+              <h3 className="text-xl sm:text-2xl font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                 {isEn ? content.purposeHeadingEn : content.purposeHeadingHi}
               </h3>
             </div>
@@ -65,7 +65,7 @@ export const AboutSection: React.FC = () => {
           <div className="space-y-5 bg-black/60 rounded-2xl p-6 sm:p-8 border border-gold-500/30 shadow-inner">
             <div className="flex items-center gap-2 text-gold-300">
               <HelpCircle className="w-5 h-5 text-gold-400 flex-shrink-0" />
-              <h4 className="text-base sm:text-lg font-bold text-gold-gradient font-spiritual-heading">
+              <h4 className="text-base sm:text-lg font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                 {isEn ? content.questionsHeadingEn : content.questionsHeadingHi}
               </h4>
             </div>
@@ -74,11 +74,9 @@ export const AboutSection: React.FC = () => {
               {(isEn ? content.questionsEn : content.questionsHi).map((q, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl bg-spiritual-navy/80 border border-gold-500/20 text-xs sm:text-sm text-spiritual-ivory/95 font-medium flex items-center gap-2.5"
+                  className="p-3.5 rounded-xl bg-spiritual-navy/70 border border-gold-500/20 text-xs sm:text-sm text-spiritual-ivory/90 flex items-start gap-2.5"
                 >
-                  <span className="w-5 h-5 rounded-full bg-gold-500/20 text-gold-300 text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-                    {idx + 1}
-                  </span>
+                  <span className="text-gold-400 font-bold">Q{idx + 1}.</span>
                   <span>{q}</span>
                 </div>
               ))}
@@ -93,7 +91,7 @@ export const AboutSection: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-gold-300">
               <span className="text-gold-400 text-lg">✦</span>
-              <h3 className="text-xl sm:text-2xl font-bold text-gold-gradient font-spiritual-heading">
+              <h3 className="text-xl sm:text-2xl font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                 {isEn ? content.servicesHeadingEn : content.servicesHeadingHi}
               </h3>
             </div>
@@ -118,7 +116,7 @@ export const AboutSection: React.FC = () => {
               <span>{isEn ? content.messageHeadingEn : content.messageHeadingHi}</span>
             </div>
 
-            <blockquote className="text-xl sm:text-2xl md:text-3xl font-spiritual-heading text-gold-gradient font-bold leading-relaxed max-w-2xl mx-auto">
+            <blockquote className="text-xl sm:text-2xl md:text-3xl font-spiritual-heading text-gold-gradient font-bold leading-relaxed py-1 max-w-2xl mx-auto overflow-visible">
               {isEn ? content.messageQuoteEn : content.messageQuoteHi}
             </blockquote>
 

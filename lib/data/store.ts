@@ -13,6 +13,7 @@ import {
   AboutSectionContent,
   ChitwaniBook,
   ChitwaniVideo,
+  AdminCredentials,
 } from "./types";
 
 import {
@@ -32,6 +33,13 @@ import {
   initialChitwaniVideos,
 } from "./seedData";
 
+const initialAdminCredentials: AdminCredentials = {
+  username: "admin",
+  email: "admin@sadhaulidham.org",
+  password: "admin123",
+  updatedAt: new Date().toISOString(),
+};
+
 type Listener = () => void;
 
 class DataStore {
@@ -49,6 +57,7 @@ class DataStore {
   private aboutContent: AboutSectionContent = initialAboutContent;
   private chitwaniBooks: ChitwaniBook[] = initialChitwaniBooks;
   private chitwaniVideos: ChitwaniVideo[] = initialChitwaniVideos;
+  private adminCredentials: AdminCredentials = initialAdminCredentials;
 
   private bookmarks: string[] = [];
   private readingHistory: { bookId: string; title: string; page: number; updatedAt: string }[] = [];
@@ -115,6 +124,9 @@ class DataStore {
 
       const storedHistory = localStorage.getItem("prannath_reading_history_v2");
       if (storedHistory) this.readingHistory = JSON.parse(storedHistory);
+
+      const storedAdminAuth = localStorage.getItem("prannath_admin_credentials_v2");
+      if (storedAdminAuth) this.adminCredentials = JSON.parse(storedAdminAuth);
     } catch (e) {
       console.warn("Could not load from localStorage:", e);
     }
@@ -659,6 +671,58 @@ class DataStore {
     }
     this.saveToStorage("prannath_reading_history_v2", this.readingHistory);
     this.notify();
+  }
+
+  // ---------------- ADMIN CREDENTIALS & SECURITY ----------------
+  public getAdminCredentials(): AdminCredentials {
+    this.ensureLoaded();
+    return { ...this.adminCredentials };
+  }
+
+  public updateAdminCredentials(updates: Partial<AdminCredentials>): boolean {
+    this.ensureLoaded();
+    this.adminCredentials = {
+      ...this.adminCredentials,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    this.saveToStorage("prannath_admin_credentials_v2", this.adminCredentials);
+    this.notify();
+    return true;
+  }
+
+  public verifyAdminCredentials(userOrEmail: string, pass: string): boolean {
+    this.ensureLoaded();
+    const input = (userOrEmail || "").trim().toLowerCase();
+    const validUser = (this.adminCredentials.username || "admin").trim().toLowerCase();
+    const validEmail = (this.adminCredentials.email || "admin@sadhaulidham.org").trim().toLowerCase();
+    const validPass = this.adminCredentials.password || "admin123";
+
+    const isUserMatch = Boolean(input && (input === validUser || input === validEmail));
+    const isPassMatch = Boolean(pass && pass === validPass);
+    return isUserMatch && isPassMatch;
+  }
+
+  public setAdminSession(active: boolean, emailOrUser?: string): void {
+    if (!this.isClient()) return;
+    if (active) {
+      localStorage.setItem("prannath_user_role", "admin");
+      localStorage.setItem("prannath_admin_session", "active");
+      if (emailOrUser) {
+        localStorage.setItem("prannath_user_email", emailOrUser);
+      }
+    } else {
+      localStorage.removeItem("prannath_user_role");
+      localStorage.removeItem("prannath_admin_session");
+      localStorage.removeItem("prannath_user_email");
+    }
+  }
+
+  public isAdminAuthenticated(): boolean {
+    if (!this.isClient()) return false;
+    const role = localStorage.getItem("prannath_user_role");
+    const session = localStorage.getItem("prannath_admin_session");
+    return role === "admin" && session === "active";
   }
 }
 

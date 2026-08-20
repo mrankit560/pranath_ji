@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSelector } from "@/components/header/LanguageSelector";
+import { store } from "@/lib/data/store";
 import {
   LayoutDashboard,
   BookOpen,
@@ -22,6 +23,7 @@ import {
   MapPin,
   Info,
   Compass,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +32,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { language } = useI18n();
   const isEn = language === "en";
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isAuth = store.isAdminAuthenticated();
+      if (!isAuth) {
+        setIsAuthenticated(false);
+        router.replace("/auth/login?redirect=" + encodeURIComponent(pathname));
+      } else {
+        setIsAuthenticated(true);
+      }
+      setIsChecking(false);
+    }
+  }, [pathname, router]);
 
   const navItems = [
     {
@@ -85,12 +102,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("prannath_user_role");
-      localStorage.removeItem("prannath_user_email");
-    }
-    router.push("/");
+    store.setAdminSession(false);
+    router.push("/auth/login");
   };
+
+  if (isChecking || !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#060403] text-spiritual-ivory flex items-center justify-center p-4">
+        <div className="text-center p-8 spiritual-glass-card rounded-3xl border border-gold-500/30 max-w-sm w-full">
+          <ShieldCheck className="w-12 h-12 text-gold-400 mx-auto mb-4 animate-pulse" />
+          <h2 className="text-base font-bold text-spiritual-ivory mb-1 font-spiritual-heading">
+            {isEn ? "Authenticating Admin Access" : "एडमिन सुरक्षा सत्यापन"}
+          </h2>
+          <p className="text-xs text-spiritual-ivory/60">
+            {isEn ? "Checking credentials & session..." : "सत्र की जांच की जा रही है..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#060403] text-spiritual-ivory flex">
@@ -109,7 +139,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               />
             </div>
             <div>
-              <span className="text-sm font-bold text-gold-gradient font-spiritual-heading block leading-tight">
+              <span className="text-sm font-bold text-gold-gradient font-spiritual-heading block leading-normal py-0.5 overflow-visible">
                 {isEn ? "Sadhauli Dham Admin" : "साढौली धाम एडमिन"}
               </span>
               <span className="text-[10px] text-gold-muted/80 font-semibold block tracking-wider uppercase">
@@ -181,7 +211,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               {mobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <span className="text-sm font-bold text-gold-gradient font-spiritual-heading">
+            <span className="text-sm font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
               {isEn ? "Paramdham CMS" : "परमधाम CMS"}
             </span>
           </div>

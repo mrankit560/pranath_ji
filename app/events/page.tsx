@@ -82,8 +82,8 @@ export default function EventsPage() {
             {isEn ? "Ashram Holy Events & Festivals" : "आश्रम कार्यक्रम एवं पावन महोत्सव"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-3">
-            {t("events.title", "आश्रम कार्यक्रम एवं उत्सव")}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-3">
+            {isEn ? "Utsav, Festivals & Live Events" : "पावन उत्सव, महोत्सव एवं लाइव कार्यक्रम"}
           </h1>
 
           <p className="text-sm sm:text-base text-gold-muted/80 max-w-xl mx-auto">
@@ -106,8 +106,8 @@ export default function EventsPage() {
               {isEn ? "Next Upcoming Holy Event" : "अगला पावन सत्संग / महोत्सव"}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading mb-4">
-              {isEn ? nextEvent.titleEn || nextEvent.titleHi : nextEvent.titleHi}
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-4">
+              {isEn ? "Live & Ongoing Event" : "वर्तमान में चल रहा पावन महोत्सव"}
             </h2>
 
             {/* Exact Date, Exact Time & Location Details */}

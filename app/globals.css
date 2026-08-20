@@ -67,17 +67,32 @@ body {
 
 .font-spiritual-heading {
   font-family: 'Noto Serif Devanagari', 'Rozha One', 'Cinzel', serif;
+  line-height: 1.35;
 }
 
 .font-english-heading {
   font-family: 'Cinzel', 'Inter', serif;
+  line-height: 1.35;
 }
 
-/* Gold Text Gradients */
+/* Gold Text Gradients with anti-clipping ascender & descender buffers */
 .text-gold-gradient {
   background: linear-gradient(135deg, #FFF0BF 0%, #F4D06F 30%, #D4AF37 70%, #9E711E 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-top: 0.15em;
+  padding-bottom: 0.2em;
+  margin-top: -0.15em;
+  margin-bottom: -0.2em;
+  line-height: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  overflow: visible;
 }
 
 .text-gold-glow {

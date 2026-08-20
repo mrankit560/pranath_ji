@@ -72,7 +72,7 @@ function MediaContent() {
             {isEn ? "Media Centre & Satsang Hub" : "मीडिया केंद्र एवं दिव्य सत्संग हब"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
             {isEn ? "Media Centre — Videos & YouTube" : "मीडिया केंद्र — पावन वीडियो एवं यूट्यूब"}
           </h1>
 
@@ -261,7 +261,7 @@ function MediaContent() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in">
           <div className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-4xl w-full p-6 shadow-2xl relative space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-gold-500/20">
-              <h3 className="text-base sm:text-lg font-bold text-gold-gradient font-spiritual-heading truncate pr-4">
+              <h3 className="text-base sm:text-lg font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible truncate pr-4">
                 {isEn ? playingVideo.titleEn || playingVideo.titleHi : playingVideo.titleHi}
               </h3>
               <button

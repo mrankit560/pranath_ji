@@ -57,7 +57,7 @@ export default function AdhyatmikGyanPage() {
             {isEn ? "Spiritual Philosophy & Blogging" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान मंच"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
             {isEn ? "Aadhyatmik Gyan — Spiritual Blog" : "आध्यात्मिक ज्ञान — आत्म-जागृति एवं तत्व दर्शन"}
           </h1>
 
@@ -158,7 +158,7 @@ export default function AdhyatmikGyanPage() {
                 <span>{selectedBlog.category}</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
                 {isEn ? selectedBlog.titleEn || selectedBlog.titleHi : selectedBlog.titleHi}
               </h2>
 

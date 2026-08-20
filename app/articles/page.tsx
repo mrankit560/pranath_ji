@@ -36,7 +36,7 @@ export default function ArticlesPage() {
             {language === "hi" ? "आध्यात्मिक आलेख" : "Spiritual Articles & Insights"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-3">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-3">
             {language === "hi" ? "तारतम ज्ञान एवं आध्यात्मिक लेख" : "Tartam Wisdom & Research Articles"}
           </h1>
 

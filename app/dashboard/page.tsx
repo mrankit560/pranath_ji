@@ -61,18 +61,13 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="px-4 py-2 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold hover:bg-gold-500/20"
-            >
-              एडमिन CMS
-            </Link>
             <button
               onClick={handleLogout}
-              className="p-2 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs flex items-center gap-1"
+              className="px-4 py-2 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/20 text-xs flex items-center gap-1.5 transition-colors"
               title="लॉगआउट"
             >
               <LogOut className="w-4 h-4" />
+              <span>{language === "hi" ? "लॉगआउट" : "Log Out"}</span>
             </button>
           </div>
         </div>

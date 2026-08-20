@@ -32,7 +32,7 @@ export default function AboutPage() {
             {language === "hi" ? "आश्रम परिचय" : "About the Ashram"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
             श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड)
           </h1>
 
@@ -67,7 +67,7 @@ export default function AboutPage() {
 
           {/* Section: मानव जीवन का वास्तविक लक्ष्य */}
           <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading flex items-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible flex items-center gap-2">
               <span>✦</span>
               <span>{language === "hi" ? "मानव जीवन का वास्तविक लक्ष्य" : "The True Purpose of Human Life"}</span>
             </h2>
@@ -116,7 +116,7 @@ export default function AboutPage() {
 
           {/* Section: हमारी सेवाएँ */}
           <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading flex items-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible flex items-center gap-2">
               <span>✦</span>
               <span>{language === "hi" ? "हमारी सेवाएँ" : "Our Sacred Services"}</span>
             </h2>
@@ -152,7 +152,7 @@ export default function AboutPage() {
             <h3 className="text-xs uppercase tracking-widest text-gold-300 font-bold mb-3">
               {language === "hi" ? "हमारा संदेश" : "Our Sacred Message"}
             </h3>
-            <blockquote className="text-xl sm:text-2xl font-spiritual-heading text-gold-gradient font-semibold mb-4">
+            <blockquote className="text-xl sm:text-2xl font-spiritual-heading text-gold-gradient font-semibold leading-relaxed py-1 overflow-visible mb-4">
               “ज्ञान ही जीवन का प्रकाश है। प्रेम, सेवा और साधना ही सच्चे जीवन का आधार हैं।”
             </blockquote>
             <p className="text-xs sm:text-sm text-spiritual-ivory/80 max-w-lg mx-auto leading-relaxed">

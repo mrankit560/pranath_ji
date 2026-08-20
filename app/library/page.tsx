@@ -77,7 +77,7 @@ function LibraryContent() {
             {isEn ? "Sacred PDF Digital Library" : "ई-ग्रंथालय एवं पावन साहित्य"}
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
             {isEn ? "PDF Books & Sacred Literature" : "PDF ग्रंथालय — ऑनलाइन पढ़ें व डाउनलोड करें"}
           </h1>
 
@@ -227,7 +227,7 @@ function LibraryContent() {
                 <span>{isEn ? "Book Review & Summary" : "पुस्तक परिचय व समीक्षा"}</span>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                 {isEn ? selectedBookForBlog.titleEn || selectedBookForBlog.titleHi : selectedBookForBlog.titleHi}
               </h2>
               <div className="text-xs text-gold-muted/80 mt-1">

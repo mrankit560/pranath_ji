@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/admin/",
     },
-    sitemap: "https://sadhaulidham.org/sitemap.xml",
+    sitemap: "https://sadhaulidham.com/sitemap.xml",
   };
 }

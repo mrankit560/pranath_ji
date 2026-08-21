@@ -5,6 +5,7 @@ import { store } from "@/lib/data/store";
 import { EventItem } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
 import { Plus, Trash2, Edit3, Calendar, MapPin, Radio, Sparkles, Save, X, Clock } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export default function AdminEventsPage() {
   const { language } = useI18n();
@@ -332,6 +333,19 @@ export default function AdminEventsPage() {
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
+          </div>
+
+          {/* Event Banner Image Upload */}
+          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+            <ImageUploadField
+              label={isEn ? "Event Banner / Poster Photo *" : "कार्यक्रम बैनर / पोस्टर फोटो *"}
+              value={form.image}
+              onChange={(url) => setForm({ ...form, image: url })}
+              recommendedSize="1200 × 630 px"
+              aspectRatio="16:9 (लैंडस्केप बैनर)"
+              maxSizeMB={5}
+              helperText={isEn ? "Displayed as the main promotional photo across Events page and Homepage hero" : "उत्सव एवं कार्यक्रम पेज तथा होमपेज पर मुख्य प्रचार फोटो के रूप में प्रदर्शित होगी"}
+            />
           </div>
 
           <div>

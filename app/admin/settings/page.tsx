@@ -15,7 +15,9 @@ import {
   Mail,
   Lock,
   AlertCircle,
+  Image as ImageIcon,
 } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export default function AdminSettingsPage() {
   const { language } = useI18n();
@@ -30,7 +32,7 @@ export default function AdminSettingsPage() {
 
   // Security Credentials form state
   const [username, setUsername] = useState(adminCreds.username || "admin");
-  const [adminEmail, setAdminEmail] = useState(adminCreds.email || "admin@sadhaulidham.org");
+  const [adminEmail, setAdminEmail] = useState(adminCreds.email || "admin@sadhaulidham.com");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -163,7 +165,7 @@ export default function AdminSettingsPage() {
                   required
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
-                  placeholder="admin@sadhaulidham.org"
+                  placeholder="admin@sadhaulidham.com"
                   className="w-full pl-9 pr-3 py-2 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
                 />
               </div>

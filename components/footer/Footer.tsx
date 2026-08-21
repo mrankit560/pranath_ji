@@ -42,11 +42,11 @@ export const Footer: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-black text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
-                  {language === "hi" ? "श्री प्राणनाथ जी" : "Shri Prannath Ji"}
+                <span className="text-xl font-black text-gold-gradient font-spiritual-heading leading-tight py-0.5 overflow-visible">
+                  {language === "hi" ? "साढौली धाम" : "Sadhauli Dham"}
                 </span>
-                <span className="text-xs text-gold-muted font-bold tracking-widest uppercase">
-                  {language === "hi" ? "परमधाम" : "Paramdham"}
+                <span className="text-xs text-gold-muted font-bold tracking-wide">
+                  {language === "hi" ? "श्री प्राणनाथ जी परमधाम" : "Shri Prannath Ji Paramdham"}
                 </span>
               </div>
             </Link>
@@ -54,7 +54,7 @@ export const Footer: React.FC = () => {
             <p className="text-xs sm:text-sm text-spiritual-ivory/70 leading-relaxed max-w-md">
               {t(
                 "footer.aboutDham",
-                "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड) — श्री प्राणनाथ जी की तारतम वाणी एवं दिव्य ब्रह्मज्ञान का पावन केंद्र।"
+                "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड) — श्री प्राणनाथ जी की तारतम वाणी एवं दिव्य ब्रह्मज्ञान का आधिकारिक पावन केंद्र।"
               )}
             </p>
 
@@ -202,18 +202,27 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-spiritual-ivory/50 gap-3 text-center sm:text-left">
+        {/* Bottom Bar: Copyright & Prominent About / Contact Buttons */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-spiritual-ivory/60 gap-4 text-center sm:text-left">
           <div>
-            © {currentYear} {t("site.title", "श्री प्राणनाथ जी परमधाम")} •{" "}
+            © {currentYear} {language === "hi" ? "साढौली धाम • श्री प्राणनाथ जी परमधाम" : "Sadhauli Dham • Shri Prannath Ji Paramdham"} (sadhaulidham.com) •{" "}
             {t("footer.rights", "सर्वाधिकार सुरक्षित।")}
           </div>
-          <div className="flex items-center gap-4 text-xs">
-            <Link href="/about" className="hover:text-gold-300">
-              {t("nav.about", "हमारे बारे में")}
+
+          {/* Prominently Highlighted About Us and Contact Buttons */}
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3">
+            <Link
+              href="/about"
+              className="px-4 py-2 rounded-xl bg-gold-500/15 border border-gold-400/40 text-gold-300 text-xs font-bold hover:bg-gold-500 hover:text-spiritual-dark transition-all shadow-sm flex items-center gap-1.5 hover:scale-105"
+            >
+              <span>🏛️ {language === "hi" ? "आश्रम परिचय (About Us)" : "About Ashram"}</span>
             </Link>
-            <Link href="/contact" className="hover:text-gold-300">
-              {t("nav.contact", "संपर्क")}
+
+            <Link
+              href="/contact"
+              className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold hover:scale-105 transition-all shadow-gold-sm flex items-center gap-1.5"
+            >
+              <span>📞 {language === "hi" ? "आश्रम संपर्क (Contact Us)" : "Contact Ashram"}</span>
             </Link>
           </div>
         </div>

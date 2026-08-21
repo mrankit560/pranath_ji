@@ -5,6 +5,8 @@ import { store } from "@/lib/data/store";
 import { Book } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
 import { Plus, Trash2, Edit3, BookOpen, Save, X, Download } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { PdfUploadField } from "@/components/admin/PdfUploadField";
 
 export default function AdminBooksPage() {
   const { language } = useI18n();
@@ -268,33 +270,25 @@ export default function AdminBooksPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "PDF File Direct URL *" : "PDF फाइल का लिंक / URL *"}
-              </label>
-              <input
-                type="text"
-                required
-                value={form.pdfUrl}
-                onChange={(e) => setForm({ ...form, pdfUrl: e.target.value })}
-                placeholder="https://.../book.pdf"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-              />
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+            {/* Book Cover Photo Upload */}
+            <ImageUploadField
+              label={isEn ? "Book Cover Photo *" : "पुस्तक कवर फोटो (Cover Photo) *"}
+              value={form.coverUrl}
+              onChange={(url) => setForm({ ...form, coverUrl: url })}
+              recommendedSize="600 × 900 px"
+              aspectRatio="2:3 (पोर्ट्रेट बुक कवर)"
+              maxSizeMB={5}
+              helperText={isEn ? "Shows as the main book cover in PDF Library" : "लाइब्रेरी में पुस्तक के मुख्य कवर के रूप में दिखेगी"}
+            />
 
-            <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Cover Image URL" : "कवर फोटो URL (Cover Image)"}
-              </label>
-              <input
-                type="text"
-                value={form.coverUrl}
-                onChange={(e) => setForm({ ...form, coverUrl: e.target.value })}
-                placeholder="/assets/logo-emblem.png"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-              />
-            </div>
+            {/* Book PDF Upload */}
+            <PdfUploadField
+              label={isEn ? "Book PDF File Document *" : "पुस्तक PDF फाइल (E-Book File) *"}
+              value={form.pdfUrl}
+              onChange={(url) => setForm({ ...form, pdfUrl: url })}
+              required
+            />
           </div>
 
           <div>

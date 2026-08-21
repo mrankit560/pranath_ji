@@ -21,27 +21,40 @@ import {
   X,
   Share2,
 } from "lucide-react";
+import { formatSpiritualDate } from "@/lib/utils/formatDate";
 
 export default function PrannathJiPage() {
   const { language } = useI18n();
   const isEn = language === "en";
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [articles, setArticles] = useState<Article[]>(store.getPrannathArticles());
+  const [articles, setArticles] = useState<Article[]>(() => store.getPrannathArticles());
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   useEffect(() => {
+    setArticles(store.getPrannathArticles());
     const unsub = store.subscribe(() => {
       setArticles(store.getPrannathArticles());
     });
     return () => unsub();
   }, []);
 
-  const filtered = articles.filter((a) => {
-    const title = (isEn ? a.titleEn : a.titleHi) || "";
-    const content = (isEn ? a.contentEn : a.contentHi) || "";
+  const categories = [
+    { id: "all", label: isEn ? "All Episodes" : "सभी प्रसंग" },
+    { id: "जीवन प्रसंग", label: isEn ? "Life Episodes" : "जीवन प्रसंग" },
+    { id: "बीतक इतिहास", label: isEn ? "Bitak History" : "बीतक इतिहास" },
+    { id: "तत्व दर्शन", label: isEn ? "Philosophy" : "तत्व दर्शन" },
+  ];
+
+  const filteredArticles = articles.filter((art) => {
+    const matchesCategory =
+      selectedCategory === "all" || art.category === selectedCategory;
+    const title = (isEn ? art.titleEn || art.titleHi : art.titleHi) || "";
+    const author = art.author || "";
     const q = searchQuery.toLowerCase();
-    return title.toLowerCase().includes(q) || content.toLowerCase().includes(q);
+    const matchesSearch = title.toLowerCase().includes(q) || author.toLowerCase().includes(q);
+    return matchesCategory && matchesSearch;
   });
 
   return (
@@ -49,22 +62,22 @@ export default function PrannathJiPage() {
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-      {/* Header Banner */}
+      {/* Banner */}
       <section className="pt-32 pb-14 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-navy/50 to-transparent border-b border-gold-500/20 text-center">
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-bold uppercase tracking-wider mb-4">
             <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-            {isEn ? "Divine Biography & Leela Portal" : "महामति श्री प्राणनाथ जी पावन चरित्र"}
+            {isEn ? "Life, History & Philosophy" : "जीवन चरित्र, बीतक एवं अमर संदेश"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
-            {isEn ? "Shree Prannath Ji — Divine Life & Teachings" : "श्री प्राणनाथ जी — दिव्य जीवन व उपदेश"}
+            {isEn ? "Mahamati Shri Prannath Ji" : "महामति श्री प्राणनाथ जी"}
           </h1>
 
           <p className="text-xs sm:text-base text-gold-muted/80 max-w-2xl mx-auto leading-relaxed">
             {isEn
-              ? "Read inspiring articles, leelas, awakening movements, and sacred philosophy bestowed by Mahamati Shri Prannath Ji."
-              : "महामति श्री प्राणनाथ जी के दिव्य प्राकट्य, सद्गुरु देवचन्द्र जी से मिलन, अखंड जागनी अभियान एवं ब्रह्मज्ञान के प्रामाणिक लेख।"}
+              ? "The divine incarnation and revealer of Tartam Vani, uniting the spiritual wisdom of East and West into one Aksharatit Brahm Gyan."
+              : "तारतम वाणी के अमर प्रणेता, जिन्होंने आत्म-जागृति व परब्रह्म साक्षात्कार का मार्ग प्रशस्त किया।"}
           </p>
 
           {/* Search Bar */}
@@ -74,28 +87,56 @@ export default function PrannathJiPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isEn ? "Search articles, leelas, teachings..." : "लेख, प्रसंग या शिक्षाएं खोजें..."}
+              placeholder={isEn ? "Search articles, history or topics..." : "प्रसंग, इतिहास या विषय खोजें..."}
               className="w-full pl-11 pr-4 py-3 rounded-2xl bg-black/60 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory placeholder-spiritual-ivory/50 focus:outline-none focus:border-gold-400 backdrop-blur-md"
             />
           </div>
         </div>
       </section>
 
-      {/* Articles Grid */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {filtered.length === 0 ? (
-          <div className="text-center py-16 spiritual-glass-card rounded-3xl p-8 max-w-md mx-auto">
-            <p className="text-sm text-spiritual-ivory/70">
-              {isEn ? "No articles found matching your query." : "कोई लेख उपलब्ध नहीं है।"}
+      {/* Main Content */}
+      <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Category Tabs */}
+        <div className="flex items-center justify-center sm:justify-start gap-2 overflow-x-auto pb-4 mb-10 border-b border-gold-500/20">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+                selectedCategory === cat.id
+                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold scale-105"
+                  : "bg-spiritual-card border border-gold-500/25 text-spiritual-ivory/80 hover:text-gold-300 hover:border-gold-400/50"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Articles Grid */}
+        {filteredArticles.length === 0 ? (
+          <div className="spiritual-glass-card rounded-3xl p-12 text-center max-w-md mx-auto border border-gold-500/30 space-y-4">
+            <BookOpen className="w-12 h-12 text-gold-400/50 mx-auto" />
+            <p className="text-sm text-spiritual-ivory/80">
+              {isEn ? "No articles found matching your search." : "आपकी खोज के अनुसार कोई आलेख नहीं मिला।"}
             </p>
+            <button
+              onClick={() => {
+                setSelectedCategory("all");
+                setSearchQuery("");
+              }}
+              className="px-5 py-2 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-300 text-xs font-bold hover:bg-gold-500 hover:text-spiritual-dark"
+            >
+              {isEn ? "Reset Filter" : "सभी आलेख देखें"}
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((art) => (
+            {filteredArticles.map((art) => (
               <div
                 key={art.id}
                 onClick={() => setSelectedArticle(art)}
-                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer hover:border-gold-400 transition-all duration-300 shadow-xl"
+                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all duration-300"
               >
                 <div className="relative h-52 w-full bg-black overflow-hidden">
                   <Image
@@ -114,7 +155,7 @@ export default function PrannathJiPage() {
                   <div>
                     <div className="flex items-center gap-2 text-xs text-gold-muted/80 mb-2">
                       <Calendar className="w-3.5 h-3.5 text-gold-400" />
-                      <span>{art.publishedAt}</span>
+                      <span>{formatSpiritualDate(art.publishedAt, language)}</span>
                     </div>
 
                     <h3 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-2">
@@ -165,7 +206,7 @@ export default function PrannathJiPage() {
               <div className="flex flex-wrap items-center gap-4 text-xs text-gold-muted/80 pb-4 border-b border-gold-500/20">
                 <span>{selectedArticle.author}</span>
                 <span>•</span>
-                <span>{selectedArticle.publishedAt}</span>
+                <span>{formatSpiritualDate(selectedArticle.publishedAt, language)}</span>
                 <span>•</span>
                 <span>{selectedArticle.readTime || "5 min read"}</span>
               </div>

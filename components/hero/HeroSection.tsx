@@ -111,30 +111,40 @@ export const HeroSection: React.FC = () => {
           {/* Left Column: Emblem, Titles & 4 Action Cards */}
           <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left z-10">
             {/* Luminous Sadhauli Dham Emblem */}
-            <div className="relative mb-4 group cursor-pointer">
+            <div className="relative mb-3 group cursor-pointer">
               <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-gold-400/30 to-amber-600/30 blur-xl opacity-75 group-hover:opacity-100 transition duration-700 animate-pulse-glow" />
-              <div className="relative w-28 h-28 sm:w-36 sm:h-36">
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32">
                 <Image
                   src="/assets/logo-emblem.png"
                   alt="श्री निजानंद आश्रम साढौली धाम परमधाम प्रतीक"
-                  width={144}
-                  height={144}
+                  width={128}
+                  height={128}
                   priority
                   className="w-full h-full object-contain drop-shadow-[0_0_25px_rgba(244,208,111,0.6)] transform group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
 
-            {/* Title: श्री प्राणनाथ जी */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gold-gradient font-spiritual-heading tracking-normal leading-normal py-1.5 mb-2 overflow-visible">
-              {language === "hi" ? "श्री प्राणनाथ जी" : "Shri Prannath Ji"}
+            {/* Official Portal Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-gold-500/20 via-amber-500/15 to-gold-500/20 border border-gold-400/40 text-gold-300 text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-gold-950/30 mb-4 sm:mb-5 backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              <span>
+                {language === "hi"
+                  ? "श्री निजानंद आश्रम • हरिद्वार (उत्तराखण्ड)"
+                  : "Shri Nijanand Ashram • Haridwar, Uttarakhand"}
+              </span>
+            </div>
+
+            {/* Main Showstopper Title: SADHAULI DHAM / साढौली धाम (Optimized Size & Spacing) */}
+            <h1 className="text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-gold-gradient font-spiritual-heading tracking-wide leading-tight mt-1 mb-3 py-1 overflow-visible drop-shadow-[0_4px_25px_rgba(244,208,111,0.35)]">
+              {language === "hi" ? "साढौली धाम" : "Sadhauli Dham"}
             </h1>
 
-            {/* Subtitle with Ornamental Flourish: परमधाम */}
-            <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-gold-300 mb-3">
+            {/* Subtitle with Ornamental Flourish: श्री प्राणनाथ जी परमधाम (Mentioned Once) */}
+            <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-gold-300 mb-4">
               <span className="text-gold-500/80 text-xs sm:text-sm">❖ ────</span>
-              <h2 className="text-xl sm:text-3xl font-extrabold tracking-widest text-gold-gradient font-spiritual-heading uppercase leading-normal py-1 overflow-visible">
-                {t("hero.portal", "परमधाम")}
+              <h2 className="text-base sm:text-xl md:text-2xl font-extrabold tracking-widest text-gold-gradient font-spiritual-heading uppercase leading-normal py-0.5 overflow-visible">
+                {t("hero.portal", "श्री प्राणनाथ जी परमधाम")}
               </h2>
               <span className="text-gold-500/80 text-xs sm:text-sm">──── ❖</span>
             </div>
@@ -150,7 +160,7 @@ export const HeroSection: React.FC = () => {
             <p className="text-sm sm:text-base text-spiritual-ivory/85 max-w-xl font-normal leading-relaxed mb-8 drop-shadow-md">
               {t(
                 "site.tagline",
-                "श्री प्राणनाथ जी की दिव्य वाणी, आध्यात्मिक ज्ञान, PDF पुस्तकें, प्रवचन, भजन और ध्यान – सब एक ही पावन परमधाम में।"
+                "श्री निजानंद आश्रम साढौली धाम (हरिद्वार) — श्री प्राणनाथ जी की दिव्य वाणी, तारतम ग्रन्थ, सत्संग, प्रवचन, भजन और साधना का पावन आध्यात्मिक तीर्थ।"
               )}
             </p>
 

@@ -5,6 +5,7 @@ import { store } from "@/lib/data/store";
 import { Article } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
 import { Plus, Trash2, FileText, Sparkles } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export default function AdminArticlesPage() {
   const { language } = useI18n();
@@ -211,6 +212,18 @@ export default function AdminArticlesPage() {
                 <option value="archived">{isEn ? "Archived" : "संग्रहीत (Archived)"}</option>
               </select>
             </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+            <ImageUploadField
+              label={isEn ? "Article Featured Image *" : "लेख मुख्य फोटो (Featured Image) *"}
+              value={form.featuredImage}
+              onChange={(url) => setForm({ ...form, featuredImage: url })}
+              recommendedSize="1200 × 675 px"
+              aspectRatio="16:9 (आलेख थंबनेल)"
+              maxSizeMB={5}
+              helperText={isEn ? "Displayed as the top banner on the article reading page and listing card" : "लेख सूची कार्ड व मुख्य वाचन पेज पर शीर्ष बैनर के रूप में दिखेगी"}
+            />
           </div>
 
           <div className="flex items-center gap-3 pt-2">

@@ -6,19 +6,24 @@ import { LanguageWelcomeModal } from "@/components/header/LanguageWelcomeModal";
 import { PersistentAudioPlayer } from "@/components/audio/PersistentAudioPlayer";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sadhaulidham.org"),
-  title: "श्री प्राणनाथ जी परमधाम | Shri Prannath Ji Paramdham",
+  metadataBase: new URL("https://sadhaulidham.com"),
+  title: {
+    default: "साढौली धाम | श्री प्राणनाथ जी परमधाम — Sadhauli Dham",
+    template: "%s | Sadhauli Dham",
+  },
   description:
-    "Shri Nijanand Ashram Sadhauli Dham, Haridwar — A Full-Stack Multilingual Spiritual Knowledge & Digital Library Platform for Tartam Vani, Paramdham Wisdom, Satsang, Pravachan, Audio & Meditation.",
+    "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड) — The official spiritual sanctuary of Mahamati Shri Prannath Ji, Tartam Vani, Satsang, and Digital Library (sadhaulidham.com).",
   keywords: [
+    "Sadhauli Dham",
+    "साढौली धाम",
+    "sadhaulidham.com",
+    "Sadhauli Dham Haridwar",
     "Shri Prannath Ji",
     "श्री प्राणनाथ जी",
     "Paramdham",
     "परमधाम",
     "Tartam Vani",
     "तारतम वाणी",
-    "Sadhauli Dham Haridwar",
-    "साढौली धाम",
     "Nijanand Sampradaya",
     "निजानंद सम्प्रदाय",
     "Brahm Gyan",
@@ -27,11 +32,28 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Sadhauli Dham Research & Media Council" }],
   openGraph: {
-    title: "श्री प्राणनाथ जी परमधाम | Shri Prannath Ji Paramdham",
+    type: "website",
+    locale: "hi_IN",
+    url: "https://sadhaulidham.com",
+    title: "साढौली धाम | श्री प्राणनाथ जी परमधाम — Sadhauli Dham",
     description:
-      "Shri Nijanand Ashram Sadhauli Dham, Haridwar — The Sacred Paramdham of Divine Wisdom, Tartam Vani & Spiritual Knowledge.",
-    images: ["/assets/hero-reference-1.jpg"],
-    siteName: "Shri Prannath Ji Paramdham",
+      "श्री निजानंद आश्रम साढौली धाम, हरिद्वार — The official spiritual sanctuary of Divine Wisdom, Tartam Vani & Nijanand Sampradaya.",
+    images: [
+      {
+        url: "https://sadhaulidham.com/assets/hero-reference-1.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Sadhauli Dham Haridwar",
+      },
+    ],
+    siteName: "साढौली धाम | Shri Prannath Ji Paramdham (sadhaulidham.com)",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "साढौली धाम | श्री प्राणनाथ जी परमधाम — Sadhauli Dham",
+    description:
+      "श्री निजानंद आश्रम साढौली धाम, हरिद्वार — The official spiritual sanctuary of Divine Wisdom, Tartam Vani & Nijanand Sampradaya.",
+    images: ["https://sadhaulidham.com/assets/hero-reference-1.jpg"],
   },
 };
 

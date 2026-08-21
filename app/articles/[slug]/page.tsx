@@ -19,6 +19,7 @@ import {
   FileText,
   Sparkles,
 } from "lucide-react";
+import { formatSpiritualDate } from "@/lib/utils/formatDate";
 
 export default function ArticleDetailPage() {
   const params = useParams();
@@ -42,13 +43,19 @@ export default function ArticleDetailPage() {
         <div className="text-center spiritual-glass-card rounded-3xl p-8 max-w-md border border-gold-500/30">
           <FileText className="w-12 h-12 text-gold-400 mx-auto mb-3" />
           <h2 className="text-xl font-bold text-spiritual-ivory font-spiritual-heading mb-2">
-            {language === "hi" ? "लेख लोड हो रहा है..." : "Loading Article..."}
+            {language === "hi" ? "आलेख नहीं मिला" : "Article Not Found"}
           </h2>
+          <p className="text-xs text-spiritual-ivory/60 mb-6">
+            {language === "hi"
+              ? "यह आलेख अभी प्रकाशित नहीं हुआ है या हटा दिया गया है।"
+              : "The requested article is not available."}
+          </p>
           <Link
             href="/articles"
-            className="inline-block mt-4 px-6 py-2 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold"
           >
-            सभी लेख देखें
+            <ArrowLeft className="w-4 h-4" />
+            <span>{language === "hi" ? "सभी लेखों पर लौटें" : "Return to Articles"}</span>
           </Link>
         </div>
       </main>
@@ -83,7 +90,7 @@ export default function ArticleDetailPage() {
           <div className="flex flex-wrap items-center gap-4 text-xs text-spiritual-ivory/60 pb-6 border-b border-gold-500/20">
             <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4 text-gold-400" />
-              {article.publishedAt}
+              {formatSpiritualDate(article.publishedAt, language)}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5">

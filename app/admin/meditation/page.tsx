@@ -15,6 +15,8 @@ import {
   Save,
   X,
 } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { PdfUploadField } from "@/components/admin/PdfUploadField";
 
 export default function AdminMeditationPage() {
   const { language } = useI18n();
@@ -296,6 +298,17 @@ export default function AdminMeditationPage() {
                 />
               </div>
 
+              <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+                <ImageUploadField
+                  label={isEn ? "Article Featured Image" : "चितवनी लेख मुख्य फोटो"}
+                  value={articleForm.featuredImage}
+                  onChange={(url) => setArticleForm({ ...articleForm, featuredImage: url })}
+                  recommendedSize="1200 × 675 px"
+                  aspectRatio="16:9 (आलेख थंबनेल)"
+                  maxSizeMB={5}
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-gold-300 mb-1">
                   {isEn ? "Full Article Content (Hindi) *" : "सम्पूर्ण लेख सामग्री (हिन्दी) *"}
@@ -422,31 +435,34 @@ export default function AdminMeditationPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "PDF URL *" : "PDF फाइल लिंक *"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={bookForm.pdfUrl}
-                    onChange={(e) => setBookForm({ ...bookForm, pdfUrl: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-                  />
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+                <ImageUploadField
+                  label={isEn ? "Book Cover Photo *" : "ग्रन्थ कवर फोटो (Cover Photo) *"}
+                  value={bookForm.coverUrl}
+                  onChange={(url) => setBookForm({ ...bookForm, coverUrl: url })}
+                  recommendedSize="600 × 900 px"
+                  aspectRatio="2:3 (पोर्ट्रेट बुक कवर)"
+                  maxSizeMB={5}
+                />
 
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Pages Count" : "कुल पृष्ठ"}
-                  </label>
-                  <input
-                    type="number"
-                    value={bookForm.pages}
-                    onChange={(e) => setBookForm({ ...bookForm, pages: Number(e.target.value) })}
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                  />
-                </div>
+                <PdfUploadField
+                  label={isEn ? "Meditation Book PDF *" : "चितवनी ग्रन्थ PDF फाइल *"}
+                  value={bookForm.pdfUrl}
+                  onChange={(url) => setBookForm({ ...bookForm, pdfUrl: url })}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">
+                  {isEn ? "Pages Count" : "कुल पृष्ठ (Pages)"}
+                </label>
+                <input
+                  type="number"
+                  value={bookForm.pages}
+                  onChange={(e) => setBookForm({ ...bookForm, pages: Number(e.target.value) })}
+                  className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                />
               </div>
 
               <div>

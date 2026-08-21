@@ -25,7 +25,13 @@ import {
   ChevronRight,
   Flower2,
   Compass,
+  MapPin,
+  Camera,
+  ExternalLink,
+  Clock,
 } from "lucide-react";
+import { isPdfAvailable } from "@/app/library/page";
+import { formatSpiritualDate } from "@/lib/utils/formatDate";
 
 export default function HomePage() {
   const { t, language } = useI18n();
@@ -63,6 +69,73 @@ export default function HomePage() {
       {/* 2. Today's Spiritual Thought */}
       <section className="py-4">
         <DailyQuoteCard />
+      </section>
+
+      {/* 2.5. Official Sadhauli Dham Welcome Banner */}
+      <section className="py-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden border-2 border-gold-400/40 bg-gradient-to-r from-[#18110c]/90 via-[#221610]/85 to-[#120e0b]/90 p-5 sm:p-7 backdrop-blur-xl shadow-2xl">
+          {/* Subtle Ambient Radial Glow */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-2xl overflow-hidden border border-gold-400/50 shadow-lg shadow-gold-950/50">
+                <Image
+                  src="/assets/sadhauli-dham-2.jpg"
+                  alt="श्री निजानंद आश्रम साढौली धाम, हरिद्वार"
+                  fill
+                  className="object-cover hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+
+              <div className="space-y-1.5 max-w-2xl">
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="w-3 h-3 text-gold-400" />
+                  <span>
+                    {isEn
+                      ? "SadhauliDham.com • Haridwar"
+                      : "साढौली धाम • SadhauliDham.com"}
+                  </span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight py-0.5 overflow-visible">
+                  {isEn
+                    ? "Welcome to Shri Nijanand Ashram Sadhauli Dham, Haridwar"
+                    : "श्री निजानंद आश्रम साढौली धाम, हरिद्वार में आपका स्वागत है"}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-spiritual-ivory/80 leading-relaxed">
+                  {isEn
+                    ? "The sacred spiritual sanctuary dedicated to Mahamati Shri Prannath Ji's Tartam Vani, Aksharatit Brahm Gyan, continuous satsang, meditation sanctums, and selfless seva in Haridwar (Uttarakhand)."
+                    : "महामति श्री प्राणनाथ जी की दिव्य तारतम वाणी, अक्षरातीत परब्रह्म दर्शन, अखंड सत्संग, साधन कुटीर एवं विशाल सेवा का पावन आध्यात्मिक तीर्थ — साढौली धाम, हरिद्वार (उत्तराखण्ड)।"}
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2.5 flex-shrink-0 w-full lg:w-auto">
+              <a
+                href="#holy-dhams"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>{isEn ? "Ashram Photos & Darshan" : "साढौली धाम दर्शन"}</span>
+              </a>
+
+              <a
+                href="https://maps.app.goo.gl/n5oY9okf86WyuiKN9?g_st=com.google.maps.preview.copy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-200 hover:bg-gold-500/25 font-semibold text-xs transition-colors"
+              >
+                <MapPin className="w-3.5 h-3.5 text-gold-400" />
+                <span>{isEn ? "Haridwar Location" : "आश्रम रास्ता (Google Maps)"}</span>
+                <ExternalLink className="w-3 h-3 opacity-70" />
+              </a>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* 3. Shree Prannath Ji Articles Highlights */}
@@ -169,7 +242,7 @@ export default function HomePage() {
                   <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-semibold uppercase">
                     {blog.category}
                   </span>
-                  <span>{blog.publishedAt}</span>
+                  <span>{formatSpiritualDate(blog.publishedAt, language)}</span>
                 </div>
 
                 <h3 className="text-lg sm:text-xl font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading mb-2">
@@ -247,22 +320,33 @@ export default function HomePage() {
 
               <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between">
                 <Link
-                  href={`/library`}
-                  className="text-xs font-bold text-gold-300 hover:text-gold-100 inline-flex items-center gap-1"
+                  href={`/library/reader/${book.id}`}
+                  className="text-xs font-bold text-gold-300 hover:text-gold-100 inline-flex items-center gap-1.5"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
                   <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
                 </Link>
 
-                <a
-                  href={book.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-semibold text-spiritual-ivory/60 hover:text-gold-300 inline-flex items-center gap-1"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>PDF</span>
-                </a>
+                {isPdfAvailable(book.pdfUrl) ? (
+                  <a
+                    href={book.pdfUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-gold-300 hover:text-gold-100 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold-500/10 border border-gold-500/30"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>PDF</span>
+                  </a>
+                ) : (
+                  <Link
+                    href={`/library/reader/${book.id}`}
+                    className="text-xs text-spiritual-ivory/60 hover:text-gold-300 inline-flex items-center gap-1"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>{isEn ? "E-Book" : "ई-ग्रंथ"}</span>
+                  </Link>
+                )}
               </div>
             </div>
           ))}

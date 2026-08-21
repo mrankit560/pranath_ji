@@ -17,6 +17,7 @@ import {
   Sparkles,
   ChevronRight,
 } from "lucide-react";
+import { formatSpiritualDate } from "@/lib/utils/formatDate";
 
 export default function ArticlesPage() {
   const { t, language } = useI18n();
@@ -33,17 +34,17 @@ export default function ArticlesPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
             <FileText className="w-3.5 h-3.5" />
-            {language === "hi" ? "आध्यात्मिक आलेख" : "Spiritual Articles & Insights"}
+            {language === "hi" ? "आश्रम शोध आलेख" : "Ashram Research Articles"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-3">
-            {language === "hi" ? "तारतम ज्ञान एवं आध्यात्मिक लेख" : "Tartam Wisdom & Research Articles"}
+            {language === "hi" ? "शोध आलेख एवं प्रकाशन" : "Spiritual Articles & Publications"}
           </h1>
 
           <p className="text-sm sm:text-base text-gold-muted/80 max-w-xl mx-auto">
             {language === "hi"
-              ? "साढौली धाम शोध पीठ द्वारा प्रकाशित आध्यात्मिक, दार्शनिक एवं ऐतिहासिक आलेख"
-              : "Scholarly and contemplative writings on Tartam Vani, self-realization, and ashram legacy"}
+              ? "श्री प्राणनाथ जी के दिव्य दर्शन, तारतम वाणी और आश्रम परंपरा पर शोधपूर्ण आलेख"
+              : "Scholarly research articles and spiritual discourses from Sadhauli Dham."}
           </p>
         </div>
       </section>
@@ -58,7 +59,7 @@ export default function ArticlesPage() {
             >
               <div className="relative h-48 w-full bg-black overflow-hidden">
                 <Image
-                  src={art.featuredImage || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800"}
+                  src={art.featuredImage || "/assets/hero-reference-1.jpg"}
                   alt={art.titleHi}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-85 group-hover:opacity-100"
@@ -73,7 +74,7 @@ export default function ArticlesPage() {
                   <div className="flex items-center gap-3 text-xs text-spiritual-ivory/60 mb-2">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5 text-gold-400" />
-                      {art.publishedAt}
+                      {formatSpiritualDate(art.publishedAt, language)}
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">

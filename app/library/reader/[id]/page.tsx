@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,17 +8,18 @@ import { useI18n } from "@/lib/i18n/context";
 import { store } from "@/lib/data/store";
 import { Book } from "@/lib/data/types";
 import {
-  ZoomIn,
-  ZoomOut,
   Maximize2,
   Minimize2,
-  ChevronLeft,
-  ChevronRight,
   Download,
   Bookmark,
   ArrowLeft,
   BookOpen,
   Sparkles,
+  FileText,
+  CheckCircle,
+  ExternalLink,
+  Info,
+  Clock,
   RotateCw,
 } from "lucide-react";
 
@@ -26,37 +27,40 @@ export default function PDFReaderPage() {
   const params = useParams();
   const router = useRouter();
   const { t, language } = useI18n();
+  const isEn = language === "en";
   const bookId = params.id as string;
 
   const [book, setBook] = useState<Book | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  
+  // Tab: "pdf" (Real PDF Document) or "details" (Book Description & Review)
+  const [activeTab, setActiveTab] = useState<"pdf" | "details">("pdf");
+  const readerContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const found = store.getBookById(bookId);
     if (found) {
       setBook(found);
-      // Check last read page
-      const history = store.getReadingHistory().find((h) => h.bookId === bookId);
-      if (history) {
-        setCurrentPage(history.page);
+      const bookmarks = store.getBookmarks();
+      setIsBookmarked(bookmarks.includes(bookId));
+      if (!found.pdfUrl || found.pdfUrl === "#") {
+        setActiveTab("details");
+      } else {
+        setActiveTab("pdf");
       }
     }
   }, [bookId]);
 
+  // Fullscreen change listener
   useEffect(() => {
-    if (book) {
-      // Auto save reading progress
-      store.saveReadingProgress(
-        book.id,
-        language === "hi" ? book.titleHi : book.titleEn,
-        currentPage
-      );
-    }
-  }, [book, currentPage, language]);
+    const onFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
 
   if (!book) {
     return (
@@ -64,105 +68,124 @@ export default function PDFReaderPage() {
         <div className="text-center spiritual-glass-card rounded-3xl p-8 max-w-md border border-gold-500/30">
           <BookOpen className="w-12 h-12 text-gold-400 mx-auto mb-3" />
           <h2 className="text-xl font-bold text-spiritual-ivory font-spiritual-heading mb-2">
-            {language === "hi" ? "पुस्तक लोड हो रही है..." : "Loading Scripture..."}
+            {isEn ? "Loading Scripture..." : "पुस्तक लोड हो रही है..."}
           </h2>
           <Link
             href="/library"
             className="inline-block mt-4 px-6 py-2 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold"
           >
-            लाइब्रेरी पर लौटें
+            {isEn ? "Back to Library" : "लाइब्रेरी पर लौटें"}
           </Link>
         </div>
       </main>
     );
   }
 
-  const totalPages = book.pages || 100;
+  const hasPdf = Boolean(book.pdfUrl && book.pdfUrl.trim() !== "" && book.pdfUrl !== "#");
 
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage((p) => p - 1);
-  };
-
-  const handleZoomIn = () => {
-    setZoomLevel((z) => Math.min(z + 15, 200));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel((z) => Math.max(z - 15, 60));
+  // Native Fullscreen API
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (readerContainerRef.current?.requestFullscreen) {
+        readerContainerRef.current.requestFullscreen().catch(() => {
+          setIsFullscreen(true);
+        });
+      } else if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {
+          setIsFullscreen(true);
+        });
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {
+          setIsFullscreen(false);
+        });
+      }
+    }
   };
 
   const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
+    const isNowBookmarked = store.toggleBookmark(book.id);
+    setIsBookmarked(isNowBookmarked);
     setToastMessage(
-      isBookmarked
-        ? "बुकमार्क हटाया गया"
-        : `पृष्ठ ${currentPage} बुकमार्क में सुरक्षित किया गया`
+      isNowBookmarked
+        ? isEn ? "Saved to your sacred bookmarks" : "पुस्तकालय बुकमार्क में सुरक्षित किया गया"
+        : isEn ? "Removed from bookmarks" : "बुकमार्क हटाया गया"
     );
     setTimeout(() => setToastMessage(null), 2500);
   };
 
   return (
-    <main
+    <div
+      ref={readerContainerRef}
       className={`min-h-screen bg-[#050403] text-spiritual-ivory flex flex-col justify-between ${
-        isFullscreen ? "p-0" : ""
+        isFullscreen ? "fixed inset-0 z-50 overflow-hidden bg-black" : ""
       }`}
     >
-      {/* Toast */}
+      {/* Toast notification */}
       {toastMessage && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold shadow-2xl animate-fade-in">
-          {toastMessage}
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+          <CheckCircle className="w-4 h-4" />
+          <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Reader Top Navbar */}
-      <header className="bg-spiritual-navy/95 border-b border-gold-500/30 px-4 py-3 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      {/* Reader Navigation Header */}
+      <header className="bg-spiritual-navy/95 border-b border-gold-500/30 px-3 sm:px-6 py-2.5 backdrop-blur-xl sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          {/* Left: Back button & Book Title */}
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => router.push("/library")}
-              className="p-1.5 rounded-lg border border-gold-500/20 text-gold-300 hover:bg-gold-500/10 flex-shrink-0"
+              className="p-2 rounded-xl border border-gold-500/20 text-gold-300 hover:bg-gold-500/10 flex-shrink-0 flex items-center gap-1.5 text-xs font-semibold"
               title="Back to Library"
             >
               <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">{isEn ? "Library" : "लाइब्रेरी"}</span>
             </button>
+
             <div className="truncate">
               <h1 className="text-xs sm:text-sm font-bold text-gold-200 truncate font-spiritual-heading">
-                {language === "hi" ? book.titleHi : book.titleEn}
+                {isEn ? book.titleEn || book.titleHi : book.titleHi}
               </h1>
-              <span className="text-[10px] text-spiritual-ivory/60 truncate">
-                {language === "hi" ? book.authorHi : book.authorEn}
+              <span className="text-[10px] text-spiritual-ivory/60 truncate block">
+                {isEn ? book.authorEn : book.authorHi} • {book.pages} {isEn ? "Pages" : "पृष्ठ"}
               </span>
             </div>
           </div>
 
-          {/* Reader Controls Toolbar */}
-          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-            {/* Zoom Controls */}
-            <div className="hidden sm:flex items-center bg-black/50 border border-gold-500/30 rounded-xl p-0.5 text-xs">
+          {/* Center/Right: PDF View vs Details Tab, Download, Fullscreen */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {/* View Mode Tabs */}
+            <div className="flex items-center bg-black/60 border border-gold-500/30 rounded-xl p-0.5 text-xs">
+              {hasPdf && (
+                <button
+                  onClick={() => setActiveTab("pdf")}
+                  className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                    activeTab === "pdf"
+                      ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold"
+                      : "text-spiritual-ivory/70 hover:text-gold-300"
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>{isEn ? "PDF Document" : "मूल PDF ग्रन्थ"}</span>
+                </button>
+              )}
+
               <button
-                onClick={handleZoomOut}
-                className="p-1.5 text-spiritual-ivory/70 hover:text-gold-300"
-                title={t("reader.zoomOut", "छोटा करें")}
+                onClick={() => setActiveTab("details")}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  activeTab === "details"
+                    ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold"
+                    : "text-spiritual-ivory/70 hover:text-gold-300"
+                }`}
               >
-                <ZoomOut className="w-3.5 h-3.5" />
-              </button>
-              <span className="px-2 text-[11px] font-mono text-gold-300">
-                {zoomLevel}%
-              </span>
-              <button
-                onClick={handleZoomIn}
-                className="p-1.5 text-spiritual-ivory/70 hover:text-gold-300"
-                title={t("reader.zoomIn", "बड़ा करें")}
-              >
-                <ZoomIn className="w-3.5 h-3.5" />
+                <Info className="w-3.5 h-3.5" />
+                <span>{isEn ? "Overview & Review" : "पुस्तक परिचय व समीक्षा"}</span>
               </button>
             </div>
 
-            {/* Bookmark */}
+            {/* Bookmark button */}
             <button
               onClick={handleBookmark}
               className={`p-2 rounded-xl border transition-colors ${
@@ -170,27 +193,31 @@ export default function PDFReaderPage() {
                   ? "bg-gold-500 text-spiritual-dark border-gold-400"
                   : "text-spiritual-ivory/70 border-gold-500/20 hover:text-gold-300"
               }`}
-              title={t("reader.bookmarkAdded", "बुकमार्क")}
+              title="Bookmark this scripture"
             >
               <Bookmark className="w-4 h-4 fill-current" />
             </button>
 
-            {/* Download */}
-            <a
-              href={book.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-xl border border-gold-500/30 text-gold-300 hover:bg-gold-500/20"
-              title="Download PDF"
-            >
-              <Download className="w-4 h-4" />
-            </a>
+            {/* Direct PDF Download Button */}
+            {hasPdf && (
+              <a
+                href={book.pdfUrl}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+                title={isEn ? "Download PDF file" : "PDF फाइल डाउनलोड करें"}
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden md:inline">{isEn ? "Download PDF" : "PDF डाउनलोड"}</span>
+              </a>
+            )}
 
-            {/* Fullscreen */}
+            {/* Maximize / Minimize Fullscreen button */}
             <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="p-2 rounded-xl border border-gold-500/20 text-spiritual-ivory/70 hover:text-gold-300"
-              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              onClick={toggleFullscreen}
+              className="p-2 rounded-xl border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 transition-colors"
+              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen Reader"}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -198,101 +225,158 @@ export default function PDFReaderPage() {
         </div>
       </header>
 
-      {/* Main Reader View Canvas */}
-      <div className="flex-1 overflow-auto flex items-center justify-center p-4 sm:p-8 bg-[#0a0705]">
-        <div
-          className="bg-[#181310] border border-gold-500/40 rounded-2xl shadow-2xl p-8 sm:p-14 max-w-3xl w-full min-h-[75vh] flex flex-col justify-between text-spiritual-ivory transition-all relative"
-          style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: "top center" }}
-        >
-          {/* Subtle ornate watermark emblem in background */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
-            <Image
-              src="/assets/logo-emblem.png"
-              alt="Watermark"
-              width={350}
-              height={350}
-              className="object-contain"
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col items-center justify-start p-2 sm:p-4 bg-[#0a0705]">
+        {activeTab === "pdf" && hasPdf ? (
+          /* ========================================================================= */
+          /* 1. ACTUAL PDF DOCUMENT VIEWER (Directly rendering the real uploaded PDF) */
+          /* ========================================================================= */
+          <div className="w-full max-w-6xl h-[86vh] rounded-2xl overflow-hidden border border-gold-500/40 shadow-2xl bg-[#1e1e1e] flex flex-col">
+            {/* Embedded PDF iframe / object */}
+            <iframe
+              src={`${book.pdfUrl}#toolbar=1&navpanes=1&statusbar=1`}
+              title={isEn ? book.titleEn || book.titleHi : book.titleHi}
+              className="w-full flex-1 border-0 bg-[#2b2b2b]"
             />
-          </div>
 
-          {/* Scripture Page Header */}
-          <div className="border-b border-gold-500/30 pb-4 flex items-center justify-between text-xs text-gold-400 font-devanagari">
-            <span>श्री निजानंद आश्रम साढौली धाम, हरिद्वार</span>
-            <span>{language === "hi" ? book.titleHi : book.titleEn}</span>
-            <span>पृष्ठ {currentPage} / {totalPages}</span>
-          </div>
+            {/* PDF Viewer Bottom Control Strip */}
+            <div className="px-4 py-2.5 bg-[#120e0a] border-t border-gold-500/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 text-spiritual-ivory/80">
+                <FileText className="w-4 h-4 text-gold-400" />
+                <span>
+                  {isEn ? "Rendering official PDF document" : "मूल PDF दस्तावेज़ से पृष्ठ प्रदर्शित हो रहे हैं"}
+                </span>
+              </div>
 
-          {/* Simulated Scripture Content for Page */}
-          <div className="py-8 space-y-6">
-            <div className="text-center">
-              <span className="text-xs uppercase tracking-widest text-gold-400/80 font-mono">
-                अध्याय {Math.ceil(currentPage / 5)} • प्रकरण {currentPage}
-              </span>
-              <h2 className="text-2xl font-bold text-gold-gradient font-spiritual-heading mt-1">
-                {language === "hi"
-                  ? `दिव्य आत्म बोध एवं परब्रह्म साक्षात्कार`
-                  : `Divine Soul Realization & Brahm Awakening`}
+              <div className="flex items-center gap-2">
+                <a
+                  href={book.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-lg bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold hover:bg-gold-500 hover:text-spiritual-dark flex items-center gap-1.5 transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>{isEn ? "Open in Full Tab" : "नई विंडो में खोलें"}</span>
+                </a>
+
+                <a
+                  href={book.pdfUrl}
+                  download
+                  className="px-3 py-1.5 rounded-lg bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>{isEn ? "Save PDF" : "डाउनलोड करें"}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* ========================================================================= */
+          /* 2. BOOK OVERVIEW, RESEARCH REVIEW & SPECIFIC SCRIPTURE METADATA           */
+          /* ========================================================================= */
+          <div className="w-full max-w-4xl spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-gold-500/30 space-y-8 my-4 shadow-2xl">
+            {/* Book Header Card */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 pb-6 border-b border-gold-500/20">
+              <div className="relative w-36 h-52 rounded-2xl overflow-hidden border-2 border-gold-500/40 shadow-2xl bg-black flex-shrink-0">
+                <Image
+                  src={book.coverUrl || "/assets/paramdham-mandala.png"}
+                  alt={isEn ? book.titleEn || book.titleHi : book.titleHi}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div className="flex-1 text-center sm:text-left space-y-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-bold uppercase tracking-wider">
+                  <BookOpen className="w-3.5 h-3.5 text-gold-400" />
+                  <span>{book.category === "bitak_saheb" ? "श्री बीतक साहेब" : book.category === "tartam_vani" ? "तारतम वाणी" : "आध्यात्मिक साहित्य"}</span>
+                </div>
+
+                <h1 className="text-2xl sm:text-3xl font-bold text-gold-gradient font-spiritual-heading leading-tight">
+                  {isEn ? book.titleEn || book.titleHi : book.titleHi}
+                </h1>
+
+                <div className="text-xs sm:text-sm text-gold-muted/90 font-semibold">
+                  {isEn ? "Author / Commentator: " : "लेखक / टीकाकार: "}
+                  <span className="text-spiritual-ivory">{isEn ? book.authorEn : book.authorHi}</span>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-spiritual-ivory/70 pt-1">
+                  <span>📖 {book.pages} {isEn ? "Pages" : "पृष्ठ"}</span>
+                  <span>🌐 {book.language === "hi" ? "हिन्दी संस्करण" : "English Edition"}</span>
+                  {hasPdf ? (
+                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      {isEn ? "Original PDF Attached" : "मूल PDF संलग्न है"}
+                    </span>
+                  ) : (
+                    <span className="text-amber-400 font-semibold flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      {isEn ? "PDF In Digitization" : "PDF संकलन प्रक्रियाधीन"}
+                    </span>
+                  )}
+                </div>
+
+                {/* Direct Action Buttons */}
+                <div className="pt-3 flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                  {hasPdf ? (
+                    <>
+                      <button
+                        onClick={() => setActiveTab("pdf")}
+                        className="px-5 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>{isEn ? "View Real PDF" : "मूल PDF दस्तावेज़ पढ़ें"}</span>
+                      </button>
+
+                      <a
+                        href={book.pdfUrl}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold hover:bg-gold-500/20 flex items-center gap-1.5 transition-colors"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span>{isEn ? "Download PDF" : "PDF डाउनलोड करें"}</span>
+                      </a>
+                    </>
+                  ) : (
+                    <div className="text-xs text-amber-300 bg-amber-500/15 border border-amber-400/30 px-4 py-2 rounded-xl">
+                      {isEn
+                        ? "This scripture's PDF is being prepared by Sadhauli Dham research council."
+                        : "इस पावन ग्रन्थ का मूल PDF साढौली धाम शोध पीठ द्वारा संकलित किया जा रहा है।"}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Book Description */}
+            <div className="space-y-3">
+              <h2 className="text-base font-bold text-gold-300 uppercase tracking-wider flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-gold-400" />
+                <span>{isEn ? "Book Description & Summary" : "पुस्तक विवरण एवं सारांश"}</span>
               </h2>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-black/40 border border-gold-500/20 text-center space-y-4">
-              <p className="text-lg sm:text-xl font-spiritual-heading text-gold-200 leading-relaxed">
-                “प्रणमूँ श्री नवतन पुरी, धाम धनी को नाम।<br />
-                दूजो प्रणमूँ सद्गुरु, जे कीन्हे पूरन काम॥”
-              </p>
-              <p className="text-xs sm:text-sm text-spiritual-ivory/80 leading-relaxed font-devanagari">
-                भावार्थ: प्रथम नवतनपुरी धाम और धामधनी श्री राज श्यामा जी के पावन नाम का वंदन करते हैं। पश्चात सद्गुरु महाराज को प्रणाम करते हैं जिन्होंने हमारे समस्त आध्यात्मिक मनोरथ पूर्ण किए।
+              <p className="text-xs sm:text-sm text-spiritual-ivory/85 leading-relaxed bg-black/40 p-5 rounded-2xl border border-gold-500/20 font-devanagari">
+                {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi || "श्री निजानंद आश्रम साढौली धाम द्वारा प्रकाशित पावन आध्यात्मिक ग्रन्थ।"}
               </p>
             </div>
 
-            <div className="text-xs sm:text-sm text-spiritual-ivory/80 leading-relaxed space-y-3 font-devanagari">
-              <p>
-                अनन्त श्री प्राणनाथ जी की वाणी जीव को माया के मोह-जाल से मुक्त कर अखंड परमधाम का साक्षात्कार कराती है। मनुष्य जीवन का सर्वोत्तम फल यही है कि वह अपने आत्मस्वरूप को पहचानकर परब्रह्म के चरणों में समर्पित हो जाए।
-              </p>
-              <p>
-                सुख सीतल करे संसार, प्रेम सेवा से पाओगे पार। तारतम ज्ञान का प्रकाश अंतरात्मा के अंधकार को मिटाकर शाश्वत शांति का संचार करता है।
-              </p>
-            </div>
+            {/* Admin Book Review / Blog */}
+            {(book.bookBlogHi || book.bookBlogEn) && (
+              <div className="space-y-3">
+                <h2 className="text-base font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>{isEn ? "Research Review & Commentary" : "शोध पीठ समीक्षा व विशेष आलेख"}</span>
+                </h2>
+                <div className="text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed bg-gold-500/10 p-5 rounded-2xl border border-gold-500/30 font-devanagari whitespace-pre-line">
+                  {isEn ? book.bookBlogEn || book.bookBlogHi : book.bookBlogHi}
+                </div>
+              </div>
+            )}
           </div>
-
-          {/* Scripture Page Footer */}
-          <div className="border-t border-gold-500/20 pt-4 flex items-center justify-between text-xs text-spiritual-ivory/50">
-            <span>© साढौली धाम डिजिटल ग्रंथालय</span>
-            <span className="font-mono text-gold-400 font-bold">~ {currentPage} ~</span>
-            <span>अमृत वाणी</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Reader Bottom Navigation Bar */}
-      <footer className="bg-spiritual-navy/95 border-t border-gold-500/30 px-4 py-3 backdrop-blur-xl sticky bottom-0 z-40">
-        <div className="max-w-md mx-auto flex items-center justify-between gap-4">
-          <button
-            onClick={handlePrev}
-            disabled={currentPage === 1}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-xs font-bold text-spiritual-ivory hover:text-gold-300 disabled:opacity-40"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>{t("reader.prevPage", "पिछला")}</span>
-          </button>
-
-          {/* Page Counter & Direct Jump */}
-          <div className="flex items-center gap-2 text-xs font-mono text-gold-300">
-            <span>{currentPage}</span>
-            <span className="opacity-50">/</span>
-            <span>{totalPages}</span>
-          </div>
-
-          <button
-            onClick={handleNext}
-            disabled={currentPage === totalPages}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-xs font-bold text-spiritual-ivory hover:text-gold-300 disabled:opacity-40"
-          >
-            <span>{t("reader.nextPage", "अगला")}</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </footer>
-    </main>
+        )}
+      </main>
+    </div>
   );
 }

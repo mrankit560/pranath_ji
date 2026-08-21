@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { store } from "@/lib/data/store";
 import { Article } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Edit3, Compass, Save, X } from "lucide-react";
+import { Plus, Trash2, Edit3, Compass, Save, X, Eye } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export default function AdminAdhyatmikGyanPage() {
   const { language } = useI18n();
@@ -203,7 +204,7 @@ export default function AdminAdhyatmikGyanPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
                 {isEn ? "Author" : "लेखक"}
@@ -212,19 +213,6 @@ export default function AdminAdhyatmikGyanPage() {
                 type="text"
                 value={form.author}
                 onChange={(e) => setForm({ ...form, author: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Featured Image URL" : "मुख्य फोटो URL (Image)"}
-              </label>
-              <input
-                type="text"
-                value={form.featuredImage}
-                onChange={(e) => setForm({ ...form, featuredImage: e.target.value })}
-                placeholder="/assets/paramdham-mandala.png या इमेज लिंक"
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
@@ -241,6 +229,18 @@ export default function AdminAdhyatmikGyanPage() {
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+            <ImageUploadField
+              label={isEn ? "Blog Featured Image *" : "ब्लॉग मुख्य फोटो (Featured Image) *"}
+              value={form.featuredImage}
+              onChange={(url) => setForm({ ...form, featuredImage: url })}
+              recommendedSize="1200 × 675 px"
+              aspectRatio="16:9 (ब्लॉग थंबनेल)"
+              maxSizeMB={5}
+              helperText={isEn ? "Displayed at the top of the blog and on listing cards" : "ब्लॉग कार्ड एवं विस्तृत अध्ययन विंडो में मुख्य फोटो के रूप में दिखेगी"}
+            />
           </div>
 
           <div>

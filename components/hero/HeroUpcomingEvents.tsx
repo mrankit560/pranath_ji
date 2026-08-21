@@ -13,20 +13,43 @@ import {
   Radio,
   ExternalLink,
   ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
 
 export const HeroUpcomingEvents: React.FC = () => {
   const { t, language } = useI18n();
   const isEn = language === "en";
-  const [nextEvent, setNextEvent] = useState<EventItem | null>(store.getEarliestUpcomingEvent());
-  const [timeLeft, setTimeLeft] = useState<{
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-  } | null>(null);
+  const [nextEvent, setNextEvent] = useState<EventItem | null>(() => store.getEarliestUpcomingEvent());
+  
+  const [timing, setTiming] = useState<{
+    status: "upcoming" | "live" | "ended";
+    timeLeft: { days: number; hours: number; minutes: number; seconds: number } | null;
+  }>(() => {
+    const evt = store.getEarliestUpcomingEvent();
+    if (!evt) return { status: "upcoming", timeLeft: null };
+    const now = Date.now();
+    const start = new Date(evt.startAt).getTime();
+    const end = evt.endAt ? new Date(evt.endAt).getTime() : start + 6 * 3600 * 1000;
+    if (now >= start && now <= end) {
+      return { status: "live", timeLeft: null };
+    } else if (now > end) {
+      return { status: "ended", timeLeft: null };
+    } else {
+      const diff = Math.max(0, start - now);
+      return {
+        status: "upcoming",
+        timeLeft: {
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((diff / 1000 / 60) % 60),
+          seconds: Math.floor((diff / 1000) % 60),
+        },
+      };
+    }
+  });
 
   useEffect(() => {
+    setNextEvent(store.getEarliestUpcomingEvent());
     const unsub = store.subscribe(() => {
       setNextEvent(store.getEarliestUpcomingEvent());
     });
@@ -36,23 +59,31 @@ export const HeroUpcomingEvents: React.FC = () => {
   useEffect(() => {
     if (!nextEvent) return;
 
-    const calculateTime = () => {
-      const difference = new Date(nextEvent.startAt).getTime() - new Date().getTime();
-      if (difference <= 0) {
-        setTimeLeft(null);
-        return;
-      }
+    const updateTiming = () => {
+      const now = Date.now();
+      const start = new Date(nextEvent.startAt).getTime();
+      const end = nextEvent.endAt ? new Date(nextEvent.endAt).getTime() : start + 6 * 3600 * 1000;
 
-      setTimeLeft({
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      });
+      if (now >= start && now <= end) {
+        setTiming({ status: "live", timeLeft: null });
+      } else if (now > end) {
+        setTiming({ status: "ended", timeLeft: null });
+      } else {
+        const diff = Math.max(0, start - now);
+        setTiming({
+          status: "upcoming",
+          timeLeft: {
+            days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((diff / 1000 / 60) % 60),
+            seconds: Math.floor((diff / 1000) % 60),
+          },
+        });
+      }
     };
 
-    calculateTime();
-    const interval = setInterval(calculateTime, 1000);
+    updateTiming();
+    const interval = setInterval(updateTiming, 1000);
     return () => clearInterval(interval);
   }, [nextEvent]);
 
@@ -71,13 +102,22 @@ export const HeroUpcomingEvents: React.FC = () => {
   // Format exact start and end date/time
   const startDate = new Date(nextEvent.startAt);
 
-  // Exact date formatting
-  const formattedDateStr = startDate.toLocaleDateString(isEn ? "en-US" : "hi-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const monthsHi = [
+    "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
+    "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
+  ];
+  const daysHi = [
+    "रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"
+  ];
+
+  const formattedDateStr = isEn
+    ? startDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : `${daysHi[startDate.getDay()]}, ${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()}`;
 
   // Time string
   const displayTime = nextEvent.timeStr || (nextEvent.hasSpecificTime !== false
@@ -175,16 +215,32 @@ export const HeroUpcomingEvents: React.FC = () => {
           <div className="w-full text-center lg:text-right">
             <div className="text-[10px] uppercase font-bold tracking-widest text-gold-400 mb-1.5 flex items-center justify-center lg:justify-end gap-1.5">
               <Clock className="w-3 h-3 text-gold-400" />
-              <span>{isEn ? "Time Remaining" : "आरंभ होने में शेष समय"}</span>
+              <span>
+                {timing.status === "live"
+                  ? (isEn ? "Live Status" : "लाइव स्थिति")
+                  : timing.status === "ended"
+                  ? (isEn ? "Status" : "कार्यक्रम स्थिति")
+                  : (isEn ? "Time Remaining" : "आरंभ होने में शेष समय")}
+              </span>
             </div>
 
-            {timeLeft ? (
+            {timing.status === "live" ? (
+              <div className="px-4 py-2.5 rounded-xl bg-red-600/20 border border-red-500/50 text-red-400 font-bold text-xs flex items-center justify-center gap-2 animate-pulse">
+                <Radio className="w-4 h-4" />
+                <span>{isEn ? "🔴 Event is Live Now!" : "🔴 कार्यक्रम अभी जारी है (Live Now)"}</span>
+              </div>
+            ) : timing.status === "ended" ? (
+              <div className="px-4 py-2.5 rounded-xl bg-gray-800/80 border border-gray-600/50 text-gray-300 font-bold text-xs flex items-center justify-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-gray-400" />
+                <span>{isEn ? "✓ Event Concluded" : "✓ कार्यक्रम सम्पन्न (Ended)"}</span>
+              </div>
+            ) : timing.timeLeft ? (
               <div className="grid grid-cols-4 gap-1.5 sm:gap-2 max-w-xs mx-auto lg:mx-0">
                 {[
-                  { label: isEn ? "Days" : "दिन", val: timeLeft.days },
-                  { label: isEn ? "Hours" : "घंटे", val: timeLeft.hours },
-                  { label: isEn ? "Min" : "मिनट", val: timeLeft.minutes },
-                  { label: isEn ? "Sec" : "सेकंड", val: timeLeft.seconds },
+                  { label: isEn ? "Days" : "दिन", val: timing.timeLeft.days },
+                  { label: isEn ? "Hours" : "घंटे", val: timing.timeLeft.hours },
+                  { label: isEn ? "Min" : "मिनट", val: timing.timeLeft.minutes },
+                  { label: isEn ? "Sec" : "सेकंड", val: timing.timeLeft.seconds },
                 ].map((item, idx) => (
                   <div
                     key={idx}
@@ -200,23 +256,22 @@ export const HeroUpcomingEvents: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div className="px-4 py-2 rounded-xl bg-red-600/20 border border-red-500/40 text-red-400 font-bold text-xs flex items-center justify-center gap-2">
-                <Radio className="w-4 h-4 animate-pulse" />
-                <span>{isEn ? "🔴 Event is Live Now!" : "🔴 कार्यक्रम अभी जारी है (Live Now)"}</span>
+              <div className="px-4 py-2 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-300 text-xs font-semibold">
+                {isEn ? "Starting Soon" : "शीघ्र आरंभ होगा"}
               </div>
             )}
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2.5 w-full">
-            {nextEvent.livestreamUrl && (
+            {nextEvent.livestreamUrl && timing.status === "live" && (
               <a
                 href={nextEvent.livestreamUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-md hover:scale-105 transition-all"
+                className="px-4 py-2 rounded-xl bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-md hover:scale-105 transition-all animate-pulse"
               >
-                <Radio className="w-3.5 h-3.5 animate-pulse" />
+                <Radio className="w-3.5 h-3.5" />
                 <span>{isEn ? "Watch Live Stream" : "लाइव सत्संग देखें"}</span>
                 <ExternalLink className="w-3 h-3" />
               </a>

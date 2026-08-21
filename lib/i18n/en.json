@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "Shri Prannath Ji Paramdham",
-    "subtitle": "Tartam Vani • Spiritual Wisdom • Nijanand Sampradaya",
-    "tagline": "The divine wisdom of Shri Prannath Ji, PDF scriptures, discourses, bhajans, and meditation — all in one sacred space.",
+    "title": "Sadhauli Dham | Shri Prannath Ji Paramdham",
+    "subtitle": "Shri Nijanand Ashram Sadhauli Dham, Haridwar • Tartam Vani",
+    "tagline": "Shri Nijanand Ashram Sadhauli Dham (Haridwar) — Dedicated to the divine wisdom of Shri Prannath Ji, Tartam Vani scriptures, discourses, and meditation.",
     "association": "Shri Nijanand Ashram Sadhauli Dham, Haridwar, Uttarakhand"
   },
   "nav": {
@@ -35,10 +35,10 @@
     "logout": "Logout"
   },
   "hero": {
-    "title": "Shri Prannath Ji",
-    "portal": "Paramdham",
+    "title": "Sadhauli Dham",
+    "portal": "Shri Prannath Ji Paramdham",
     "badge1": "Asht Prahar Leela",
-    "badge2": "Paramdham Divine Form",
+    "badge2": "Brahm Gyan Philosophy",
     "badge3": "Chitwani & Wisdom",
     "badge4": "Satsang, Seva, Sadhna",
     "readScriptures": "Read Scriptures",
@@ -55,8 +55,8 @@
   },
   "welcomeModal": {
     "greeting": "🙏 Welcome",
-    "portal": "Shri Prannath Ji Paramdham",
-    "sub": "Sadhauli Dham, Haridwar, Uttarakhand",
+    "portal": "Sadhauli Dham • Shri Prannath Ji Paramdham",
+    "sub": "Shri Nijanand Ashram Sadhauli Dham, Haridwar, Uttarakhand",
     "prompt": "Choose your preferred language / अपनी पसंदीदा भाषा चुनें",
     "hiBtn": "हिंदी में आगे बढ़ें",
     "hiDesc": "Explore the full portal in Hindi",

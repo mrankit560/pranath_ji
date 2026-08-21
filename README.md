@@ -56,7 +56,7 @@ Open [http://localhost:3000](http://localhost:3000) in your web browser.
 To access the administrative management portal:
 1. Navigate to: [http://localhost:3000/auth/login](http://localhost:3000/auth/login) or click **लॉगिन / रजिस्टर** in the header.
 2. Enter the administrator credentials:
-   - **Username / Email**: `admin` (or `admin@sadhaulidham.org`)
+   - **Username / Email**: `admin` (or `admin@sadhaulidham.com`)
    - **Password**: `admin123`
 3. You will be automatically redirected to the **Admin CMS Dashboard** (`/admin`).
 

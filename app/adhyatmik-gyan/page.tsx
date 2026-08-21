@@ -22,26 +22,41 @@ import {
   Share2,
 } from "lucide-react";
 
+import { formatSpiritualDate } from "@/lib/utils/formatDate";
+
 export default function AdhyatmikGyanPage() {
   const { language } = useI18n();
   const isEn = language === "en";
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [blogs, setBlogs] = useState<Article[]>(store.getAdhyatmikBlogs());
+  const [blogs, setBlogs] = useState<Article[]>(() => store.getAdhyatmikBlogs());
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedBlog, setSelectedBlog] = useState<Article | null>(null);
 
   useEffect(() => {
+    setBlogs(store.getAdhyatmikBlogs());
     const unsub = store.subscribe(() => {
       setBlogs(store.getAdhyatmikBlogs());
     });
     return () => unsub();
   }, []);
 
-  const filtered = blogs.filter((b) => {
-    const title = (isEn ? b.titleEn : b.titleHi) || "";
-    const content = (isEn ? b.contentEn : b.contentHi) || "";
+  const categories = [
+    { id: "all", label: isEn ? "All Wisdom" : "सभी विषय" },
+    { id: "तत्व ज्ञान", label: isEn ? "Tattva Gyan" : "तत्व ज्ञान" },
+    { id: "चितवनी ध्यान", label: isEn ? "Chitwani Dhyan" : "चितवनी ध्यान" },
+    { id: "वाणी व्याख्या", label: isEn ? "Vani Commentary" : "वाणी व्याख्या" },
+    { id: "आध्यात्मिक साधना", label: isEn ? "Spiritual Practice" : "आध्यात्मिक साधना" },
+  ];
+
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesCategory =
+      selectedCategory === "all" || blog.category === selectedCategory;
+    const title = (isEn ? blog.titleEn || blog.titleHi : blog.titleHi) || "";
+    const author = blog.author || "";
     const q = searchQuery.toLowerCase();
-    return title.toLowerCase().includes(q) || content.toLowerCase().includes(q);
+    const matchesSearch = title.toLowerCase().includes(q) || author.toLowerCase().includes(q);
+    return matchesCategory && matchesSearch;
   });
 
   return (
@@ -49,22 +64,22 @@ export default function AdhyatmikGyanPage() {
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-      {/* Header Banner */}
+      {/* Banner */}
       <section className="pt-32 pb-14 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-navy/50 to-transparent border-b border-gold-500/20 text-center">
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
             <Compass className="w-3.5 h-3.5" />
-            {isEn ? "Spiritual Philosophy & Blogging" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान मंच"}
+            {isEn ? "Spiritual Wisdom & Philosophy" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
-            {isEn ? "Aadhyatmik Gyan — Spiritual Blog" : "आध्यात्मिक ज्ञान — आत्म-जागृति एवं तत्व दर्शन"}
+            {isEn ? "Aadhyatmik Gyan — Spiritual Blogs" : "आध्यात्मिक ज्ञान — सत्संग व ब्लॉग"}
           </h1>
 
           <p className="text-xs sm:text-base text-gold-muted/80 max-w-2xl mx-auto leading-relaxed">
             {isEn
-              ? "Read thought-provoking articles on spiritual awakening, soul realization, Aksharatit, and the path of divine love."
-              : "आत्मज्ञान, क्षर-अक्षर-अक्षरातीत का तत्व दर्शन, प्रेम, सेवा और साधना पर ज्ञानवर्धक सत्संग लेख।"}
+              ? "Read scholarly reflections, contemplation guides, and discourses on Aksharatit Paramdham, soul awakening, and love."
+              : "आत्मज्ञान, अक्षरातीत परब्रह्म, प्रेम, सेवा और साधना पर साढौली धाम शोध पीठ द्वारा प्रकाशित आध्यात्मिक लेख।"}
           </p>
 
           {/* Search Bar */}
@@ -74,28 +89,56 @@ export default function AdhyatmikGyanPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isEn ? "Search spiritual blogs..." : "आध्यात्मिक ब्लॉग खोजें..."}
+              placeholder={isEn ? "Search topics, keywords or author..." : "लेख का शीर्षक या लेखक खोजें..."}
               className="w-full pl-11 pr-4 py-3 rounded-2xl bg-black/60 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory placeholder-spiritual-ivory/50 focus:outline-none focus:border-gold-400 backdrop-blur-md"
             />
           </div>
         </div>
       </section>
 
-      {/* Blogs Grid */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {filtered.length === 0 ? (
-          <div className="text-center py-16 spiritual-glass-card rounded-3xl p-8 max-w-md mx-auto">
-            <p className="text-sm text-spiritual-ivory/70">
-              {isEn ? "No blogs found matching your search." : "कोई ब्लॉग उपलब्ध नहीं है।"}
+      {/* Main Content */}
+      <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Category Tabs */}
+        <div className="flex items-center justify-center sm:justify-start gap-2 overflow-x-auto pb-4 mb-10 border-b border-gold-500/20">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+                selectedCategory === cat.id
+                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold scale-105"
+                  : "bg-spiritual-card border border-gold-500/25 text-spiritual-ivory/80 hover:text-gold-300 hover:border-gold-400/50"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Blogs Grid */}
+        {filteredBlogs.length === 0 ? (
+          <div className="spiritual-glass-card rounded-3xl p-12 text-center max-w-md mx-auto border border-gold-500/30 space-y-4">
+            <Compass className="w-12 h-12 text-gold-400/50 mx-auto" />
+            <p className="text-sm text-spiritual-ivory/80">
+              {isEn ? "No blogs found matching your search." : "आपकी खोज के अनुसार कोई लेख नहीं मिला।"}
             </p>
+            <button
+              onClick={() => {
+                setSelectedCategory("all");
+                setSearchQuery("");
+              }}
+              className="px-5 py-2 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-300 text-xs font-bold hover:bg-gold-500 hover:text-spiritual-dark"
+            >
+              {isEn ? "Reset Filter" : "सभी लेख देखें"}
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((blog) => (
+            {filteredBlogs.map((blog) => (
               <div
                 key={blog.id}
                 onClick={() => setSelectedBlog(blog)}
-                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer hover:border-gold-400 transition-all duration-300 shadow-xl"
+                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all duration-300"
               >
                 <div className="relative h-52 w-full bg-black overflow-hidden">
                   <Image
@@ -114,7 +157,7 @@ export default function AdhyatmikGyanPage() {
                   <div>
                     <div className="flex items-center gap-2 text-xs text-gold-muted/80 mb-2">
                       <Calendar className="w-3.5 h-3.5 text-gold-400" />
-                      <span>{blog.publishedAt}</span>
+                      <span>{formatSpiritualDate(blog.publishedAt, language)}</span>
                     </div>
 
                     <h3 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-2">
@@ -165,7 +208,7 @@ export default function AdhyatmikGyanPage() {
               <div className="flex flex-wrap items-center gap-4 text-xs text-gold-muted/80 pb-4 border-b border-gold-500/20">
                 <span>{selectedBlog.author}</span>
                 <span>•</span>
-                <span>{selectedBlog.publishedAt}</span>
+                <span>{formatSpiritualDate(selectedBlog.publishedAt, language)}</span>
                 <span>•</span>
                 <span>{selectedBlog.readTime || "5 min read"}</span>
               </div>

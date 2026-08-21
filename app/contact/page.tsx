@@ -169,10 +169,10 @@ export default function ContactPage() {
             <div className="rounded-2xl overflow-hidden border border-gold-500/30 h-60 bg-black">
               <iframe
                 title="Sadhauli Dham Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110540.24584732155!2d78.070000!3d29.950000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3909470eb8ee53c9%3A0x8249870104f762f9!2sHaridwar%2C%20Uttarakhand!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+                src="https://maps.google.com/maps?q=Shri%20Nijanand%20Ashram%20Sadhauli%20Dham%20Haridwar%20Uttarakhand&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
-                style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) brightness(90%) contrast(90%)" }}
+                style={{ border: 0 }}
                 loading="lazy"
                 allowFullScreen
               />
@@ -278,6 +278,19 @@ export default function ContactPage() {
                   />
                 </div>
 
+                {/* Privacy Assurance Note */}
+                <div className="p-3.5 rounded-2xl bg-black/40 border border-gold-500/20 text-[11px] sm:text-xs text-spiritual-ivory/70 leading-relaxed flex items-start gap-2.5">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  <p>
+                    <strong className="text-gold-300 font-semibold">
+                      {language === "en" ? "Privacy Assurance:" : "गोपनीयता आश्वासन:"}
+                    </strong>{" "}
+                    {language === "en"
+                      ? "Your contact details (name, email, phone) will solely be used to respond to your spiritual inquiries and satsang updates. We respect your privacy and never share your data with any third party."
+                      : "आपकी व्यक्तिगत जानकारी (नाम, ईमेल, फोन) केवल आध्यात्मिक जिज्ञासाओं व सत्संग संपर्क हेतु सुरक्षित रखी जाती है। हम आपकी गोपनीयता का पूर्ण सम्मान करते हैं और इसे किसी भी तीसरे पक्ष के साथ साझा नहीं करते।"}
+                  </p>
+                </div>
+
                 {/* Submit */}
                 <button
                   type="submit"
@@ -288,7 +301,7 @@ export default function ContactPage() {
                   <span>
                     {isSubmitting
                       ? t("contact.sending", "भेज रहे हैं...")
-                      : t("contact.send", "संदेश भेजें")}
+                      : t("contact.submit", "संदेश भेजें")}
                   </span>
                 </button>
               </form>

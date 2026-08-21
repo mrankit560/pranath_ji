@@ -19,7 +19,9 @@ import {
   Download,
   Share2,
   FileText,
+  Clock,
 } from "lucide-react";
+import { isPdfAvailable } from "@/app/library/page";
 
 export default function TartamVaniPage() {
   const { t, language } = useI18n();
@@ -166,15 +168,22 @@ export default function TartamVaniPage() {
                   </button>
                 </div>
 
-                <a
-                  href={selectedGranth.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl border border-gold-500/30 text-xs font-semibold text-gold-300 hover:bg-gold-500/20 flex items-center gap-1.5"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>PDF</span>
-                </a>
+                {isPdfAvailable(selectedGranth.pdfUrl) ? (
+                  <a
+                    href={selectedGranth.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-xl border border-gold-500/30 text-xs font-semibold text-gold-300 hover:bg-gold-500/20 flex items-center gap-1.5"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>PDF</span>
+                  </a>
+                ) : (
+                  <span className="px-3 py-1.5 rounded-xl bg-gold-500/10 border border-gold-400/20 text-gold-300 text-xs font-medium flex items-center gap-1.5" title={language === "hi" ? "मूल ग्रन्थ PDF शीघ्र अपलोड होगी" : "Scripture PDF coming soon"}>
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{language === "hi" ? "PDF जल्द उपलब्ध" : "PDF Coming Soon"}</span>
+                  </span>
+                )}
               </div>
             </div>
 

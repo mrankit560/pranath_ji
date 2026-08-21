@@ -10,6 +10,8 @@ import { Article, ChitwaniBook, ChitwaniVideo } from "@/lib/data/types";
 import { Navbar } from "@/components/header/Navbar";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { Footer } from "@/components/footer/Footer";
+import { isPdfAvailable } from "@/app/library/page";
+import { formatSpiritualDate } from "@/lib/utils/formatDate";
 import {
   Flower2,
   BookOpen,
@@ -24,18 +26,27 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-function MeditationContent() {
+function MeditationTabSync({ onTabChange }: { onTabChange: (tab: "articles" | "books" | "videos") => void }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "articles" || tab === "books" || tab === "videos") {
+      onTabChange(tab);
+    }
+  }, [searchParams, onTabChange]);
+  return null;
+}
+
+export default function MeditationPage() {
   const { language } = useI18n();
   const isEn = language === "en";
-  const searchParams = useSearchParams();
-  const initialTab = (searchParams.get("tab") as "articles" | "books" | "videos") || "articles";
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"articles" | "books" | "videos">(initialTab);
+  const [activeTab, setActiveTab] = useState<"articles" | "books" | "videos">("articles");
 
-  const [articles, setArticles] = useState<Article[]>(store.getChitwaniArticles());
-  const [books, setBooks] = useState<ChitwaniBook[]>(store.getChitwaniBooks());
-  const [videos, setVideos] = useState<ChitwaniVideo[]>(store.getChitwaniVideos());
+  const [articles, setArticles] = useState<Article[]>(() => store.getChitwaniArticles());
+  const [books, setBooks] = useState<ChitwaniBook[]>(() => store.getChitwaniBooks());
+  const [videos, setVideos] = useState<ChitwaniVideo[]>(() => store.getChitwaniVideos());
 
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [playingVideo, setPlayingVideo] = useState<ChitwaniVideo | null>(null);
@@ -43,9 +54,12 @@ function MeditationContent() {
   // Meditation Breathing State
   const [isMeditating, setIsMeditating] = useState(false);
   const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
-  const [timerSeconds, setTimerSeconds] = useState(600); // 10 mins default
 
   useEffect(() => {
+    setArticles(store.getChitwaniArticles());
+    setBooks(store.getChitwaniBooks());
+    setVideos(store.getChitwaniVideos());
+
     const unsub = store.subscribe(() => {
       setArticles(store.getChitwaniArticles());
       setBooks(store.getChitwaniBooks());
@@ -53,13 +67,6 @@ function MeditationContent() {
     });
     return () => unsub();
   }, []);
-
-  useEffect(() => {
-    const tab = searchParams.get("tab");
-    if (tab === "articles" || tab === "books" || tab === "videos") {
-      setActiveTab(tab);
-    }
-  }, [searchParams]);
 
   // Breathing Guide Loop
   useEffect(() => {
@@ -75,6 +82,10 @@ function MeditationContent() {
 
   return (
     <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+      <Suspense fallback={null}>
+        <MeditationTabSync onTabChange={setActiveTab} />
+      </Suspense>
+
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
@@ -100,7 +111,7 @@ function MeditationContent() {
           <div className="flex flex-wrap items-center justify-center p-1.5 rounded-2xl bg-black/70 border border-gold-500/40 shadow-2xl backdrop-blur-xl gap-2 max-w-xl mx-auto">
             <button
               onClick={() => setActiveTab("articles")}
-              className={`flex-1 min-w-[150px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+              className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${
                 activeTab === "articles"
                   ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
                   : "text-spiritual-ivory/75 hover:text-gold-300"
@@ -112,90 +123,89 @@ function MeditationContent() {
 
             <button
               onClick={() => setActiveTab("books")}
-              className={`flex-1 min-w-[150px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+              className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${
                 activeTab === "books"
                   ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
                   : "text-spiritual-ivory/75 hover:text-gold-300"
               }`}
             >
               <BookOpen className="w-4 h-4" />
-              <span>{isEn ? "2. Chitwani Books" : "२. चितवनी ग्रन्थ"}</span>
+              <span>{isEn ? "2. Meditation Books" : "२. ध्यान ग्रन्थ"}</span>
             </button>
 
             <button
               onClick={() => setActiveTab("videos")}
-              className={`flex-1 min-w-[150px] px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
+              className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${
                 activeTab === "videos"
                   ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
                   : "text-spiritual-ivory/75 hover:text-gold-300"
               }`}
             >
               <Play className="w-4 h-4 fill-current" />
-              <span>{isEn ? "3. Chitwani Videos" : "३. चितवनी वीडियो"}</span>
+              <span>{isEn ? "3. Video Guidance" : "३. वीडियो मार्गदर्शिका"}</span>
             </button>
           </div>
         </div>
       </section>
 
-      {/* Interactive Meditation Breathing Guide Sanctuary */}
-      <section className="py-10 max-w-4xl mx-auto px-4">
-        <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-400/40 text-center relative overflow-hidden bg-gradient-to-b from-purple-950/20 via-spiritual-navy to-black/60">
-          <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-6">
-            <span className="text-xs font-bold text-gold-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Flower2 className="w-4 h-4" />
-              {isEn ? "Live Breathing & Chitwani Timer" : "लाइव श्वास-प्रश्वास व ध्यान टाइमर"}
+      {/* Interactive Meditation Breathing Guide */}
+      <section className="py-8 max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 text-center relative overflow-hidden shadow-2xl">
+          <div className="max-w-md mx-auto space-y-4">
+            <span className="text-xs font-bold text-gold-300 uppercase tracking-wider">
+              {isEn ? "Interactive Dhyan Assistant" : "इंटरैक्टिव चितवनी ध्यान सहायक"}
             </span>
+
+            <div className="relative w-40 h-40 mx-auto flex items-center justify-center">
+              <div
+                className={`absolute inset-0 rounded-full border-2 border-gold-400/40 transition-all duration-1000 ${
+                  isMeditating
+                    ? breathPhase === "inhale"
+                      ? "scale-110 bg-gold-500/20 shadow-[0_0_30px_rgba(244,208,111,0.4)]"
+                      : breathPhase === "hold"
+                      ? "scale-105 bg-purple-500/20 shadow-[0_0_30px_rgba(168,85,247,0.4)]"
+                      : "scale-95 bg-amber-500/10 shadow-none"
+                    : "bg-gold-500/5"
+                }`}
+              />
+              <div className="relative z-10 text-center">
+                <Flower2
+                  className={`w-10 h-10 mx-auto text-gold-400 mb-1 transition-transform duration-1000 ${
+                    isMeditating ? "rotate-180" : ""
+                  }`}
+                />
+                <span className="text-xs font-bold text-spiritual-ivory">
+                  {isMeditating
+                    ? breathPhase === "inhale"
+                      ? isEn
+                        ? "Inhale (श्वास लें)"
+                        : "श्वास लें (Inhale)"
+                      : breathPhase === "hold"
+                      ? isEn
+                        ? "Hold (ध्यान लगाएं)"
+                        : "ध्यान लगाएं (Hold)"
+                      : isEn
+                      ? "Exhale (श्वास छोड़ें)"
+                      : "श्वास छोड़ें (Exhale)"
+                    : isEn
+                    ? "Start Meditation"
+                    : "ध्यान शुरू करें"}
+                </span>
+              </div>
+            </div>
 
             <button
               onClick={() => setIsMeditating(!isMeditating)}
-              className="px-4 py-1.5 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform"
+              className="px-6 py-2 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform"
             >
               {isMeditating
                 ? isEn
-                  ? "Pause Dhyan"
-                  : "रोकें"
+                  ? "Stop Guide"
+                  : "अभ्यास रोकें"
                 : isEn
-                ? "Begin 10-Min Dhyan"
-                : "१० मिनट ध्यान आरंभ करें"}
+                ? "Begin 5-Min Chitwani Guide"
+                : "चितवनी श्वास-मार्गदर्शन शुरू करें"}
             </button>
-          </div>
-
-          {/* Pulsing Breathing Circle */}
-          <div className="py-6 flex flex-col items-center justify-center">
-            <div
-              className={`w-36 h-36 sm:w-44 sm:h-44 rounded-full border-2 border-gold-400/60 bg-gradient-to-tr from-gold-500/20 via-purple-500/20 to-amber-500/20 flex flex-col items-center justify-center shadow-2xl shadow-gold-900/40 transition-all duration-1000 ${
-                isMeditating && breathPhase === "inhale"
-                  ? "scale-125 border-gold-300 shadow-gold-lg"
-                  : isMeditating && breathPhase === "hold"
-                  ? "scale-115 border-purple-400"
-                  : "scale-95 border-gold-500/40"
-              }`}
-            >
-              <span className="text-2xl mb-1">🪷</span>
-              <span className="text-xs sm:text-sm font-bold text-gold-200 uppercase tracking-widest font-mono">
-                {isMeditating
-                  ? breathPhase === "inhale"
-                    ? isEn
-                      ? "Inhale (पूरक)"
-                      : "श्वास लें (Inhale)"
-                    : breathPhase === "hold"
-                    ? isEn
-                      ? "Hold (कुम्भक)"
-                      : "श्वास रोकें (Hold)"
-                    : isEn
-                    ? "Exhale (रेचक)"
-                    : "श्वास छोड़ें (Exhale)"
-                  : isEn
-                  ? "Ready to Dhyan"
-                  : "चितवनी ध्यान"}
-              </span>
-            </div>
-
-            <p className="text-[11px] text-spiritual-ivory/70 mt-4 max-w-sm">
-              {isEn
-                ? "Breathe in rhythm, calm your thoughts, and immerse your mind in the lotus feet of Aksharatit Paramdham."
-                : "श्वास की गति को शांत करें और मन को श्री राज-श्यामा जी के पावन युगल स्वरूप में स्थिर करें।"}
-            </p>
           </div>
         </div>
       </section>
@@ -204,13 +214,13 @@ function MeditationContent() {
       {activeTab === "articles" && (
         <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading mb-2">
-              {isEn ? "Chitwani Articles & How-To Guides" : "चितवनी लेख — ध्यान की विधि एवं सूत्र"}
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
+              {isEn ? "1. How to Practice Chitwani (Articles)" : "१. चितवनी कैसे करें (ज्ञानवर्धक लेख)"}
             </h2>
             <p className="text-xs sm:text-sm text-gold-muted/80">
               {isEn
-                ? "Articles written by the Ashram on how to do step-by-step Chitwani meditation."
-                : "चितवनी कैसे करें, मन को कैसे एकाग्र करें, और परमधाम का साक्षात्कार कैसे करें।"}
+                ? "Detailed contemplative articles explaining step-by-step methods to fix your inner consciousness on Paramdham."
+                : "परमधाम के स्वरूप, नूरमई लीला, एवं अंतरात्मा को परमात्मा में लीन करने के सरल एवं प्रभावकारी उपाय।"}
             </p>
           </div>
 
@@ -221,34 +231,29 @@ function MeditationContent() {
                 onClick={() => setSelectedArticle(art)}
                 className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all duration-300"
               >
-                <div className="relative h-48 w-full bg-black overflow-hidden">
+                <div className="relative h-48 w-full bg-black">
                   <Image
-                    src={art.featuredImage || "/assets/paramdham-mandala.png"}
+                    src={art.featuredImage || "/assets/hero-reference-1.jpg"}
                     alt={art.titleHi}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-95"
                   />
-                  <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 border border-gold-500/30 text-[10px] font-bold text-gold-300 uppercase">
-                    {art.readTime || "5 min read"}
-                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-transparent" />
                 </div>
 
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <h3 className="text-base sm:text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-2">
+                    <h3 className="text-base font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-2">
                       {isEn ? art.titleEn || art.titleHi : art.titleHi}
                     </h3>
-                    <p className="text-xs text-spiritual-ivory/75 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-spiritual-ivory/70 line-clamp-3 leading-relaxed">
                       {isEn ? art.summaryEn || art.summaryHi : art.summaryHi}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between text-xs text-gold-300 font-semibold">
-                    <span>{art.author}</span>
-                    <span className="inline-flex items-center gap-1">
-                      <span>{isEn ? "Read Guide" : "विधि पढ़ें"}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
+                  <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between text-xs font-bold text-gold-300">
+                    <span>{isEn ? "Read Full Guide" : "विस्तार से पढ़ें"}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
               </div>
@@ -257,74 +262,92 @@ function MeditationContent() {
         </section>
       )}
 
-      {/* SUB-CATEGORY 2: CHITWANI BOOKS */}
+      {/* SUB-CATEGORY 2: MEDITATION BOOKS */}
       {activeTab === "books" && (
         <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
-              {isEn ? "2. Chitwani Books & Meditation Texts" : "२. चितवनी ग्रन्थ एवं साधना पुस्तकें"}
+              {isEn ? "2. Meditation & Chitwani Books" : "२. चितवनी एवं ध्यान ग्रन्थ"}
             </h2>
             <p className="text-xs sm:text-sm text-gold-muted/80">
               {isEn
-                ? "Download and study illustrated books and manuals on Asht Prahar and Paramdham Dhyan."
+                ? "Download sacred scriptures and study materials dedicated to Asht Prahar Leela and inward contemplation."
                 : "अष्ट प्रहर लीला, रंगमहल एवं चितवनी साधना के पवित्र ग्रन्थ ऑनलाइन पढ़ें व डाउनलोड करें।"}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {books.map((book) => (
-              <div
-                key={book.id}
-                className="spiritual-glass-card rounded-3xl p-6 border border-gold-500/30 flex flex-col justify-between group shadow-xl hover:border-gold-400 transition-all"
-              >
-                <div className="flex gap-5">
-                  <div className="relative w-28 h-36 rounded-xl overflow-hidden flex-shrink-0 bg-black border border-gold-500/30">
-                    <Image
-                      src={book.coverUrl || "/assets/paramdham-mandala.png"}
-                      alt={book.titleHi}
-                      fill
-                      className="object-cover"
-                    />
+            {books.map((book) => {
+              const hasLivePdf = isPdfAvailable(book.pdfUrl);
+
+              return (
+                <div
+                  key={book.id}
+                  className="spiritual-glass-card rounded-3xl p-6 border border-gold-500/30 flex flex-col justify-between group shadow-xl hover:border-gold-400 transition-all"
+                >
+                  <div className="flex gap-5">
+                    <div className="relative w-28 h-36 rounded-xl overflow-hidden flex-shrink-0 bg-black border border-gold-500/30">
+                      <Image
+                        src={book.coverUrl || "/assets/paramdham-mandala.png"}
+                        alt={book.titleHi}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] font-bold uppercase">
+                        {book.pages} {isEn ? "Pages" : "पृष्ठ"}
+                      </span>
+                      <h3 className="text-base sm:text-lg font-bold text-spiritual-ivory font-spiritual-heading">
+                        {isEn ? book.titleEn || book.titleHi : book.titleHi}
+                      </h3>
+                      <p className="text-xs text-gold-muted/80">{book.author}</p>
+                      <p className="text-xs text-spiritual-ivory/70 line-clamp-2">
+                        {isEn ? book.descriptionEn : book.descriptionHi}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] font-bold uppercase">
-                      {book.pages} {isEn ? "Pages" : "पृष्ठ"}
-                    </span>
-                    <h3 className="text-base sm:text-lg font-bold text-spiritual-ivory font-spiritual-heading">
-                      {isEn ? book.titleEn || book.titleHi : book.titleHi}
-                    </h3>
-                    <p className="text-xs text-gold-muted/80">{book.author}</p>
-                    <p className="text-xs text-spiritual-ivory/70 line-clamp-2">
-                      {isEn ? book.descriptionEn : book.descriptionHi}
-                    </p>
+                  <div className="pt-4 mt-4 border-t border-gold-500/20 flex items-center justify-between">
+                    {hasLivePdf ? (
+                      <>
+                        <a
+                          href={book.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm"
+                        >
+                          <BookOpen className="w-3.5 h-3.5" />
+                          <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
+                        </a>
+
+                        <a
+                          href={book.pdfUrl}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3.5 py-2 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold inline-flex items-center gap-1"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>PDF</span>
+                        </a>
+                      </>
+                    ) : (
+                      <div className="w-full py-2 px-3 rounded-xl bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold flex items-center justify-between">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-amber-400" />
+                          <span>{isEn ? "PDF Coming Soon" : "PDF शीघ्र उपलब्ध होगा"}</span>
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-bold uppercase">
+                          {isEn ? "Coming Soon" : "जल्द उपलब्ध"}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                <div className="pt-4 mt-4 border-t border-gold-500/20 flex items-center justify-between">
-                  <a
-                    href={book.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm"
-                  >
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
-                  </a>
-
-                  <a
-                    href={book.pdfUrl}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold inline-flex items-center gap-1"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>PDF</span>
-                  </a>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}
@@ -334,11 +357,11 @@ function MeditationContent() {
         <section className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
-              {isEn ? "1. Chitwani Method & Step-by-Step Guidance" : "१. चितवनी विधि एवं मार्गदर्शिका"}
+              {isEn ? "3. Chitwani Video Guidance" : "३. चितवनी वीडियो मार्गदर्शिका"}
             </h2>
             <p className="text-xs sm:text-sm text-gold-muted/80">
               {isEn
-                ? "Watch step-by-step video instructions on how to practice Chitwani meditation."
+                ? "Watch guided video sessions for step-by-step meditation practice."
                 : "पूज्य संतों के सान्निध्य में चितवनी अभ्यास के वीडियो सत्र।"}
             </p>
           </div>
@@ -360,26 +383,13 @@ function MeditationContent() {
                   <div className="w-12 h-12 rounded-full bg-gold-gradient text-spiritual-dark flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform relative z-10">
                     <Play className="w-5 h-5 fill-current ml-0.5" />
                   </div>
-                  <span className="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono text-white">
-                    {vid.duration}
-                  </span>
                 </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
-                  <div>
-                    <h3 className="text-base font-bold text-spiritual-ivory group-hover:text-gold-300 font-spiritual-heading mb-1">
-                      {isEn ? vid.titleEn || vid.titleHi : vid.titleHi}
-                    </h3>
-                    <p className="text-xs text-gold-muted/80 mb-2">{vid.speaker}</p>
-                    <p className="text-xs text-spiritual-ivory/70 line-clamp-2">
-                      {isEn ? vid.descriptionEn : vid.descriptionHi}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-gold-500/20 text-xs font-bold text-gold-300 flex items-center justify-between">
-                    <span>{isEn ? "Watch Video Guide" : "वीडियो चलाएं"}</span>
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                  </div>
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
+                  <h3 className="text-base font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug">
+                    {isEn ? vid.titleEn || vid.titleHi : vid.titleHi}
+                  </h3>
+                  <p className="text-xs text-gold-muted/80">{vid.speaker} • {vid.duration}</p>
                 </div>
               </div>
             ))}
@@ -387,10 +397,16 @@ function MeditationContent() {
         </section>
       )}
 
-      {/* Article Reader Modal */}
+      {/* Article Detail Modal */}
       {selectedArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fade-in">
-          <div className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-10 shadow-2xl relative space-y-6">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fade-in"
+          onClick={() => setSelectedArticle(null)}
+        >
+          <div
+            className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-10 shadow-2xl relative space-y-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => setSelectedArticle(null)}
               className="absolute top-5 right-5 p-2 rounded-full bg-gold-500/15 text-gold-300 hover:bg-gold-500 hover:text-spiritual-dark transition-colors"
@@ -399,20 +415,18 @@ function MeditationContent() {
             </button>
 
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">
-                <Flower2 className="w-3.5 h-3.5" />
-                <span>{isEn ? "Chitwani Guide" : "चितवनी साधना विधि"}</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
                 {isEn ? selectedArticle.titleEn || selectedArticle.titleHi : selectedArticle.titleHi}
               </h2>
-              <div className="text-xs text-gold-muted/80">
-                {selectedArticle.author} • {selectedArticle.publishedAt}
+              <div className="text-xs text-gold-muted/80 mt-1">
+                {selectedArticle.author} • {formatSpiritualDate(selectedArticle.publishedAt, language)}
               </div>
             </div>
 
-            <div className="prose prose-invert max-w-none text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed space-y-4 whitespace-pre-line font-devanagari">
-              {isEn ? selectedArticle.contentEn || selectedArticle.contentHi : selectedArticle.contentHi}
+            <div className="p-4 rounded-2xl bg-black/50 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed space-y-3 font-devanagari">
+              <p className="whitespace-pre-line">
+                {isEn ? selectedArticle.contentEn || selectedArticle.contentHi : selectedArticle.contentHi}
+              </p>
             </div>
           </div>
         </div>
@@ -449,13 +463,5 @@ function MeditationContent() {
 
       <Footer />
     </main>
-  );
-}
-
-export default function MeditationPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-spiritual-dark flex items-center justify-center text-gold-300">Loading...</div>}>
-      <MeditationContent />
-    </Suspense>
   );
 }

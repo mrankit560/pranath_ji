@@ -6,6 +6,7 @@ import { store } from "@/lib/data/store";
 import { Article } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
 import { Plus, Trash2, Edit3, Sparkles, Image as ImageIcon, Save, X } from "lucide-react";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export default function AdminPrannathJiPage() {
   const { language } = useI18n();
@@ -204,7 +205,7 @@ export default function AdminPrannathJiPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
                 {isEn ? "Author / Speaker" : "लेखक / शोध पीठ"}
@@ -213,19 +214,6 @@ export default function AdminPrannathJiPage() {
                 type="text"
                 value={form.author}
                 onChange={(e) => setForm({ ...form, author: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Featured Image URL" : "मुख्य फोटो URL (Image)"}
-              </label>
-              <input
-                type="text"
-                value={form.featuredImage}
-                onChange={(e) => setForm({ ...form, featuredImage: e.target.value })}
-                placeholder="/assets/hero-reference-1.jpg या इमेज लिंक"
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
@@ -242,6 +230,18 @@ export default function AdminPrannathJiPage() {
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+            <ImageUploadField
+              label={isEn ? "Article Featured Image *" : "लेख मुख्य फोटो (Featured Image) *"}
+              value={form.featuredImage}
+              onChange={(url) => setForm({ ...form, featuredImage: url })}
+              recommendedSize="1200 × 675 px"
+              aspectRatio="16:9 (आलेख थंबनेल)"
+              maxSizeMB={5}
+              helperText={isEn ? "Displayed in Shri Prannath Ji biography cards and reading overlay" : "श्री प्राणनाथ जी जीवन चरित्र आलेख कार्ड व वाचन विंडो में दिखेगी"}
+            />
           </div>
 
           <div>

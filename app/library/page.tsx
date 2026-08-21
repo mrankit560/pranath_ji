@@ -21,31 +21,42 @@ import {
   ChevronRight,
   X,
   Info,
+  Clock,
 } from "lucide-react";
 
-function LibraryContent() {
+// Safe category sync helper wrapped in Suspense
+function CategoryParamSync({ onCategoryChange }: { onCategoryChange: (cat: string) => void }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) onCategoryChange(cat);
+  }, [searchParams, onCategoryChange]);
+  return null;
+}
+
+export const isPdfAvailable = (url?: string): boolean => {
+  if (!url) return false;
+  const lower = url.toLowerCase().trim();
+  return lower !== "" && lower !== "#";
+};
+
+export default function LibraryPage() {
   const { t, language } = useI18n();
   const isEn = language === "en";
-  const searchParams = useSearchParams();
-  const initialCategory = searchParams.get("category") || "all";
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [books, setBooks] = useState<Book[]>(store.getBooks());
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [books, setBooks] = useState<Book[]>(() => store.getBooks());
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBookForBlog, setSelectedBookForBlog] = useState<Book | null>(null);
 
   useEffect(() => {
+    setBooks(store.getBooks());
     const unsub = store.subscribe(() => {
       setBooks(store.getBooks());
     });
     return () => unsub();
   }, []);
-
-  useEffect(() => {
-    const cat = searchParams.get("category");
-    if (cat) setSelectedCategory(cat);
-  }, [searchParams]);
 
   const categories = [
     { id: "all", label: isEn ? "All Books" : "सभी पुस्तकें" },
@@ -66,6 +77,10 @@ function LibraryContent() {
 
   return (
     <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+      <Suspense fallback={null}>
+        <CategoryParamSync onCategoryChange={setSelectedCategory} />
+      </Suspense>
+
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
@@ -101,141 +116,162 @@ function LibraryContent() {
         </div>
       </section>
 
-      {/* Main Content & Categories Filter */}
-      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Category Pills Filter */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap mb-12">
-          {categories.map((c) => (
+      {/* Main Content Area */}
+      <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Category Tabs */}
+        <div className="flex items-center justify-center sm:justify-start gap-2 overflow-x-auto pb-4 mb-10 border-b border-gold-500/20">
+          {categories.map((cat) => (
             <button
-              key={c.id}
-              onClick={() => setSelectedCategory(c.id)}
-              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all ${
-                selectedCategory === c.id
-                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm scale-105"
-                  : "bg-spiritual-navy/80 border border-gold-500/30 text-spiritual-ivory/80 hover:text-gold-300 hover:border-gold-400"
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
+                selectedCategory === cat.id
+                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold scale-105"
+                  : "bg-spiritual-card border border-gold-500/25 text-spiritual-ivory/80 hover:text-gold-300 hover:border-gold-400/50"
               }`}
             >
-              {c.label}
+              {cat.label}
             </button>
           ))}
         </div>
 
-        {/* Books Grid */}
+        {/* Books Grid or Empty State */}
         {filteredBooks.length === 0 ? (
-          <div className="text-center py-16 spiritual-glass-card rounded-3xl p-8 max-w-md mx-auto">
-            <p className="text-sm text-spiritual-ivory/70">
-              {isEn ? "No books found in this category." : "इस श्रेणी में कोई पुस्तक उपलब्ध नहीं है।"}
+          <div className="spiritual-glass-card rounded-3xl p-12 text-center max-w-md mx-auto border border-gold-500/30 space-y-4">
+            <BookOpen className="w-12 h-12 text-gold-400/50 mx-auto" />
+            <p className="text-sm sm:text-base text-spiritual-ivory/80">
+              {isEn ? "No books found matching your criteria." : "आपकी खोज के अनुसार कोई पुस्तक नहीं मिली।"}
             </p>
+            <button
+              onClick={() => {
+                setSelectedCategory("all");
+                setSearchQuery("");
+              }}
+              className="px-5 py-2 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-300 text-xs font-bold hover:bg-gold-500 hover:text-spiritual-dark transition-colors"
+            >
+              {isEn ? "Reset Filters" : "सभी पुस्तकें देखें"}
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredBooks.map((book) => (
-              <div
-                key={book.id}
-                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group shadow-xl hover:border-gold-400 transition-all duration-300"
-              >
-                {/* Book Cover Area */}
-                <div className="relative h-60 w-full bg-black overflow-hidden flex items-center justify-center p-4">
-                  <Image
-                    src={book.coverUrl || "/assets/logo-emblem.png"}
-                    alt={book.titleHi}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-75 group-hover:opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-black/30" />
+            {filteredBooks.map((book) => {
+              const hasLivePdf = isPdfAvailable(book.pdfUrl);
 
-                  <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 border border-gold-500/30 text-[10px] font-bold text-gold-300 uppercase">
-                    {book.category.replace("_", " ")}
-                  </span>
+              return (
+                <div
+                  key={book.id}
+                  className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group hover:border-gold-400 transition-all duration-300 shadow-xl"
+                >
+                  {/* Book Cover */}
+                  <div className="relative h-60 w-full bg-black/60 overflow-hidden">
+                    <Image
+                      src={book.coverUrl || "/assets/paramdham-mandala.png"}
+                      alt={isEn ? book.titleEn || book.titleHi : book.titleHi}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-transparent" />
 
-                  <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gold-500/20 text-gold-300 text-[10px] font-bold">
-                    {book.pages} {isEn ? "Pages" : "पृष्ठ"}
-                  </span>
-                </div>
+                    <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gold-500/20 text-gold-300 text-[10px] font-bold">
+                      {book.pages} {isEn ? "Pages" : "पृष्ठ"}
+                    </span>
+                  </div>
 
-                {/* Book Details */}
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-1">
-                      {isEn ? book.titleEn || book.titleHi : book.titleHi}
-                    </h3>
+                  {/* Book Details */}
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-1">
+                        {isEn ? book.titleEn || book.titleHi : book.titleHi}
+                      </h3>
 
-                    <div className="text-xs text-gold-muted/80 mb-3 font-semibold">
-                      {isEn ? book.authorEn : book.authorHi}
+                      <div className="text-xs text-gold-muted/80 mb-3 font-semibold">
+                        {isEn ? book.authorEn : book.authorHi}
+                      </div>
+
+                      <p className="text-xs text-spiritual-ivory/75 line-clamp-3 leading-relaxed mb-3">
+                        {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi}
+                      </p>
+
+                      {/* Book Blog / Review button if available */}
+                      {(book.bookBlogHi || book.bookBlogEn) && (
+                        <button
+                          onClick={() => setSelectedBookForBlog(book)}
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-200 hover:underline mb-2"
+                        >
+                          <Info className="w-3.5 h-3.5" />
+                          <span>{isEn ? "Read About This Book (Review)" : "पुस्तक परिचय व समीक्षा पढ़ें"}</span>
+                        </button>
+                      )}
                     </div>
 
-                    <p className="text-xs text-spiritual-ivory/75 line-clamp-3 leading-relaxed mb-3">
-                      {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi}
-                    </p>
-
-                    {/* Book Blog / Review button if available */}
-                    {(book.bookBlogHi || book.bookBlogEn) && (
-                      <button
-                        onClick={() => setSelectedBookForBlog(book)}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-200 hover:underline mb-2"
+                    {/* Actions: Read Online & Download */}
+                    <div className="pt-4 border-t border-gold-500/20 flex items-center justify-between gap-2">
+                      <Link
+                        href={`/library/reader/${book.id}`}
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-gold-sm hover:scale-[1.02] transition-transform"
                       >
-                        <Info className="w-3.5 h-3.5" />
-                        <span>{isEn ? "Read About This Book (Review)" : "पुस्तक परिचय व समीक्षा पढ़ें"}</span>
-                      </button>
-                    )}
-                  </div>
+                        <BookOpen className="w-3.5 h-3.5" />
+                        <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
+                      </Link>
 
-                  {/* Actions: Read Online & Download */}
-                  <div className="pt-4 border-t border-gold-500/20 flex items-center justify-between gap-2">
-                    <a
-                      href={book.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
-                    >
-                      <BookOpen className="w-3.5 h-3.5" />
-                      <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
-                    </a>
-
-                    <a
-                      href={book.pdfUrl}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3.5 py-2 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>PDF</span>
-                    </a>
+                      {hasLivePdf ? (
+                        <a
+                          href={book.pdfUrl}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2.5 px-3 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
+                          title={isEn ? "Download PDF" : "PDF डाउनलोड करें"}
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>{isEn ? "Download" : "डाउनलोड"}</span>
+                        </a>
+                      ) : (
+                        <div
+                          className="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 text-spiritual-ivory/40 text-xs font-semibold inline-flex items-center gap-1"
+                          title={isEn ? "Digital edition only" : "डिजिटल संस्करण उपलब्ध"}
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                          <span>{isEn ? "E-Book" : "ई-बुक"}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
 
-      {/* Book Blog / Review Modal */}
+      {/* Book Review / Description Modal */}
       {selectedBookForBlog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fade-in">
-          <div className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-10 shadow-2xl relative space-y-6">
-            <button
-              onClick={() => setSelectedBookForBlog(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-gold-500/15 text-gold-300 hover:bg-gold-500 hover:text-spiritual-dark transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 text-xs font-bold uppercase tracking-wider mb-2">
-                <Info className="w-3.5 h-3.5" />
-                <span>{isEn ? "Book Review & Summary" : "पुस्तक परिचय व समीक्षा"}</span>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fade-in"
+          onClick={() => setSelectedBookForBlog(null)}
+        >
+          <div
+            className="spiritual-glass-card rounded-3xl p-6 sm:p-8 max-w-2xl w-full border-2 border-gold-400/50 shadow-2xl relative space-y-4 max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-gold-500/30">
+              <div className="flex items-center gap-2 text-gold-300">
+                <Sparkles className="w-4 h-4 text-gold-400" />
+                <h3 className="text-lg font-bold text-gold-gradient font-spiritual-heading">
+                  {isEn
+                    ? selectedBookForBlog.titleEn || selectedBookForBlog.titleHi
+                    : selectedBookForBlog.titleHi}
+                </h3>
               </div>
-
-              <h2 className="text-xl sm:text-2xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
-                {isEn ? selectedBookForBlog.titleEn || selectedBookForBlog.titleHi : selectedBookForBlog.titleHi}
-              </h2>
-              <div className="text-xs text-gold-muted/80 mt-1">
-                {isEn ? selectedBookForBlog.authorEn : selectedBookForBlog.authorHi} • {selectedBookForBlog.pages} {isEn ? "Pages" : "पृष्ठ"}
-              </div>
+              <button
+                onClick={() => setSelectedBookForBlog(null)}
+                className="p-1 rounded-full text-spiritual-ivory/70 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div className="p-4 rounded-2xl bg-black/50 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed space-y-3 font-devanagari">
+            <div className="space-y-3 text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed">
               <p className="font-semibold text-gold-300">
                 {isEn ? "Editor's Review / About the Scripture:" : "आश्रम शोध पीठ द्वारा पुस्तक परिचय:"}
               </p>
@@ -247,15 +283,20 @@ function LibraryContent() {
             </div>
 
             <div className="pt-2 flex items-center justify-end gap-3">
-              <a
-                href={selectedBookForBlog.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-5 py-2.5 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform inline-flex items-center gap-1.5"
-              >
-                <BookOpen className="w-4 h-4" />
-                <span>{isEn ? "Open PDF Document" : "PDF ग्रन्थ खोलें"}</span>
-              </a>
+              {isPdfAvailable(selectedBookForBlog.pdfUrl) ? (
+                <Link
+                  href={`/library/reader/${selectedBookForBlog.id}`}
+                  className="px-5 py-2.5 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform inline-flex items-center gap-1.5"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>{isEn ? "Open PDF Document" : "PDF ग्रन्थ खोलें"}</span>
+                </Link>
+              ) : (
+                <span className="px-4 py-2 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-semibold flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{isEn ? "PDF Coming Soon" : "PDF शीघ्र उपलब्ध होगा"}</span>
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -263,13 +304,5 @@ function LibraryContent() {
 
       <Footer />
     </main>
-  );
-}
-
-export default function LibraryPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-spiritual-dark flex items-center justify-center text-gold-300">Loading...</div>}>
-      <LibraryContent />
-    </Suspense>
   );
 }

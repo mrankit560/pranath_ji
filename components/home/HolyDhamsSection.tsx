@@ -70,7 +70,7 @@ export const HolyDhamsSection: React.FC = () => {
   };
 
   return (
-    <section className="py-20 relative bg-gradient-to-b from-spiritual-navy via-black/80 to-spiritual-navy border-y border-gold-500/20">
+    <section id="holy-dhams" className="py-20 relative bg-gradient-to-b from-spiritual-navy via-black/80 to-spiritual-navy border-y border-gold-500/20 scroll-mt-20">
       {/* Background Saffron/Gold Ambient Glow */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -100,6 +100,7 @@ export const HolyDhamsSection: React.FC = () => {
             const images = getDhamImages(dham);
             const activeIndex = (slideIndices[dham.id] || 0) % images.length;
             const currentImg = images[activeIndex] || "/assets/sadhauli-dham-2.jpg";
+            const isSadhauli = dham.id === "sadhauli-dham" || dham.nameHi?.includes("साढौली") || index === 0;
 
             return (
               <div
@@ -123,8 +124,14 @@ export const HolyDhamsSection: React.FC = () => {
 
                   {/* Top Badges: Dham Number & Photo Counter */}
                   <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10 pointer-events-none">
-                    <span className="px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-gold-400/40 text-xs font-bold text-gold-300 shadow-md">
-                      {isEn ? `Dham 0${index + 1}` : `पावन धाम ०${index + 1}`}
+                    <span className={`px-3 py-1 rounded-full backdrop-blur-md border text-xs font-bold shadow-md ${
+                      isSadhauli
+                        ? "bg-gold-500/90 text-spiritual-dark border-gold-300 font-extrabold"
+                        : "bg-black/80 text-gold-300 border-gold-400/40"
+                    }`}>
+                      {isSadhauli
+                        ? (isEn ? "★ Official Ashram Dham" : "★ मुख्य पावन धाम (Sadhauli Dham)")
+                        : (isEn ? `Dham 0${index + 1}` : `पावन धाम ${["०१", "०२", "०३", "०४", "०५"][index] || index + 1}`)}
                     </span>
 
                     <div className="flex items-center gap-2">

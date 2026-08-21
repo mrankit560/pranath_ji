@@ -82,6 +82,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       name: isEn ? "Festival Events" : "उत्सव एवं कार्यक्रम",
       href: "/events",
     },
+    {
+      name: isEn ? "About Ashram" : "आश्रम परिचय",
+      href: "/about",
+    },
+    {
+      name: isEn ? "Contact" : "संपर्क",
+      href: "/contact",
+    },
   ];
 
   return (
@@ -94,30 +102,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Brand Logo & Title */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
-              <div className="absolute inset-0 rounded-full bg-gold-400/20 blur-md group-hover:bg-gold-400/40 transition-all" />
-              <Image
-                src="/assets/logo-emblem.png"
-                alt="Sadhauli Dham Emblem"
-                width={48}
-                height={48}
-                className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_10px_rgba(244,208,111,0.5)] transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base sm:text-xl font-black text-gold-gradient font-spiritual-heading leading-normal py-0.5 tracking-wide overflow-visible">
-                {isEn ? "Shri Prannath Ji" : "श्री प्राणनाथ जी"}
-              </span>
-              <span className="text-[10px] sm:text-xs text-gold-muted/90 font-bold tracking-widest uppercase">
-                {isEn ? "Paramdham" : "परमधाम"}
-              </span>
-            </div>
-          </Link>
+            {/* Brand Logo & Title */}
+            <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0 mr-6 lg:mr-10">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
+                <div className="absolute inset-0 rounded-full bg-gold-400/20 blur-md group-hover:bg-gold-400/40 transition-all" />
+                <Image
+                  src="/assets/logo-emblem.png"
+                  alt="Sadhauli Dham Emblem"
+                  width={48}
+                  height={48}
+                  className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_10px_rgba(244,208,111,0.5)] transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-base sm:text-lg font-black text-gold-gradient font-spiritual-heading leading-tight tracking-wide overflow-visible">
+                  {isEn ? "Sadhauli Dham" : "साढौली धाम"}
+                </span>
+                <span className="text-[10px] sm:text-xs text-gold-muted/90 font-bold tracking-wider">
+                  {isEn ? "Haridwar (Uttarakhand)" : "हरिद्वार (उत्तराखण्ड)"}
+                </span>
+              </div>
+            </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center gap-1.5">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               const hasSub = !!link.subItems;
@@ -188,6 +196,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             >
               <Search className="w-4 h-4" />
             </button>
+
+            {/* Prominent Header Contact Button */}
+            <Link
+              href="/contact"
+              className="hidden sm:inline-flex items-center gap-1 px-3.5 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold shadow-gold-sm hover:scale-105 transition-transform"
+            >
+              <span>{isEn ? "Contact Us" : "संपर्क करें"}</span>
+            </Link>
 
             {/* Mobile Menu Toggle Button */}
             <button

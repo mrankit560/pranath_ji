@@ -35,7 +35,7 @@ import {
 
 const initialAdminCredentials: AdminCredentials = {
   username: "admin",
-  email: "admin@sadhaulidham.org",
+  email: "admin@sadhaulidham.com",
   password: "admin123",
   updatedAt: new Date().toISOString(),
 };
@@ -688,6 +688,10 @@ class DataStore {
     this.notify();
   }
 
+  public saveReadingProgress(bookId: string, title: string, page: number) {
+    this.updateReadingHistory(bookId, title, page);
+  }
+
   // ---------------- ADMIN CREDENTIALS & SECURITY ----------------
   public getAdminCredentials(): AdminCredentials {
     this.ensureLoaded();
@@ -710,7 +714,7 @@ class DataStore {
     this.ensureLoaded();
     const input = (userOrEmail || "").trim().toLowerCase();
     const validUser = (this.adminCredentials.username || "admin").trim().toLowerCase();
-    const validEmail = (this.adminCredentials.email || "admin@sadhaulidham.org").trim().toLowerCase();
+    const validEmail = (this.adminCredentials.email || "admin@sadhaulidham.com").trim().toLowerCase();
     const validPass = this.adminCredentials.password || "admin123";
 
     const isUserMatch = Boolean(input && (input === validUser || input === validEmail));

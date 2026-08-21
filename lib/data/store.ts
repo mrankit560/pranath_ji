@@ -692,6 +692,12 @@ class DataStore {
     this.updateReadingHistory(bookId, title, page);
   }
 
+  public getReadingProgress(bookId: string): number {
+    this.ensureLoaded();
+    const item = this.readingHistory.find((h) => h.bookId === bookId);
+    return item ? item.page : 1;
+  }
+
   // ---------------- ADMIN CREDENTIALS & SECURITY ----------------
   public getAdminCredentials(): AdminCredentials {
     this.ensureLoaded();

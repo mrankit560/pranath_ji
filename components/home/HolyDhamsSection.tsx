@@ -94,8 +94,8 @@ export const HolyDhamsSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Dham Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+        {/* Dham Cards Grid with 3D Depth */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 perspective-1200" style={{ perspective: "1200px" }}>
           {dhams.map((dham, index) => {
             const images = getDhamImages(dham);
             const activeIndex = (slideIndices[dham.id] || 0) % images.length;
@@ -105,7 +105,7 @@ export const HolyDhamsSection: React.FC = () => {
             return (
               <div
                 key={dham.id}
-                className="spiritual-glass-card rounded-3xl overflow-hidden border-2 border-gold-500/30 flex flex-col justify-between group shadow-2xl hover:border-gold-400/80 transition-all duration-300"
+                className="spiritual-glass-card rounded-3xl overflow-hidden border-2 border-gold-500/30 flex flex-col justify-between group shadow-2xl hover:border-gold-400/90 transition-all duration-500 transform-style-3d hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(244,208,111,0.2)]"
               >
                 {/* Multi-Photo Carousel Area */}
                 <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-black/90 select-none">
@@ -116,25 +116,27 @@ export const HolyDhamsSection: React.FC = () => {
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority={index === 0}
-                    className="object-cover transition-all duration-500 group-hover:scale-105"
+                    className="object-cover transition-all duration-700 group-hover:scale-108"
                   />
 
                   {/* Gradient Vignette Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-black/50 pointer-events-none" />
 
-                  {/* Top Badges: Dham Number & Photo Counter */}
-                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10 pointer-events-none">
-                    <span className={`px-3 py-1 rounded-full backdrop-blur-md border text-xs font-bold shadow-md ${
+                  {/* Top Badges: Dham Number & Photo Counter (3D Layer) */}
+                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10 pointer-events-none transform-style-3d">
+                    <span className={`px-3 py-1 rounded-full backdrop-blur-md border text-xs font-bold shadow-xl transition-transform duration-300 group-hover:scale-105 ${
                       isSadhauli
-                        ? "bg-gold-500/90 text-spiritual-dark border-gold-300 font-extrabold"
-                        : "bg-black/80 text-gold-300 border-gold-400/40"
-                    }`}>
+                        ? "bg-gold-500/95 text-spiritual-dark border-gold-300 font-extrabold shadow-gold-sm"
+                        : "bg-black/85 text-gold-300 border-gold-400/50"
+                    }`}
+                    style={{ transform: "translateZ(30px)" }}
+                    >
                       {isSadhauli
                         ? (isEn ? "★ Official Ashram Dham" : "★ मुख्य पावन धाम (Sadhauli Dham)")
                         : (isEn ? `Dham 0${index + 1}` : `पावन धाम ${["०१", "०२", "०३", "०४", "०५"][index] || index + 1}`)}
                     </span>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2" style={{ transform: "translateZ(30px)" }}>
                       <span className="px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-gold-400/30 text-[11px] font-bold text-gold-200 shadow-md flex items-center gap-1">
                         <Camera className="w-3 h-3 text-gold-400" />
                         <span>

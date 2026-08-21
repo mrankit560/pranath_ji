@@ -25,6 +25,7 @@ import {
   X,
   ExternalLink,
 } from "lucide-react";
+import { ChitwaniMeditation3D } from "@/components/3d/ChitwaniMeditation3D";
 
 function MeditationTabSync({ onTabChange }: { onTabChange: (tab: "articles" | "books" | "videos") => void }) {
   const searchParams = useSearchParams();
@@ -148,65 +149,10 @@ export default function MeditationPage() {
         </div>
       </section>
 
-      {/* Interactive Meditation Breathing Guide */}
+      {/* Interactive 3D Meditation Breathing Guide */}
       <section className="py-8 max-w-4xl mx-auto px-4 sm:px-6">
         <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 text-center relative overflow-hidden shadow-2xl">
-          <div className="max-w-md mx-auto space-y-4">
-            <span className="text-xs font-bold text-gold-300 uppercase tracking-wider">
-              {isEn ? "Interactive Dhyan Assistant" : "इंटरैक्टिव चितवनी ध्यान सहायक"}
-            </span>
-
-            <div className="relative w-40 h-40 mx-auto flex items-center justify-center">
-              <div
-                className={`absolute inset-0 rounded-full border-2 border-gold-400/40 transition-all duration-1000 ${
-                  isMeditating
-                    ? breathPhase === "inhale"
-                      ? "scale-110 bg-gold-500/20 shadow-[0_0_30px_rgba(244,208,111,0.4)]"
-                      : breathPhase === "hold"
-                      ? "scale-105 bg-purple-500/20 shadow-[0_0_30px_rgba(168,85,247,0.4)]"
-                      : "scale-95 bg-amber-500/10 shadow-none"
-                    : "bg-gold-500/5"
-                }`}
-              />
-              <div className="relative z-10 text-center">
-                <Flower2
-                  className={`w-10 h-10 mx-auto text-gold-400 mb-1 transition-transform duration-1000 ${
-                    isMeditating ? "rotate-180" : ""
-                  }`}
-                />
-                <span className="text-xs font-bold text-spiritual-ivory">
-                  {isMeditating
-                    ? breathPhase === "inhale"
-                      ? isEn
-                        ? "Inhale (श्वास लें)"
-                        : "श्वास लें (Inhale)"
-                      : breathPhase === "hold"
-                      ? isEn
-                        ? "Hold (ध्यान लगाएं)"
-                        : "ध्यान लगाएं (Hold)"
-                      : isEn
-                      ? "Exhale (श्वास छोड़ें)"
-                      : "श्वास छोड़ें (Exhale)"
-                    : isEn
-                    ? "Start Meditation"
-                    : "ध्यान शुरू करें"}
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsMeditating(!isMeditating)}
-              className="px-6 py-2 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform"
-            >
-              {isMeditating
-                ? isEn
-                  ? "Stop Guide"
-                  : "अभ्यास रोकें"
-                : isEn
-                ? "Begin 5-Min Chitwani Guide"
-                : "चितवनी श्वास-मार्गदर्शन शुरू करें"}
-            </button>
-          </div>
+          <ChitwaniMeditation3D />
         </div>
       </section>
 

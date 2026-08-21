@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { isPdfAvailable } from "@/lib/utils/isPdfAvailable";
 import { formatSpiritualDate } from "@/lib/utils/formatDate";
+import { BookCard3D } from "@/components/3d/BookCard3D";
 
 export default function HomePage() {
   const { t, language } = useI18n();
@@ -295,60 +296,9 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {books.slice(0, 3).map((book) => (
-            <div
-              key={book.id}
-              className="spiritual-glass-card rounded-2xl p-5 border border-gold-500/30 flex flex-col justify-between group"
-            >
-              <div>
-                <div className="flex items-center justify-between text-xs text-gold-300 font-semibold mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 uppercase text-[10px]">
-                    {book.category.replace("_", " ")}
-                  </span>
-                  <span>{book.pages} {isEn ? "Pages" : "पृष्ठ"}</span>
-                </div>
-
-                <h3 className="text-base sm:text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading mb-2">
-                  {isEn ? book.titleEn || book.titleHi : book.titleHi}
-                </h3>
-
-                <p className="text-xs text-spiritual-ivory/70 line-clamp-3 leading-relaxed mb-4">
-                  {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between">
-                <Link
-                  href={`/library/reader/${book.id}`}
-                  className="text-xs font-bold text-gold-300 hover:text-gold-100 inline-flex items-center gap-1.5"
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
-                </Link>
-
-                {isPdfAvailable(book.pdfUrl) ? (
-                  <a
-                    href={book.pdfUrl}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-semibold text-gold-300 hover:text-gold-100 inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gold-500/10 border border-gold-500/30"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>PDF</span>
-                  </a>
-                ) : (
-                  <Link
-                    href={`/library/reader/${book.id}`}
-                    className="text-xs text-spiritual-ivory/60 hover:text-gold-300 inline-flex items-center gap-1"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>{isEn ? "E-Book" : "ई-ग्रंथ"}</span>
-                  </Link>
-                )}
-              </div>
-            </div>
+            <BookCard3D key={book.id} book={book} isEn={isEn} />
           ))}
         </div>
       </section>

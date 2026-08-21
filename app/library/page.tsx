@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 
 import { isPdfAvailable } from "@/lib/utils/isPdfAvailable";
+import { BookCard3D } from "@/components/3d/BookCard3D";
 
 // Safe category sync helper wrapped in Suspense
 function CategoryParamSync({ onCategoryChange }: { onCategoryChange: (cat: string) => void }) {
@@ -150,92 +151,9 @@ export default function LibraryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredBooks.map((book) => {
-              const hasLivePdf = isPdfAvailable(book.pdfUrl);
-
-              return (
-                <div
-                  key={book.id}
-                  className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group hover:border-gold-400 transition-all duration-300 shadow-xl"
-                >
-                  {/* Book Cover */}
-                  <div className="relative h-60 w-full bg-black/60 overflow-hidden">
-                    <Image
-                      src={book.coverUrl || "/assets/paramdham-mandala.png"}
-                      alt={isEn ? book.titleEn || book.titleHi : book.titleHi}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-transparent" />
-
-                    <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-gold-500/20 text-gold-300 text-[10px] font-bold">
-                      {book.pages} {isEn ? "Pages" : "पृष्ठ"}
-                    </span>
-                  </div>
-
-                  {/* Book Details */}
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-1">
-                        {isEn ? book.titleEn || book.titleHi : book.titleHi}
-                      </h3>
-
-                      <div className="text-xs text-gold-muted/80 mb-3 font-semibold">
-                        {isEn ? book.authorEn : book.authorHi}
-                      </div>
-
-                      <p className="text-xs text-spiritual-ivory/75 line-clamp-3 leading-relaxed mb-3">
-                        {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi}
-                      </p>
-
-                      {/* Book Blog / Review button if available */}
-                      {(book.bookBlogHi || book.bookBlogEn) && (
-                        <button
-                          onClick={() => setSelectedBookForBlog(book)}
-                          className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-200 hover:underline mb-2"
-                        >
-                          <Info className="w-3.5 h-3.5" />
-                          <span>{isEn ? "Read About This Book (Review)" : "पुस्तक परिचय व समीक्षा पढ़ें"}</span>
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Actions: Read Online & Download */}
-                    <div className="pt-4 border-t border-gold-500/20 flex items-center justify-between gap-2">
-                      <Link
-                        href={`/library/reader/${book.id}`}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-gold-sm hover:scale-[1.02] transition-transform"
-                      >
-                        <BookOpen className="w-3.5 h-3.5" />
-                        <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
-                      </Link>
-
-                      {hasLivePdf ? (
-                        <a
-                          href={book.pdfUrl}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="py-2.5 px-3 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
-                          title={isEn ? "Download PDF" : "PDF डाउनलोड करें"}
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          <span>{isEn ? "Download" : "डाउनलोड"}</span>
-                        </a>
-                      ) : (
-                        <div
-                          className="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 text-spiritual-ivory/40 text-xs font-semibold inline-flex items-center gap-1"
-                          title={isEn ? "Digital edition only" : "डिजिटल संस्करण उपलब्ध"}
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>{isEn ? "E-Book" : "ई-बुक"}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {filteredBooks.map((book) => (
+              <BookCard3D key={book.id} book={book} isEn={isEn} />
+            ))}
           </div>
         )}
       </section>

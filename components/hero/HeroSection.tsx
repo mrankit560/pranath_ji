@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { HeroUpcomingEvents } from "./HeroUpcomingEvents";
+import { Paramdham3DMandala } from "@/components/3d/Paramdham3DMandala";
 import { BookOpen, FileText, Play, Flower2, Sparkles } from "lucide-react";
 
 export const HeroSection: React.FC = () => {
@@ -232,63 +233,9 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Giant Paramdham Cosmic Mandala & Floating Badges */}
-          <div className="lg:col-span-5 relative flex items-center justify-center py-8 lg:py-0">
-            {/* Celestial Sunburst Glow */}
-            <div className="absolute w-[360px] h-[360px] sm:w-[500px] sm:h-[500px] rounded-full bg-gradient-to-tr from-amber-500/20 via-yellow-500/20 to-emerald-500/20 blur-3xl animate-pulse-glow" />
-
-            {/* Giant Mandala Frame */}
-            <div className="relative w-[300px] h-[300px] sm:w-[420px] sm:h-[420px] md:w-[480px] md:h-[480px]">
-              <div className="absolute inset-0 rounded-full border-2 border-gold-400/40 shadow-2xl shadow-gold-900/60" />
-              <Image
-                src="/assets/paramdham-mandala.png"
-                alt="परमधाम २४ पक्षीय दिव्य मण्डल एवं साधक स्वरूप"
-                width={480}
-                height={480}
-                priority
-                className="w-full h-full object-contain drop-shadow-[0_0_35px_rgba(244,208,111,0.5)]"
-              />
-            </div>
-
-            {/* Floating Glass Badges */}
-            {/* Badge 1: Top Left */}
-            <Link
-              href="/meditation"
-              className="absolute -top-3 left-0 sm:left-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 animate-float"
-            >
-              <span className="text-base">🏛️</span>
-              <span>{t("hero.badge1", "अष्ट प्रहर लीला")}</span>
-            </Link>
-
-            {/* Badge 2: Top Right */}
-            <Link
-              href="/philosophy"
-              className="absolute top-4 -right-2 sm:right-2 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 animate-float-slow"
-              style={{ animationDelay: "1s" }}
-            >
-              <span className="text-base">🌌</span>
-              <span>{t("hero.badge2", "परमधाम का दिव्य स्वरूप")}</span>
-            </Link>
-
-            {/* Badge 3: Bottom Left */}
-            <Link
-              href="/philosophy"
-              className="absolute bottom-6 -left-2 sm:left-2 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 animate-float-slow"
-              style={{ animationDelay: "2s" }}
-            >
-              <span className="text-base">📿</span>
-              <span>{t("hero.badge3", "चितवनी व ज्ञान")}</span>
-            </Link>
-
-            {/* Badge 4: Bottom Right */}
-            <Link
-              href="/about"
-              className="absolute -bottom-3 right-0 sm:right-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 animate-float"
-              style={{ animationDelay: "1.5s" }}
-            >
-              <span className="text-base">🪷</span>
-              <span>{t("hero.badge4", "सत्संग, सेवा, साधना")}</span>
-            </Link>
+          {/* Right Column: Interactive 3D Paramdham Sacred Cosmic Mandala */}
+          <div className="lg:col-span-5 relative flex items-center justify-center">
+            <Paramdham3DMandala />
           </div>
         </div>
 

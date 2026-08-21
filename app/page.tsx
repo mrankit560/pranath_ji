@@ -9,7 +9,6 @@ import { Navbar } from "@/components/header/Navbar";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { DailyQuoteCard } from "@/components/common/DailyQuoteCard";
 import { HolyDhamsSection } from "@/components/home/HolyDhamsSection";
-import { AboutSection } from "@/components/home/AboutSection";
 import { SectionDivider } from "@/components/common/SectionDivider";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { Footer } from "@/components/footer/Footer";
@@ -305,13 +304,8 @@ export default function HomePage() {
 
       <SectionDivider symbol="🏛️" />
 
-      {/* 6. Holy Dham Locations Section (Sadhauli Dham, Gondar Dham) */}
+      {/* 6. Dham Section (Sadhauli Dham, Gondar Dham) */}
       <HolyDhamsSection />
-
-      <SectionDivider symbol="📜" />
-
-      {/* 7. Verbatim About Section (Editable by Admin) */}
-      <AboutSection />
 
       {/* Footer */}
       <Footer />

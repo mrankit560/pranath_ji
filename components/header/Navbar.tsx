@@ -6,7 +6,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSelector } from "./LanguageSelector";
-import { MobileBottomNav } from "./MobileBottomNav";
 import {
   Menu,
   X,
@@ -342,12 +341,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </div>
         )}
       </header>
-
-      {/* Persistent Mobile Bottom Navigation Bar */}
-      <MobileBottomNav
-        onToggleMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
-        isMenuOpen={mobileMenuOpen}
-      />
     </>
   );
 };

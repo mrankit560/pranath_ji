@@ -1,5 +1,5 @@
 # श्री प्राणनाथ जी परमधाम (Shri Prannath Ji Paramdham)
-### A Full-Stack Multilingual Spiritual Knowledge & Digital Library Platform
+### A Full-Stack Multilingual Aadhyatmik Gyan & Digital Library Platform
 **Shri Nijanand Ashram Sadhauli Dham, Haridwar, Uttarakhand (श्री निजानंद आश्रम साढौली धाम, हरिद्वार)**
 
 ---

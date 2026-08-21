@@ -69,7 +69,7 @@ export default function AdhyatmikGyanPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
             <Compass className="w-3.5 h-3.5" />
-            {isEn ? "Spiritual Wisdom & Philosophy" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान"}
+            {isEn ? "Aadhyatmik Gyan & Philosophy" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">

@@ -52,7 +52,17 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
         {/* Top Badges */}
         <div className="flex items-center justify-between text-xs text-gold-300 font-semibold mb-4">
           <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 uppercase text-[10px] tracking-wider font-bold">
-            {book.category.replace("_", " ")}
+            {isEn
+              ? book.category.replace("_", " ")
+              : book.category === "tartam_vani"
+              ? "तारतम वाणी"
+              : book.category === "bitak_saheb"
+              ? "श्री बीतक साहेब"
+              : book.category === "meditation"
+              ? "चितवनी ध्यान"
+              : book.category === "philosophy"
+              ? "ब्रह्मज्ञान तत्व"
+              : "आध्यात्मिक ग्रन्थ"}
           </span>
           <span className="text-[11px] text-spiritual-ivory/70 font-mono">
             {book.pages} {isEn ? "Pages" : "पृष्ठ"}

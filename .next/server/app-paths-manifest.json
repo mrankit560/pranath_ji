@@ -1,5 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
   "/auth/login/page": "app/auth/login/page.js",
   "/dashboard/page": "app/dashboard/page.js",
@@ -9,15 +8,18 @@
   "/library/reader/[id]/page": "app/library/reader/[id]/page.js",
   "/contact/page": "app/contact/page.js",
   "/about/page": "app/about/page.js",
-  "/library/page": "app/library/page.js",
   "/admin/adhyatmik-gyan/page": "app/admin/adhyatmik-gyan/page.js",
+  "/library/page": "app/library/page.js",
   "/library/tartam-vani/page": "app/library/tartam-vani/page.js",
   "/media/page": "app/media/page.js",
   "/meditation/page": "app/meditation/page.js",
-  "/philosophy/page": "app/philosophy/page.js",
-  "/adhyatmik-gyan/page": "app/adhyatmik-gyan/page.js",
   "/events/page": "app/events/page.js",
+  "/philosophy/page": "app/philosophy/page.js",
   "/prannath-ji/page": "app/prannath-ji/page.js",
+  "/adhyatmik-gyan/page": "app/adhyatmik-gyan/page.js",
+  "/articles/page": "app/articles/page.js",
+  "/articles/[slug]/page": "app/articles/[slug]/page.js",
+  "/admin/page": "app/admin/page.js",
   "/admin/books/page": "app/admin/books/page.js",
   "/admin/events/page": "app/admin/events/page.js",
   "/admin/dhams/page": "app/admin/dhams/page.js",
@@ -27,8 +29,5 @@
   "/admin/about/page": "app/admin/about/page.js",
   "/admin/settings/page": "app/admin/settings/page.js",
   "/admin/videos/page": "app/admin/videos/page.js",
-  "/admin/audio/page": "app/admin/audio/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/articles/page": "app/articles/page.js",
-  "/articles/[slug]/page": "app/articles/[slug]/page.js"
+  "/admin/audio/page": "app/admin/audio/page.js"
 }

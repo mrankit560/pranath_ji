@@ -99,7 +99,7 @@ export const Paramdham3DMandala: React.FC = () => {
           style={{ transform: "translateZ(45px)" }}
         >
           <span className="text-base">🏛️</span>
-          <span>{t("hero.badge1", "अष्ट प्रहर लीला")}</span>
+          <span>{language === "hi" ? "अष्ट प्रहर लीला" : "Asht Prahar Leela"}</span>
         </Link>
 
         {/* Badge 2: Top Right */}
@@ -109,7 +109,7 @@ export const Paramdham3DMandala: React.FC = () => {
           style={{ transform: "translateZ(55px)" }}
         >
           <span className="text-base">🌌</span>
-          <span>{t("hero.badge2", "परमधाम का दिव्य स्वरूप")}</span>
+          <span>{language === "hi" ? "परमधाम का दिव्य स्वरूप" : "Divine Paramdham"}</span>
         </Link>
 
         {/* Badge 3: Bottom Left */}
@@ -119,7 +119,7 @@ export const Paramdham3DMandala: React.FC = () => {
           style={{ transform: "translateZ(50px)" }}
         >
           <span className="text-base">📿</span>
-          <span>{t("hero.badge3", "चितवनी व ज्ञान")}</span>
+          <span>{language === "hi" ? "चितवनी व ज्ञान" : "Chitwani & Gyan"}</span>
         </Link>
 
         {/* Badge 4: Bottom Right */}
@@ -129,7 +129,7 @@ export const Paramdham3DMandala: React.FC = () => {
           style={{ transform: "translateZ(65px)" }}
         >
           <span className="text-base">🪷</span>
-          <span>{t("hero.badge4", "सत्संग, सेवा, साधना")}</span>
+          <span>{language === "hi" ? "सत्संग, सेवा, साधना" : "Satsang & Sadhana"}</span>
         </Link>
       </div>
     </div>

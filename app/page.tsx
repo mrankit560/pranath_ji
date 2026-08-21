@@ -210,7 +210,7 @@ export default function HomePage() {
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-2">
               <Compass className="w-3.5 h-3.5" />
-              {isEn ? "Spiritual Wisdom & Philosophy" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान"}
+              {isEn ? "Aadhyatmik Gyan & Philosophy" : "आध्यात्मिक ज्ञान व ब्रह्मज्ञान"}
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
               {isEn ? "Aadhyatmik Gyan — Spiritual Blogs" : "आध्यात्मिक ज्ञान — सत्संग व ब्लॉग"}
@@ -226,7 +226,7 @@ export default function HomePage() {
             href="/adhyatmik-gyan"
             className="mt-4 md:mt-0 inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gold-300 hover:text-gold-100 group"
           >
-            <span>{isEn ? "Explore Spiritual Blogs" : "सभी ब्लॉग देखें"}</span>
+            <span>{isEn ? "Explore Aadhyatmik Gyan" : "सभी ब्लॉग देखें"}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

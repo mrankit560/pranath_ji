@@ -209,20 +209,20 @@ export const Footer: React.FC = () => {
             {t("footer.rights", "सर्वाधिकार सुरक्षित।")}
           </div>
 
-          {/* Prominently Highlighted About Us and Contact Buttons */}
+          {/* Prominently Highlighted About and Contact Buttons */}
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3">
             <Link
               href="/about"
               className="px-4 py-2 rounded-xl bg-gold-500/15 border border-gold-400/40 text-gold-300 text-xs font-bold hover:bg-gold-500 hover:text-spiritual-dark transition-all shadow-sm flex items-center gap-1.5 hover:scale-105"
             >
-              <span>🏛️ {language === "hi" ? "आश्रम परिचय (About Us)" : "About Ashram"}</span>
+              <span>🏛️ {language === "hi" ? "आश्रम परिचय (About)" : "About"}</span>
             </Link>
 
             <Link
               href="/contact"
               className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold hover:scale-105 transition-all shadow-gold-sm flex items-center gap-1.5"
             >
-              <span>📞 {language === "hi" ? "आश्रम संपर्क (Contact Us)" : "Contact Ashram"}</span>
+              <span>📞 {language === "hi" ? "आश्रम संपर्क (Contact)" : "Contact"}</span>
             </Link>
           </div>
         </div>

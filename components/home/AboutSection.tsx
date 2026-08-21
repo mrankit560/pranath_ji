@@ -31,7 +31,7 @@ export const AboutSection: React.FC = () => {
           <div className="text-center space-y-4 pb-8 border-b border-gold-500/20">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-              <span>{isEn ? "About the Ashram" : "आश्रम परिचय"}</span>
+              <span>{isEn ? "About" : "आश्रम परिचय (About)"}</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible">

@@ -2,9 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useI18n } from "@/lib/i18n/context";
 import { Sparkles, Flower2, Wind, Heart } from "lucide-react";
 
 export const ChitwaniMeditation3D: React.FC = () => {
+  const { language } = useI18n();
+  const isEn = language === "en";
   const [phase, setPhase] = useState<"inhale" | "hold" | "exhale" | "rest">("inhale");
   const [seconds, setSeconds] = useState<number>(4);
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -32,10 +35,30 @@ export const ChitwaniMeditation3D: React.FC = () => {
   }, [isActive]);
 
   const phaseLabels = {
-    inhale: { hi: "श्वास लें (Inhale Divine Light)", en: "Inhale Divine Light", color: "text-amber-300", scale: "scale-110" },
-    hold: { hi: "ध्यान धारण करें (Contemplate Paramdham)", en: "Contemplate Paramdham", color: "text-gold-300", scale: "scale-110" },
-    exhale: { hi: "श्वास छोड़ें (Release Illusion)", en: "Release Illusion", color: "text-emerald-300", scale: "scale-90" },
-    rest: { hi: "शांत स्वरूप (Rest in Aksharatit Bliss)", en: "Rest in Aksharatit Bliss", color: "text-purple-300", scale: "scale-100" },
+    inhale: {
+      hi: "श्वास लें (परमधाम दिव्य प्रकाश)",
+      en: "Inhale (Divine Light)",
+      color: "text-amber-300",
+      scale: "scale-110",
+    },
+    hold: {
+      hi: "ध्यान धारण करें (अक्षरातीत युगल स्वरूप)",
+      en: "Contemplate (Divine Paramdham)",
+      color: "text-gold-300",
+      scale: "scale-110",
+    },
+    exhale: {
+      hi: "श्वास छोड़ें (अहंकार व माया विसर्जन)",
+      en: "Exhale (Release Illusion)",
+      color: "text-emerald-300",
+      scale: "scale-90",
+    },
+    rest: {
+      hi: "शांत स्वरूप (परम आनंद व विश्राम)",
+      en: "Rest (Aksharatit Bliss)",
+      color: "text-purple-300",
+      scale: "scale-100",
+    },
   };
 
   return (
@@ -84,10 +107,12 @@ export const ChitwaniMeditation3D: React.FC = () => {
       {/* Breathing Guidance Instruction */}
       <div className="text-center mt-6 space-y-2">
         <div className={`text-base sm:text-lg font-bold font-spiritual-heading transition-colors duration-500 ${phaseLabels[phase].color}`}>
-          {phaseLabels[phase].hi}
+          {isEn ? phaseLabels[phase].en : phaseLabels[phase].hi}
         </div>
         <p className="text-xs text-spiritual-ivory/70 max-w-sm mx-auto">
-          “राज श्यामा जी के पावन स्वरूप का अंतर में ध्यान करें। श्वास-प्रश्वास में श्री जी का स्मरण बना रहे।”
+          {isEn
+            ? "“Contemplate the eternal divine realm of Paramdham. With every breath, remember the bliss of Shri Raj Shyamaji.”"
+            : "“राज श्यामा जी के पावन स्वरूप का अंतर में ध्यान करें। श्वास-प्रश्वास में श्री जी का स्मरण बना रहे।”"}
         </p>
       </div>
     </div>

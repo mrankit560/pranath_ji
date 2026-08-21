@@ -29,11 +29,13 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
             <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-            {language === "hi" ? "आश्रम परिचय" : "About the Ashram"}
+            {language === "hi" ? "आश्रम परिचय (About)" : "About"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
-            श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड)
+            {language === "hi"
+              ? "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड)"
+              : "Shri Nijanand Ashram Sadhauli Dham, Haridwar (Uttarakhand)"}
           </h1>
 
           <p className="text-sm sm:text-base text-gold-muted/90 max-w-2xl mx-auto">

@@ -154,15 +154,14 @@ export const HeroSection: React.FC = () => {
             <div className="inline-block text-xs sm:text-sm font-semibold tracking-widest text-gold-400/90 uppercase px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/20 mb-4">
               {language === "hi"
                 ? "तारतम वाणी • आध्यात्मिक ज्ञान • निजानंद सम्प्रदाय"
-                : "Tartam Vani • Spiritual Wisdom • Nijanand Sampradaya"}
+                : "Tartam Vani • Aadhyatmik Gyan • Nijanand Sampradaya"}
             </div>
 
             {/* Supporting Description */}
             <p className="text-sm sm:text-base text-spiritual-ivory/85 max-w-xl font-normal leading-relaxed mb-8 drop-shadow-md">
-              {t(
-                "site.tagline",
-                "श्री निजानंद आश्रम साढौली धाम (हरिद्वार) — श्री प्राणनाथ जी की दिव्य वाणी, तारतम ग्रन्थ, सत्संग, प्रवचन, भजन और साधना का पावन आध्यात्मिक तीर्थ।"
-              )}
+              {language === "hi"
+                ? "श्री निजानंद आश्रम साढौली धाम (हरिद्वार) — श्री प्राणनाथ जी की दिव्य वाणी, तारतम ग्रन्थ, सत्संग, प्रवचन, भजन और साधना का पावन आध्यात्मिक तीर्थ।"
+                : "Shri Nijanand Ashram Sadhauli Dham (Haridwar) — The sacred spiritual sanctuary dedicated to Mahamati Shri Prannath Ji's Tartam Vani scriptures, discourses, and meditation."}
             </p>
 
             {/* 4 Action Buttons / Cards */}
@@ -176,10 +175,10 @@ export const HeroSection: React.FC = () => {
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors">
-                  {t("hero.readScriptures", "शास्त्र पढ़ें")}
+                  {language === "hi" ? "शास्त्र पढ़ें" : "Read Scriptures"}
                 </span>
                 <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
-                  {t("hero.readScripturesSub", "तारतम वाणी")}
+                  {language === "hi" ? "तारतम वाणी" : "Tartam Vani"}
                 </span>
               </Link>
 
@@ -192,10 +191,10 @@ export const HeroSection: React.FC = () => {
                   <FileText className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors">
-                  {t("hero.explorePdfs", "PDF लाइब्रेरी")}
+                  {language === "hi" ? "PDF लाइब्रेरी" : "PDF Library"}
                 </span>
                 <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
-                  {t("hero.explorePdfsSub", "ई-बुक्स")}
+                  {language === "hi" ? "ई-बुक्स" : "E-Books"}
                 </span>
               </Link>
 
@@ -208,10 +207,10 @@ export const HeroSection: React.FC = () => {
                   <Play className="w-5 h-5 fill-current" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-emerald-300 transition-colors">
-                  {t("hero.watchVideos", "वीडियो देखें")}
+                  {language === "hi" ? "वीडियो देखें" : "Watch Videos"}
                 </span>
                 <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
-                  {t("hero.watchVideosSub", "सत्संग")}
+                  {language === "hi" ? "सत्संग" : "Satsang"}
                 </span>
               </Link>
 
@@ -224,10 +223,10 @@ export const HeroSection: React.FC = () => {
                   <Flower2 className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-purple-300 transition-colors">
-                  {t("hero.startMeditation", "ध्यान करें")}
+                  {language === "hi" ? "ध्यान करें" : "Start Meditation"}
                 </span>
                 <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
-                  {t("hero.startMeditationSub", "चितवनी")}
+                  {language === "hi" ? "चितवनी" : "Chitwani"}
                 </span>
               </Link>
             </div>

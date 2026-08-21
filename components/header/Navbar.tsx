@@ -107,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       icon: Calendar,
     },
     {
-      name: isEn ? "About Ashram" : "आश्रम परिचय",
+      name: isEn ? "About" : "आश्रम परिचय (About)",
       href: "/about",
       icon: Info,
     },

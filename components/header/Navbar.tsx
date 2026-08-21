@@ -185,7 +185,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             })}
           </nav>
 
-          {/* Right Action Icons: Language Selector, Search */}
+          {/* Right Action Icons: Language Selector, Search, Mobile Menu */}
           <div className="flex items-center gap-2 sm:gap-3">
             <LanguageSelector />
 
@@ -196,14 +196,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             >
               <Search className="w-4 h-4" />
             </button>
-
-            {/* Prominent Header Contact Button */}
-            <Link
-              href="/contact"
-              className="hidden sm:inline-flex items-center gap-1 px-3.5 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold shadow-gold-sm hover:scale-105 transition-transform"
-            >
-              <span>{isEn ? "Contact Us" : "संपर्क करें"}</span>
-            </Link>
 
             {/* Mobile Menu Toggle Button */}
             <button
@@ -257,6 +249,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ))}
+
+          <div className="pt-2">
+            <Link
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block w-full text-center py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm"
+            >
+              📞 {isEn ? "Contact Ashram" : "आश्रम संपर्क करें"}
+            </Link>
+          </div>
         </div>
       )}
     </header>

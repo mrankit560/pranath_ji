@@ -25,38 +25,18 @@ export default function EventsPage() {
   const { t, language } = useI18n();
   const isEn = language === "en";
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [events, setEvents] = useState<EventItem[]>(() => store.getEvents());
+  const [mounted, setMounted] = useState(false);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [nextEvent, setNextEvent] = useState<EventItem | null>(() => store.getEarliestUpcomingEvent());
+  const [nextEvent, setNextEvent] = useState<EventItem | null>(null);
 
   const [timing, setTiming] = useState<{
     status: "upcoming" | "live" | "ended";
     timeLeft: { days: number; hours: number; minutes: number; seconds: number } | null;
-  }>(() => {
-    const evt = store.getEarliestUpcomingEvent();
-    if (!evt) return { status: "upcoming", timeLeft: null };
-    const now = Date.now();
-    const start = new Date(evt.startAt).getTime();
-    const end = evt.endAt ? new Date(evt.endAt).getTime() : start + 6 * 3600 * 1000;
-    if (now >= start && now <= end) {
-      return { status: "live", timeLeft: null };
-    } else if (now > end) {
-      return { status: "ended", timeLeft: null };
-    } else {
-      const diff = Math.max(0, start - now);
-      return {
-        status: "upcoming",
-        timeLeft: {
-          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / 1000 / 60) % 60),
-          seconds: Math.floor((diff / 1000) % 60),
-        },
-      };
-    }
-  });
+  }>({ status: "upcoming", timeLeft: null });
 
   useEffect(() => {
+    setMounted(true);
     setEvents(store.getEvents());
     setNextEvent(store.getEarliestUpcomingEvent());
     const unsub = store.subscribe(() => {
@@ -67,7 +47,7 @@ export default function EventsPage() {
   }, []);
 
   useEffect(() => {
-    if (!nextEvent) return;
+    if (!nextEvent || !mounted) return;
 
     const updateTiming = () => {
       const now = Date.now();
@@ -228,7 +208,7 @@ export default function EventsPage() {
                 <span>{isEn ? "✓ Event Concluded" : "✓ कार्यक्रम सम्पन्न (Ended)"}</span>
               </div>
             ) : timing.timeLeft ? (
-              <div className="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto mb-6">
+              <div className="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto mb-6" suppressHydrationWarning>
                 {[
                   { label: isEn ? "Days" : "दिन", val: timing.timeLeft.days },
                   { label: isEn ? "Hours" : "घंटे", val: timing.timeLeft.hours },
@@ -239,7 +219,7 @@ export default function EventsPage() {
                     key={idx}
                     className="p-3 sm:p-4 rounded-2xl bg-black/70 border border-gold-500/30 flex flex-col items-center shadow-inner"
                   >
-                    <span className="text-2xl sm:text-4xl font-extrabold text-gold-gradient font-mono">
+                    <span className="text-2xl sm:text-4xl font-extrabold text-gold-gradient font-mono" suppressHydrationWarning>
                       {item.val.toString().padStart(2, "0")}
                     </span>
                     <span className="text-[10px] sm:text-xs text-spiritual-ivory/60 mt-1 uppercase font-semibold">

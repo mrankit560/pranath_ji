@@ -21,7 +21,7 @@ import {
   FileText,
   Clock,
 } from "lucide-react";
-import { isPdfAvailable } from "@/app/library/page";
+import { isPdfAvailable } from "@/lib/utils/isPdfAvailable";
 
 export default function TartamVaniPage() {
   const { t, language } = useI18n();

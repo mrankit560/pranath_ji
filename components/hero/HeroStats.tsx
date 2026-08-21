@@ -8,11 +8,13 @@ import { BookOpen, Video, Users, Globe, Calendar, Clock, Sparkles } from "lucide
 
 export const HeroStats: React.FC = () => {
   const { t, language } = useI18n();
+  const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState(store.getStats());
   const [nextEvent, setNextEvent] = useState(store.getNextUpcomingEvent());
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     const unsub = store.subscribe(() => {
       setStats(store.getStats());
       setNextEvent(store.getNextUpcomingEvent());
@@ -21,7 +23,7 @@ export const HeroStats: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!nextEvent) return;
+    if (!nextEvent || !mounted) return;
 
     const calculateTime = () => {
       const difference = new Date(nextEvent.startAt).getTime() - new Date().getTime();
@@ -41,7 +43,7 @@ export const HeroStats: React.FC = () => {
     calculateTime();
     const interval = setInterval(calculateTime, 1000);
     return () => clearInterval(interval);
-  }, [nextEvent]);
+  }, [nextEvent, mounted]);
 
   return (
     <div className="w-full rounded-2xl border border-gold-500/30 bg-spiritual-navy/85 backdrop-blur-2xl p-4 sm:p-5 shadow-2xl shadow-black/80 relative overflow-hidden">
@@ -137,7 +139,7 @@ export const HeroStats: React.FC = () => {
                   {language === "hi" ? nextEvent.titleHi : nextEvent.titleEn}
                 </div>
                 {timeLeft ? (
-                  <div className="text-[11px] text-gold-400 font-mono font-semibold">
+                  <div className="text-[11px] text-gold-400 font-mono font-semibold" suppressHydrationWarning>
                     {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
                   </div>
                 ) : (

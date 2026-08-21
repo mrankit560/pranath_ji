@@ -19,36 +19,16 @@ import {
 export const HeroUpcomingEvents: React.FC = () => {
   const { t, language } = useI18n();
   const isEn = language === "en";
-  const [nextEvent, setNextEvent] = useState<EventItem | null>(() => store.getEarliestUpcomingEvent());
+  const [mounted, setMounted] = useState(false);
+  const [nextEvent, setNextEvent] = useState<EventItem | null>(null);
   
   const [timing, setTiming] = useState<{
     status: "upcoming" | "live" | "ended";
     timeLeft: { days: number; hours: number; minutes: number; seconds: number } | null;
-  }>(() => {
-    const evt = store.getEarliestUpcomingEvent();
-    if (!evt) return { status: "upcoming", timeLeft: null };
-    const now = Date.now();
-    const start = new Date(evt.startAt).getTime();
-    const end = evt.endAt ? new Date(evt.endAt).getTime() : start + 6 * 3600 * 1000;
-    if (now >= start && now <= end) {
-      return { status: "live", timeLeft: null };
-    } else if (now > end) {
-      return { status: "ended", timeLeft: null };
-    } else {
-      const diff = Math.max(0, start - now);
-      return {
-        status: "upcoming",
-        timeLeft: {
-          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / 1000 / 60) % 60),
-          seconds: Math.floor((diff / 1000) % 60),
-        },
-      };
-    }
-  });
+  }>({ status: "upcoming", timeLeft: null });
 
   useEffect(() => {
+    setMounted(true);
     setNextEvent(store.getEarliestUpcomingEvent());
     const unsub = store.subscribe(() => {
       setNextEvent(store.getEarliestUpcomingEvent());
@@ -57,7 +37,7 @@ export const HeroUpcomingEvents: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!nextEvent) return;
+    if (!nextEvent || !mounted) return;
 
     const updateTiming = () => {
       const now = Date.now();
@@ -85,7 +65,7 @@ export const HeroUpcomingEvents: React.FC = () => {
     updateTiming();
     const interval = setInterval(updateTiming, 1000);
     return () => clearInterval(interval);
-  }, [nextEvent]);
+  }, [nextEvent, mounted]);
 
   if (!nextEvent) {
     return (
@@ -235,7 +215,7 @@ export const HeroUpcomingEvents: React.FC = () => {
                 <span>{isEn ? "✓ Event Concluded" : "✓ कार्यक्रम सम्पन्न (Ended)"}</span>
               </div>
             ) : timing.timeLeft ? (
-              <div className="grid grid-cols-4 gap-1.5 sm:gap-2 max-w-xs mx-auto lg:mx-0">
+              <div className="grid grid-cols-4 gap-1.5 sm:gap-2 max-w-xs mx-auto lg:mx-0" suppressHydrationWarning>
                 {[
                   { label: isEn ? "Days" : "दिन", val: timing.timeLeft.days },
                   { label: isEn ? "Hours" : "घंटे", val: timing.timeLeft.hours },
@@ -246,7 +226,7 @@ export const HeroUpcomingEvents: React.FC = () => {
                     key={idx}
                     className="p-2 rounded-xl bg-black/70 border border-gold-500/30 flex flex-col items-center min-w-[50px] shadow-inner"
                   >
-                    <span className="text-lg sm:text-xl font-black text-gold-gradient font-mono leading-none">
+                    <span className="text-lg sm:text-xl font-black text-gold-gradient font-mono leading-none" suppressHydrationWarning>
                       {item.val.toString().padStart(2, "0")}
                     </span>
                     <span className="text-[9px] text-spiritual-ivory/60 uppercase font-medium mt-1">

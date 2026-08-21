@@ -24,6 +24,8 @@ import {
   Clock,
 } from "lucide-react";
 
+import { isPdfAvailable } from "@/lib/utils/isPdfAvailable";
+
 // Safe category sync helper wrapped in Suspense
 function CategoryParamSync({ onCategoryChange }: { onCategoryChange: (cat: string) => void }) {
   const searchParams = useSearchParams();
@@ -33,12 +35,6 @@ function CategoryParamSync({ onCategoryChange }: { onCategoryChange: (cat: strin
   }, [searchParams, onCategoryChange]);
   return null;
 }
-
-export const isPdfAvailable = (url?: string): boolean => {
-  if (!url) return false;
-  const lower = url.toLowerCase().trim();
-  return lower !== "" && lower !== "#";
-};
 
 export default function LibraryPage() {
   const { t, language } = useI18n();

@@ -10,7 +10,7 @@ import { Article, ChitwaniBook, ChitwaniVideo } from "@/lib/data/types";
 import { Navbar } from "@/components/header/Navbar";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { Footer } from "@/components/footer/Footer";
-import { isPdfAvailable } from "@/app/library/page";
+import { isPdfAvailable } from "@/lib/utils/isPdfAvailable";
 import { formatSpiritualDate } from "@/lib/utils/formatDate";
 import {
   Flower2,

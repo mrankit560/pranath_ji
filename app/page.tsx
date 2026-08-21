@@ -30,7 +30,7 @@ import {
   ExternalLink,
   Clock,
 } from "lucide-react";
-import { isPdfAvailable } from "@/app/library/page";
+import { isPdfAvailable } from "@/lib/utils/isPdfAvailable";
 import { formatSpiritualDate } from "@/lib/utils/formatDate";
 
 export default function HomePage() {

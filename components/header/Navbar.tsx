@@ -50,6 +50,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  // Desktop header navigation links (About and Contact removed from top header as they are in footer)
   const navLinks = [
     {
       name: isEn ? "Home" : "होम",
@@ -101,17 +102,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       ],
     },
     {
-      name: isEn ? "Festival Events" : "उत्सव एवं कार्यक्रम",
+      name: isEn ? "Events" : "उत्सव एवं कार्यक्रम",
       href: "/events",
       icon: Calendar,
     },
+  ];
+
+  // Mobile drawer links (contains full list including About & Contact)
+  const mobileNavLinks = [
+    ...navLinks,
     {
-      name: isEn ? "About" : "आश्रम परिचय (About)",
+      name: isEn ? "About Ashram" : "आश्रम परिचय (About)",
       href: "/about",
       icon: Info,
     },
     {
-      name: isEn ? "Contact" : "संपर्क",
+      name: isEn ? "Contact Us" : "संपर्क (Contact)",
       href: "/contact",
       icon: Phone,
     },
@@ -131,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* Brand Logo & Title */}
             <Link
               href="/"
-              className="flex items-center gap-2 sm:gap-3 group flex-shrink min-w-0 mr-1 sm:mr-4 lg:mr-8"
+              className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0 min-w-[200px] sm:min-w-[230px] whitespace-nowrap mr-2 sm:mr-4 lg:mr-6"
             >
               <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
                 <div className="absolute inset-0 rounded-full bg-gold-400/20 blur-md group-hover:bg-gold-400/40 transition-all" />
@@ -143,18 +149,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_10px_rgba(244,208,111,0.5)] transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-              <div className="flex flex-col min-w-0 truncate">
-                <span className="text-sm sm:text-lg font-black text-gold-gradient font-spiritual-heading leading-tight tracking-wide truncate">
+              <div className="flex flex-col flex-shrink-0 whitespace-nowrap">
+                <span className="text-base sm:text-lg font-black text-gold-gradient font-spiritual-heading leading-tight tracking-wide whitespace-nowrap">
                   {isEn ? "Sadhauli Dham" : "साढौली धाम"}
                 </span>
-                <span className="text-[9px] sm:text-xs text-gold-muted/90 font-bold tracking-wider truncate">
+                <span className="text-[10px] sm:text-xs text-gold-muted/90 font-bold tracking-wider whitespace-nowrap">
                   {isEn ? "Haridwar (Uttarakhand)" : "हरिद्वार (उत्तराखण्ड)"}
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden xl:flex items-center gap-1">
+            {/* Desktop Navigation Links (Shown on lg+ screens) */}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 const hasSub = !!link.subItems;
@@ -168,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   >
                     <Link
                       href={link.href}
-                      className={`px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1 ${
+                      className={`px-2.5 py-1.5 rounded-xl text-xs xl:text-sm font-semibold transition-all flex items-center gap-1 ${
                         isActive
                           ? "text-gold-300 bg-gold-500/15 border border-gold-500/30 shadow-gold-sm"
                           : "text-spiritual-ivory/85 hover:text-gold-300 hover:bg-gold-500/10"
@@ -214,7 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               })}
             </nav>
 
-            {/* Right Action Icons: Language Selector, Search, Prominent Mobile Menu Button */}
+            {/* Right Action Icons: Language Selector, Search, Mobile Menu Button */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
               <LanguageSelector />
 
@@ -226,10 +232,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Search className="w-4 h-4" />
               </button>
 
-              {/* High-Visibility Mobile Menu Button */}
+              {/* High-Visibility Mobile Menu Button (Only on Mobile & Tablet, hidden on Desktop lg+) */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="xl:hidden px-2.5 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark font-extrabold text-xs shadow-gold-sm flex items-center gap-1 active:scale-95 transition-transform"
+                className="lg:hidden px-2.5 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark font-extrabold text-xs shadow-gold-sm flex items-center gap-1 active:scale-95 transition-transform"
                 aria-label="Toggle Categories Menu"
               >
                 {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -241,9 +247,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </div>
         </div>
 
-        {/* Mobile Fullscreen Categories Drawer Menu */}
+        {/* Mobile Fullscreen Categories Drawer Menu (Only on Mobile & Tablet) */}
         {mobileMenuOpen && (
-          <div className="xl:hidden bg-[#0d0a08]/98 border-b-2 border-gold-500/40 px-4 pt-3 pb-8 space-y-2 backdrop-blur-3xl animate-fade-in max-h-[85vh] overflow-y-auto shadow-2xl">
+          <div className="lg:hidden bg-[#0d0a08]/98 border-b-2 border-gold-500/40 px-4 pt-3 pb-8 space-y-2 backdrop-blur-3xl animate-fade-in max-h-[85vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-gold-500/20">
               <span className="text-xs font-bold text-gold-300 uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-gold-400" />
@@ -258,7 +264,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </div>
 
             <div className="space-y-1.5 pt-1">
-              {navLinks.map((link) => {
+              {mobileNavLinks.map((link) => {
                 const Icon = link.icon;
                 const hasSub = Boolean(link.subItems && link.subItems.length > 0);
                 const isAccordionOpen = mobileAccordion === link.name;

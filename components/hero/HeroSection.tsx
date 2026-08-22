@@ -126,16 +126,6 @@ export const HeroSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Official Portal Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-gold-500/20 via-amber-500/15 to-gold-500/20 border border-gold-400/40 text-gold-300 text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-gold-950/30 mb-4 sm:mb-5 backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-              <span>
-                {language === "hi"
-                  ? "श्री निजानंद आश्रम • हरिद्वार (उत्तराखण्ड)"
-                  : "Shri Nijanand Ashram • Haridwar, Uttarakhand"}
-              </span>
-            </div>
-
             {/* Main Showstopper Title: SADHAULI DHAM / साढौली धाम (Optimized Size & Spacing) */}
             <h1 className="text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-gold-gradient font-spiritual-heading tracking-wide leading-tight mt-1 mb-3 py-1 overflow-visible drop-shadow-[0_4px_25px_rgba(244,208,111,0.35)]">
               {language === "hi" ? "साढौली धाम" : "Sadhauli Dham"}
@@ -160,8 +150,8 @@ export const HeroSection: React.FC = () => {
             {/* Supporting Description */}
             <p className="text-sm sm:text-base text-spiritual-ivory/85 max-w-xl font-normal leading-relaxed mb-8 drop-shadow-md">
               {language === "hi"
-                ? "श्री निजानंद आश्रम साढौली धाम (हरिद्वार) — श्री प्राणनाथ जी की दिव्य वाणी, तारतम ग्रन्थ, सत्संग, प्रवचन, भजन और साधना का पावन आध्यात्मिक तीर्थ।"
-                : "Shri Nijanand Ashram Sadhauli Dham (Haridwar) — The sacred spiritual sanctuary dedicated to Mahamati Shri Prannath Ji's Tartam Vani scriptures, discourses, and meditation."}
+                ? "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड) - श्री प्राणनाथ जी की दिव्य ब्रह्मवाणी, सत्संग, प्रवचन, ध्यान और साधना का पावन आध्यात्मिक तीर्थ।"
+                : "Shri Nijanand Ashram Sadhauli Dham, Haridwar (Uttarakhand) — The sacred spiritual sanctuary of Mahamati Shri Prannath Ji's divine Brahm Vani, satsang, discourses, meditation, and sadhana."}
             </p>
 
             {/* 4 Action Buttons / Cards */}

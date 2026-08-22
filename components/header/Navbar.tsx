@@ -132,28 +132,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             : "bg-gradient-to-b from-black/90 via-spiritual-navy/70 to-transparent py-3"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-1 sm:gap-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2">
             {/* Brand Logo & Title */}
             <Link
               href="/"
-              className="flex items-center gap-1.5 sm:gap-3 group flex-shrink min-w-0 mr-1 sm:mr-4 lg:mr-6"
+              className="flex items-center gap-2 sm:gap-3 group flex-shrink-0 min-w-0"
             >
-              <div className="relative w-8 h-8 sm:w-11 sm:h-11 flex-shrink-0">
+              <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
                 <div className="absolute inset-0 rounded-full bg-gold-400/20 blur-md group-hover:bg-gold-400/40 transition-all" />
                 <Image
                   src="/assets/logo-emblem.png"
                   alt="Sadhauli Dham Emblem"
-                  width={44}
-                  height={44}
+                  width={48}
+                  height={48}
+                  priority
                   className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_10px_rgba(244,208,111,0.5)] transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-              <div className="flex flex-col min-w-0">
+              <div className="flex flex-col">
                 <span className="text-sm sm:text-lg font-black text-gold-gradient font-spiritual-heading leading-tight tracking-wide whitespace-nowrap">
                   {isEn ? "Sadhauli Dham" : "साढौली धाम"}
                 </span>
-                <span className="text-[8.5px] sm:text-xs text-gold-muted/90 font-bold tracking-wider whitespace-nowrap">
+                <span className="text-[9px] sm:text-xs text-gold-muted/90 font-bold tracking-wider whitespace-nowrap">
                   {isEn ? "Haridwar (Uttarakhand)" : "हरिद्वार (उत्तराखण्ड)"}
                 </span>
               </div>
@@ -221,13 +222,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </nav>
 
             {/* Right Action Icons: Language Selector, Search, Mobile Menu Button */}
-            <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
               <LanguageSelector />
 
               <button
                 onClick={onOpenSearch}
-                className="p-1.5 sm:p-2.5 rounded-xl bg-gold-500/10 border border-gold-400/30 text-gold-300 hover:bg-gold-500/20 hover:text-white transition-all shadow-sm"
+                className="p-2 sm:p-2.5 rounded-xl bg-gold-500/10 border border-gold-400/30 text-gold-300 hover:bg-gold-500/20 hover:text-white transition-all shadow-sm"
                 title={isEn ? "Search Portal" : "खोजें"}
+                aria-label={isEn ? "Search Portal" : "खोजें"}
               >
                 <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
@@ -235,7 +237,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               {/* High-Visibility Mobile Menu Button (Only on Mobile & Tablet, hidden on Desktop lg+) */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden px-2.5 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark font-extrabold text-xs shadow-gold-md flex items-center gap-1 active:scale-95 transition-transform flex-shrink-0"
+                className="lg:hidden px-3 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark font-extrabold text-xs shadow-gold-md flex items-center gap-1.5 active:scale-95 transition-transform flex-shrink-0"
                 aria-label="Toggle Categories Menu"
               >
                 {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}

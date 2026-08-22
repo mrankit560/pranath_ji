@@ -128,30 +128,30 @@ export default function EventsPage() {
             {/* Clean Date Range & Location Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6 text-left">
               {/* Event Date Range */}
-              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3.5 shadow-lg">
-                <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-300 flex items-center justify-center flex-shrink-0">
-                  <CalendarIcon className="w-5 h-5" />
+              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-start sm:items-center gap-3.5 shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-300 flex items-center justify-center flex-shrink-0 border border-gold-400/40 mt-0.5 sm:mt-0">
+                  <CalendarIcon className="w-5 h-5 text-gold-400" />
                 </div>
-                <div className="min-w-0">
-                  <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider mb-0.5">
                     {isEn ? "Ashram Event Date Range" : "पावन महोत्सव तिथि"}
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory">
+                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words">
                     {formatEventDateRange(nextEvent.startAt, nextEvent.endAt)}
                   </div>
                 </div>
               </div>
 
               {/* Exact Location */}
-              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3.5 shadow-lg">
-                <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5" />
+              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-start sm:items-center gap-3.5 shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center flex-shrink-0 border border-red-500/40 mt-0.5 sm:mt-0">
+                  <MapPin className="w-5 h-5 text-red-400" />
                 </div>
-                <div className="min-w-0">
-                  <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider mb-0.5">
                     {isEn ? "Location / Venue" : "स्थान / आश्रम"}
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory truncate" title={nextEvent.location}>
+                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words" title={nextEvent.location}>
                     {nextEvent.location}
                   </div>
                 </div>
@@ -275,8 +275,8 @@ export default function EventsPage() {
 
                     <div className="space-y-1.5 text-xs text-spiritual-ivory/80 pt-1">
                       {/* Date Range */}
-                      <div className="flex items-center gap-2 text-gold-300 font-semibold">
-                        <CalendarIcon className="w-3.5 h-3.5 text-gold-400 flex-shrink-0" />
+                      <div className="flex items-start gap-2 text-gold-300 font-semibold text-xs leading-snug break-words">
+                        <CalendarIcon className="w-3.5 h-3.5 text-gold-400 flex-shrink-0 mt-0.5" />
                         <span>{formatEventDateRange(event.startAt, event.endAt)}</span>
                       </div>
 

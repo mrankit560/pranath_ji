@@ -79,30 +79,30 @@ export const HeroUpcomingEvents: React.FC = () => {
           {/* Date Range and Location Detail Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             {/* 1. Date Range */}
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/50 border border-gold-500/20">
-              <div className="w-9 h-9 rounded-xl bg-gold-500/15 text-gold-300 flex items-center justify-center flex-shrink-0 border border-gold-500/30">
-                <Calendar className="w-4 h-4" />
+            <div className="flex items-start sm:items-center gap-3 p-3.5 rounded-2xl bg-black/60 border border-gold-500/30 shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-gold-500/20 text-gold-300 flex items-center justify-center flex-shrink-0 border border-gold-400/40 mt-0.5 sm:mt-0">
+                <Calendar className="w-4 h-4 text-gold-400" />
               </div>
-              <div className="min-w-0">
-                <div className="text-[10px] text-gold-muted/80 uppercase font-bold tracking-wider">
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] text-gold-muted font-bold uppercase tracking-wider mb-0.5">
                   {isEn ? "Event Date Range" : "कार्यक्रम पावन तिथि"}
                 </div>
-                <div className="text-xs sm:text-sm font-bold text-spiritual-ivory truncate">
+                <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words">
                   {formattedDateRangeStr}
                 </div>
               </div>
             </div>
 
             {/* 2. Location */}
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/50 border border-gold-500/20">
-              <div className="w-9 h-9 rounded-xl bg-red-500/15 text-red-300 flex items-center justify-center flex-shrink-0 border border-red-500/30">
-                <MapPin className="w-4 h-4" />
+            <div className="flex items-start sm:items-center gap-3 p-3.5 rounded-2xl bg-black/60 border border-gold-500/30 shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center flex-shrink-0 border border-red-500/40 mt-0.5 sm:mt-0">
+                <MapPin className="w-4 h-4 text-red-400" />
               </div>
-              <div className="min-w-0">
-                <div className="text-[10px] text-gold-muted/80 uppercase font-bold tracking-wider">
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] text-gold-muted font-bold uppercase tracking-wider mb-0.5">
                   {isEn ? "Location / Venue" : "स्थान / पावन धाम"}
                 </div>
-                <div className="text-xs sm:text-sm font-bold text-spiritual-ivory truncate" title={nextEvent.location}>
+                <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words" title={nextEvent.location}>
                   {nextEvent.location}
                 </div>
               </div>

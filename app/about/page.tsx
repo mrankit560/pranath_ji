@@ -40,8 +40,8 @@ export default function AboutPage() {
 
           <p className="text-sm sm:text-base text-gold-muted/90 max-w-2xl mx-auto">
             {language === "hi"
-              ? "श्री प्राणनाथ जी परमधाम साढौली धाम में आपका हार्दिक स्वागत है।"
-              : "Welcome to Shri Prannath Ji Paramdham, Sadhauli Dham, Haridwar."}
+              ? "श्री प्राणनाथ जी वाणी साढौली धाम में आपका हार्दिक स्वागत है।"
+              : "Welcome to Shri Prannath Ji Vani, Sadhauli Dham, Haridwar."}
           </p>
         </div>
       </section>

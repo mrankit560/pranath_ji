@@ -8,7 +8,7 @@ import { PersistentAudioPlayer } from "@/components/audio/PersistentAudioPlayer"
 export const metadata: Metadata = {
   metadataBase: new URL("https://sadhaulidham.com"),
   title: {
-    default: "साढौली धाम | श्री प्राणनाथ जी परमधाम — Sadhauli Dham",
+    default: "साढौली धाम | श्री प्राणनाथ जी वाणी — Sadhauli Dham",
     template: "%s | Sadhauli Dham",
   },
   description:
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "hi_IN",
     url: "https://sadhaulidham.com",
-    title: "साढौली धाम | श्री प्राणनाथ जी परमधाम — Sadhauli Dham",
+    title: "साढौली धाम | श्री प्राणनाथ जी वाणी — Sadhauli Dham",
     description:
       "श्री निजानंद आश्रम साढौली धाम, हरिद्वार — The official spiritual sanctuary of Divine Wisdom, Tartam Vani & Nijanand Sampradaya.",
     images: [
@@ -46,11 +46,11 @@ export const metadata: Metadata = {
         alt: "Sadhauli Dham Haridwar",
       },
     ],
-    siteName: "साढौली धाम | Shri Prannath Ji Paramdham (sadhaulidham.com)",
+    siteName: "साढौली धाम | Shri Prannath Ji Vani (sadhaulidham.com)",
   },
   twitter: {
     card: "summary_large_image",
-    title: "साढौली धाम | श्री प्राणनाथ जी परमधाम — Sadhauli Dham",
+    title: "साढौली धाम | श्री प्राणनाथ जी वाणी — Sadhauli Dham",
     description:
       "श्री निजानंद आश्रम साढौली धाम, हरिद्वार — The official spiritual sanctuary of Divine Wisdom, Tartam Vani & Nijanand Sampradaya.",
     images: ["https://sadhaulidham.com/assets/hero-reference-1.jpg"],

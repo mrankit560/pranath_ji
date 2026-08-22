@@ -87,7 +87,20 @@ class DataStore {
   private loadFromStorage() {
     try {
       const storedBooks = localStorage.getItem("prannath_books_v2");
-      if (storedBooks) this.books = JSON.parse(storedBooks);
+      if (storedBooks) {
+        try {
+          const parsed = JSON.parse(storedBooks);
+          this.books = parsed.map((b: Book) => {
+            if (b.pdfUrl && b.pdfUrl.includes("archive.org/download/tartam-vani-sample/")) {
+              const filename = b.pdfUrl.split("/").pop() || "shri-bitak-saheb.pdf";
+              return { ...b, pdfUrl: `/assets/${filename}` };
+            }
+            return b;
+          });
+        } catch {
+          this.books = initialBooks;
+        }
+      }
 
       const storedVideos = localStorage.getItem("prannath_videos_v2");
       if (storedVideos) this.videos = JSON.parse(storedVideos);
@@ -123,7 +136,19 @@ class DataStore {
       if (storedAbout) this.aboutContent = JSON.parse(storedAbout);
 
       const storedChitwaniBooks = localStorage.getItem("prannath_chitwani_books_v2");
-      if (storedChitwaniBooks) this.chitwaniBooks = JSON.parse(storedChitwaniBooks);
+      if (storedChitwaniBooks) {
+        try {
+          const parsed = JSON.parse(storedChitwaniBooks);
+          this.chitwaniBooks = parsed.map((cb: ChitwaniBook) => {
+            if (cb.pdfUrl && cb.pdfUrl.includes("archive.org/download/tartam-vani-sample/")) {
+              return { ...cb, pdfUrl: "/assets/chitwani-guide.pdf" };
+            }
+            return cb;
+          });
+        } catch {
+          this.chitwaniBooks = initialChitwaniBooks;
+        }
+      }
 
       const storedChitwaniVideos = localStorage.getItem("prannath_chitwani_videos_v2");
       if (storedChitwaniVideos) this.chitwaniVideos = JSON.parse(storedChitwaniVideos);

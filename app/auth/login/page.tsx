@@ -95,7 +95,7 @@ function LoginForm() {
           <p className="text-xs text-spiritual-ivory/70 mt-1">
             {isEn
               ? "Enter your credentials to access the portal"
-              : "श्री प्राणनाथ जी परमधाम में प्रवेश हेतु विवरण दर्ज करें"}
+              : "श्री प्राणनाथ जी वाणी पोर्टल में प्रवेश हेतु विवरण दर्ज करें"}
           </p>
         </div>
 

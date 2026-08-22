@@ -1,4 +1,4 @@
-# श्री प्राणनाथ जी परमधाम (Shri Prannath Ji Paramdham)
+# श्री प्राणनाथ जी वाणी (Shri Prannath Ji Vani)
 ### A Full-Stack Multilingual Aadhyatmik Gyan & Digital Library Platform
 **Shri Nijanand Ashram Sadhauli Dham, Haridwar, Uttarakhand (श्री निजानंद आश्रम साढौली धाम, हरिद्वार)**
 

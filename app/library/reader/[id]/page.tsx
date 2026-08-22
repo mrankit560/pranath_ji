@@ -39,13 +39,23 @@ export default function PDFReaderPage() {
   const [activeTab, setActiveTab] = useState<"pdf" | "details">("pdf");
   const readerContainerRef = useRef<HTMLDivElement>(null);
 
+  const resolvePdfUrl = (url?: string) => {
+    if (!url || url === "#") return "";
+    if (url.includes("archive.org/download/tartam-vani-sample/")) {
+      const name = url.split("/").pop() || "shri-bitak-saheb.pdf";
+      return `/assets/${name}`;
+    }
+    return url;
+  };
+
   useEffect(() => {
     const found = store.getBookById(bookId);
     if (found) {
-      setBook(found);
+      const fixedPdfUrl = resolvePdfUrl(found.pdfUrl);
+      setBook({ ...found, pdfUrl: fixedPdfUrl });
       const bookmarks = store.getBookmarks();
       setIsBookmarked(bookmarks.includes(bookId));
-      if (!found.pdfUrl || found.pdfUrl === "#") {
+      if (!fixedPdfUrl || fixedPdfUrl === "#") {
         setActiveTab("details");
       } else {
         setActiveTab("pdf");
@@ -81,7 +91,8 @@ export default function PDFReaderPage() {
     );
   }
 
-  const hasPdf = Boolean(book.pdfUrl && book.pdfUrl.trim() !== "" && book.pdfUrl !== "#");
+  const cleanPdfUrl = resolvePdfUrl(book.pdfUrl);
+  const hasPdf = Boolean(cleanPdfUrl && cleanPdfUrl.trim() !== "" && cleanPdfUrl !== "#");
 
   // Native Fullscreen API
   const toggleFullscreen = () => {
@@ -201,7 +212,7 @@ export default function PDFReaderPage() {
             {/* Direct PDF Download Button */}
             {hasPdf && (
               <a
-                href={book.pdfUrl}
+                href={cleanPdfUrl}
                 download
                 target="_blank"
                 rel="noopener noreferrer"
@@ -231,13 +242,46 @@ export default function PDFReaderPage() {
           /* ========================================================================= */
           /* 1. ACTUAL PDF DOCUMENT VIEWER (Directly rendering the real uploaded PDF) */
           /* ========================================================================= */
-          <div className="w-full max-w-6xl h-[86vh] rounded-2xl overflow-hidden border border-gold-500/40 shadow-2xl bg-[#1e1e1e] flex flex-col">
-            {/* Embedded PDF iframe / object */}
-            <iframe
-              src={`${book.pdfUrl}#toolbar=1&navpanes=1&statusbar=1`}
-              title={isEn ? book.titleEn || book.titleHi : book.titleHi}
+          <div className="w-full max-w-6xl h-[82vh] sm:h-[86vh] rounded-2xl overflow-hidden border border-gold-500/40 shadow-2xl bg-[#1e1e1e] flex flex-col relative">
+            {/* Mobile Helper Bar */}
+            <div className="sm:hidden bg-spiritual-navy border-b border-gold-500/30 px-3 py-2 flex items-center justify-between gap-2 text-xs">
+              <span className="text-[11px] text-gold-300 font-semibold flex items-center gap-1">
+                <span>📱</span>
+                <span>{isEn ? "Mobile PDF Reader" : "मोबाइल PDF व्यूअर"}</span>
+              </span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={cleanPdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded-lg bg-gold-gradient text-spiritual-dark text-[11px] font-bold flex items-center gap-1 shadow-gold-sm"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  <span>{isEn ? "Full Tab" : "पूरा खोलें"}</span>
+                </a>
+                <a
+                  href={cleanPdfUrl}
+                  download
+                  className="px-2.5 py-1 rounded-lg bg-gold-500/20 border border-gold-400/40 text-gold-300 text-[11px] font-bold flex items-center gap-1"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>{isEn ? "Save" : "डाउनलोड"}</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Multi-Engine PDF Embed (Object + Iframe Fallback) */}
+            <object
+              data={`${cleanPdfUrl}#toolbar=1&navpanes=1&statusbar=1`}
+              type="application/pdf"
               className="w-full flex-1 border-0 bg-[#2b2b2b]"
-            />
+            >
+              <iframe
+                src={`${cleanPdfUrl}#toolbar=1&navpanes=1&statusbar=1`}
+                title={isEn ? book.titleEn || book.titleHi : book.titleHi}
+                className="w-full h-full border-0 bg-[#2b2b2b]"
+              />
+            </object>
 
             {/* PDF Viewer Bottom Control Strip */}
             <div className="px-4 py-2.5 bg-[#120e0a] border-t border-gold-500/20 flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -250,7 +294,7 @@ export default function PDFReaderPage() {
 
               <div className="flex items-center gap-2">
                 <a
-                  href={book.pdfUrl}
+                  href={cleanPdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-lg bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold hover:bg-gold-500 hover:text-spiritual-dark flex items-center gap-1.5 transition-colors"
@@ -260,7 +304,7 @@ export default function PDFReaderPage() {
                 </a>
 
                 <a
-                  href={book.pdfUrl}
+                  href={cleanPdfUrl}
                   download
                   className="px-3 py-1.5 rounded-lg bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
                 >

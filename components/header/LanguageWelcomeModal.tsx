@@ -45,7 +45,7 @@ export const LanguageWelcomeModal: React.FC = () => {
         </div>
 
         <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-1">
-          {t("welcomeModal.portal", "साढौली धाम • श्री प्राणनाथ जी परमधाम")}
+          {t("welcomeModal.portal", "साढौली धाम • श्री प्राणनाथ जी वाणी")}
         </h2>
         <p className="text-xs sm:text-sm text-gold-muted/80 mb-6">
           श्री निजानंद आश्रम साढौली धाम, हरिद्वार • sadhaulidham.com

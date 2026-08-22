@@ -55,7 +55,7 @@ export default function DashboardPage() {
                 साधक सदस्य
               </h1>
               <p className="text-xs text-spiritual-ivory/70 font-medium">
-                {language === "hi" ? "श्री प्राणनाथ जी परमधाम" : "Shri Prannath Ji Paramdham"}
+                {language === "hi" ? "श्री प्राणनाथ जी वाणी" : "Shri Prannath Ji Vani"}
               </p>
             </div>
           </div>

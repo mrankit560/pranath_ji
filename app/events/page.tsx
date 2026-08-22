@@ -11,7 +11,6 @@ import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { Footer } from "@/components/footer/Footer";
 import {
   Calendar as CalendarIcon,
-  Clock,
   MapPin,
   Sparkles,
   Radio,
@@ -81,25 +80,45 @@ export default function EventsPage() {
     (e) => selectedFilter === "all" || e.eventType === selectedFilter
   );
 
+  const monthsEn = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
   const monthsHi = [
     "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
     "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
+  ];
+  const daysEn = [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
   ];
   const daysHi = [
     "रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"
   ];
 
-  const formatEventDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
-    return isEn
-      ? d.toLocaleDateString("en-US", {
-          weekday: "short",
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        })
-      : `${daysHi[d.getDay()]}, ${d.getDate()} ${monthsHi[d.getMonth()]} ${d.getFullYear()}`;
+  const formatEventDateRange = (startStr: string, endStr?: string) => {
+    const startDate = new Date(startStr);
+    const endDate = endStr ? new Date(endStr) : null;
+    if (isNaN(startDate.getTime())) return startStr;
+
+    if (isEn) {
+      if (
+        endDate &&
+        endDate.getTime() !== startDate.getTime() &&
+        (endDate.getDate() !== startDate.getDate() || endDate.getMonth() !== startDate.getMonth())
+      ) {
+        return `${startDate.getDate()} ${monthsEn[startDate.getMonth()]} ${startDate.getFullYear()} (${daysEn[startDate.getDay()]}) – ${endDate.getDate()} ${monthsEn[endDate.getMonth()]} ${endDate.getFullYear()} (${daysEn[endDate.getDay()]})`;
+      }
+      return `${startDate.getDate()} ${monthsEn[startDate.getMonth()]} ${startDate.getFullYear()} (${daysEn[startDate.getDay()]})`;
+    } else {
+      if (
+        endDate &&
+        endDate.getTime() !== startDate.getTime() &&
+        (endDate.getDate() !== startDate.getDate() || endDate.getMonth() !== startDate.getMonth())
+      ) {
+        return `${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()} (${daysHi[startDate.getDay()]}) – ${endDate.getDate()} ${monthsHi[endDate.getMonth()]} ${endDate.getFullYear()} (${daysHi[endDate.getDay()]})`;
+      }
+      return `${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()} (${daysHi[startDate.getDay()]})`;
+    }
   };
 
   return (
@@ -127,7 +146,7 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* Dynamic Next Satsang Countdown Card with Exact Date, Time & Venue */}
+      {/* Dynamic Next Satsang Card with Clean Date Range & Venue (Countdown Removed) */}
       {nextEvent && (
         <section className="max-w-5xl mx-auto px-4 -mt-6 mb-12">
           <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border-2 border-gold-400/50 bg-gradient-to-b from-spiritual-navy via-[#1c140e] to-spiritual-navy shadow-2xl text-center relative overflow-hidden">
@@ -138,56 +157,35 @@ export default function EventsPage() {
               {isEn ? "Next Upcoming Holy Event" : "अगला पावन सत्संग / महोत्सव"}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-4">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-6">
               {isEn ? nextEvent.titleEn || nextEvent.titleHi : nextEvent.titleHi}
             </h2>
 
-            {/* Exact Date, Exact Time & Location Details */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto mb-6 text-left">
-              {/* Exact Date */}
-              <div className="p-3 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gold-500/15 text-gold-300 flex items-center justify-center flex-shrink-0">
+            {/* Clean Date Range & Location Details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6 text-left">
+              {/* Event Date Range */}
+              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3.5 shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-300 flex items-center justify-center flex-shrink-0">
                   <CalendarIcon className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[10px] text-gold-muted/80 uppercase font-semibold">
-                    {isEn ? "Exact Date" : "निश्चित दिनांक"}
+                  <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider">
+                    {isEn ? "Ashram Event Date Range" : "पावन महोत्सव तिथि"}
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory truncate">
-                    {formatEventDate(nextEvent.startAt)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Exact Time */}
-              <div className="p-3 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[10px] text-gold-muted/80 uppercase font-semibold">
-                    {isEn ? "Exact Time" : "निश्चित समय"}
-                  </div>
-                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory truncate font-mono">
-                    {nextEvent.timeStr || (nextEvent.hasSpecificTime !== false
-                      ? new Date(nextEvent.startAt).toLocaleTimeString(isEn ? "en-US" : "hi-IN", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        }) + (nextEvent.endAt ? ` – ${new Date(nextEvent.endAt).toLocaleTimeString(isEn ? "en-US" : "hi-IN", { hour: "2-digit", minute: "2-digit", hour12: true })}` : "")
-                      : (isEn ? "All Day Event" : "पूरे दिन का आयोजन"))}
+                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory">
+                    {formatEventDateRange(nextEvent.startAt, nextEvent.endAt)}
                   </div>
                 </div>
               </div>
 
               {/* Exact Location */}
-              <div className="p-3 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-red-500/15 text-red-300 flex items-center justify-center flex-shrink-0">
+              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-center gap-3.5 shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[10px] text-gold-muted/80 uppercase font-semibold">
-                    {isEn ? "Location" : "स्थान"}
+                  <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider">
+                    {isEn ? "Location / Venue" : "स्थान / आश्रम"}
                   </div>
                   <div className="text-xs sm:text-sm font-bold text-spiritual-ivory truncate" title={nextEvent.location}>
                     {nextEvent.location}
@@ -196,41 +194,17 @@ export default function EventsPage() {
               </div>
             </div>
 
-            {/* Countdown Grid or Live Status */}
-            {timing.status === "live" ? (
-              <div className="py-4 px-6 rounded-2xl bg-red-600/20 border border-red-500/50 text-red-400 font-bold text-base sm:text-lg flex items-center justify-center gap-2 mb-6 animate-pulse max-w-md mx-auto">
+            {/* Status if Live or Concluded */}
+            {timing.status === "live" && (
+              <div className="py-3 px-6 rounded-2xl bg-red-600/20 border border-red-500/50 text-red-400 font-bold text-sm sm:text-base flex items-center justify-center gap-2 mb-4 animate-pulse max-w-md mx-auto">
                 <Radio className="w-5 h-5" />
                 <span>{isEn ? "🔴 Event is Live Now!" : "🔴 कार्यक्रम अभी जारी है (Live Now)"}</span>
               </div>
-            ) : timing.status === "ended" ? (
-              <div className="py-4 px-6 rounded-2xl bg-gray-800/80 border border-gray-600/50 text-gray-300 font-bold text-sm sm:text-base flex items-center justify-center gap-2 mb-6 max-w-md mx-auto">
-                <CheckCircle2 className="w-5 h-5 text-gray-400" />
+            )}
+            {timing.status === "ended" && (
+              <div className="py-3 px-6 rounded-2xl bg-gray-800/80 border border-gray-600/50 text-gray-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 mb-4 max-w-md mx-auto">
+                <CheckCircle2 className="w-4 h-4 text-gray-400" />
                 <span>{isEn ? "✓ Event Concluded" : "✓ कार्यक्रम सम्पन्न (Ended)"}</span>
-              </div>
-            ) : timing.timeLeft ? (
-              <div className="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto mb-6" suppressHydrationWarning>
-                {[
-                  { label: isEn ? "Days" : "दिन", val: timing.timeLeft.days },
-                  { label: isEn ? "Hours" : "घंटे", val: timing.timeLeft.hours },
-                  { label: isEn ? "Minutes" : "मिनट", val: timing.timeLeft.minutes },
-                  { label: isEn ? "Seconds" : "सेकंड", val: timing.timeLeft.seconds },
-                ].map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 sm:p-4 rounded-2xl bg-black/70 border border-gold-500/30 flex flex-col items-center shadow-inner"
-                  >
-                    <span className="text-2xl sm:text-4xl font-extrabold text-gold-gradient font-mono" suppressHydrationWarning>
-                      {item.val.toString().padStart(2, "0")}
-                    </span>
-                    <span className="text-[10px] sm:text-xs text-spiritual-ivory/60 mt-1 uppercase font-semibold">
-                      {item.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="py-3 text-gold-300 font-semibold mb-6">
-                {isEn ? "Event starting shortly" : "कार्यक्रम शीघ्र आरंभ होगा"}
               </div>
             )}
 
@@ -336,24 +310,10 @@ export default function EventsPage() {
                     </h3>
 
                     <div className="space-y-1.5 text-xs text-spiritual-ivory/80 pt-1">
-                      {/* Exact Date */}
+                      {/* Date Range */}
                       <div className="flex items-center gap-2 text-gold-300 font-semibold">
                         <CalendarIcon className="w-3.5 h-3.5 text-gold-400 flex-shrink-0" />
-                        <span>{formatEventDate(event.startAt)}</span>
-                      </div>
-
-                      {/* Exact Time */}
-                      <div className="flex items-center gap-2 font-mono text-amber-300 text-[11px]">
-                        <Clock className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                        <span>
-                          {event.timeStr || (event.hasSpecificTime !== false
-                            ? startDate.toLocaleTimeString(isEn ? "en-US" : "hi-IN", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              })
-                            : (isEn ? "All Day Event" : "पूरे दिन का आयोजन"))}
-                        </span>
+                        <span>{formatEventDateRange(event.startAt, event.endAt)}</span>
                       </div>
 
                       {/* Location */}

@@ -50,7 +50,7 @@ export default function AdminMeditationPage() {
     descriptionEn: "",
     author: "श्री निजानंद आश्रम, साढौली धाम",
     coverUrl: "/assets/paramdham-mandala.png",
-    pdfUrl: "https://archive.org/download/tartam-vani-sample/chitwani-guide.pdf",
+    pdfUrl: "/assets/chitwani-guide.pdf",
     pages: 120,
   });
 

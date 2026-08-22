@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { store } from "@/lib/data/store";
+import { SiteSettings } from "@/lib/data/types";
 import {
   MapPin,
   Phone,
@@ -16,8 +17,16 @@ import {
 
 export const Footer: React.FC = () => {
   const { t, language } = useI18n();
-  const settings = store.getSettings();
+  const [settings, setSettings] = useState<SiteSettings>(store.getSettings());
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    setSettings(store.getSettings());
+    const unsub = store.subscribe(() => {
+      setSettings(store.getSettings());
+    });
+    return () => unsub();
+  }, []);
 
   return (
     <footer className="relative bg-[#0a0705] border-t border-gold-500/30 text-spiritual-ivory/80 pt-8 pb-20 md:pb-8 overflow-hidden">

@@ -19,6 +19,7 @@ import {
   CheckCircle2,
   Camera,
 } from "lucide-react";
+import { formatEventDateRangeSafe } from "@/lib/utils/dateUtils";
 
 export default function EventsPage() {
   const { t, language } = useI18n();
@@ -80,45 +81,8 @@ export default function EventsPage() {
     (e) => selectedFilter === "all" || e.eventType === selectedFilter
   );
 
-  const monthsEn = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  const monthsHi = [
-    "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
-    "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
-  ];
-  const daysEn = [
-    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-  ];
-  const daysHi = [
-    "रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"
-  ];
-
   const formatEventDateRange = (startStr: string, endStr?: string) => {
-    const startDate = new Date(startStr);
-    const endDate = endStr ? new Date(endStr) : null;
-    if (isNaN(startDate.getTime())) return startStr;
-
-    if (isEn) {
-      if (
-        endDate &&
-        endDate.getTime() !== startDate.getTime() &&
-        (endDate.getDate() !== startDate.getDate() || endDate.getMonth() !== startDate.getMonth())
-      ) {
-        return `${startDate.getDate()} ${monthsEn[startDate.getMonth()]} ${startDate.getFullYear()} (${daysEn[startDate.getDay()]}) – ${endDate.getDate()} ${monthsEn[endDate.getMonth()]} ${endDate.getFullYear()} (${daysEn[endDate.getDay()]})`;
-      }
-      return `${startDate.getDate()} ${monthsEn[startDate.getMonth()]} ${startDate.getFullYear()} (${daysEn[startDate.getDay()]})`;
-    } else {
-      if (
-        endDate &&
-        endDate.getTime() !== startDate.getTime() &&
-        (endDate.getDate() !== startDate.getDate() || endDate.getMonth() !== startDate.getMonth())
-      ) {
-        return `${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()} (${daysHi[startDate.getDay()]}) – ${endDate.getDate()} ${monthsHi[endDate.getMonth()]} ${endDate.getFullYear()} (${daysHi[endDate.getDay()]})`;
-      }
-      return `${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()} (${daysHi[startDate.getDay()]})`;
-    }
+    return formatEventDateRangeSafe(startStr, endStr, isEn);
   };
 
   return (

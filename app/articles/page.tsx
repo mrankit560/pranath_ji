@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
@@ -22,7 +22,17 @@ import { formatSpiritualDate } from "@/lib/utils/formatDate";
 export default function ArticlesPage() {
   const { t, language } = useI18n();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const articles = store.getArticles().filter((a) => a.status === "published");
+  const [articles, setArticles] = useState<Article[]>(() =>
+    store.getArticles().filter((a) => a.status === "published")
+  );
+
+  useEffect(() => {
+    setArticles(store.getArticles().filter((a) => a.status === "published"));
+    const unsub = store.subscribe(() => {
+      setArticles(store.getArticles().filter((a) => a.status === "published"));
+    });
+    return () => unsub();
+  }, []);
 
   return (
     <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">

@@ -31,10 +31,15 @@ export default function ArticleDetailPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
-    const found = store.getArticleBySlug(slug);
-    if (found) {
-      setArticle(found);
-    }
+    const updateArticle = () => {
+      const found = store.getArticleBySlug(slug);
+      if (found) {
+        setArticle(found);
+      }
+    };
+    updateArticle();
+    const unsub = store.subscribe(updateArticle);
+    return () => unsub();
   }, [slug]);
 
   if (!article) {

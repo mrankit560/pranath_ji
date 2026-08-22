@@ -49,18 +49,21 @@ export default function PDFReaderPage() {
   };
 
   useEffect(() => {
-    const found = store.getBookById(bookId);
-    if (found) {
-      const fixedPdfUrl = resolvePdfUrl(found.pdfUrl);
-      setBook({ ...found, pdfUrl: fixedPdfUrl });
-      const bookmarks = store.getBookmarks();
-      setIsBookmarked(bookmarks.includes(bookId));
-      if (!fixedPdfUrl || fixedPdfUrl === "#") {
-        setActiveTab("details");
-      } else {
-        setActiveTab("pdf");
+    const updateReaderBook = () => {
+      const found = store.getBookById(bookId);
+      if (found) {
+        const fixedPdfUrl = resolvePdfUrl(found.pdfUrl);
+        setBook({ ...found, pdfUrl: fixedPdfUrl });
+        const bookmarks = store.getBookmarks();
+        setIsBookmarked(bookmarks.includes(bookId));
+        if (!fixedPdfUrl || fixedPdfUrl === "#") {
+          setActiveTab("details");
+        }
       }
-    }
+    };
+    updateReaderBook();
+    const unsub = store.subscribe(updateReaderBook);
+    return () => unsub();
   }, [bookId]);
 
   // Fullscreen change listener

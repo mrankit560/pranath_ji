@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { store } from "@/lib/data/store";
+import { SiteSettings } from "@/lib/data/types";
 import { Navbar } from "@/components/header/Navbar";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
 import { Footer } from "@/components/footer/Footer";
@@ -21,7 +22,15 @@ import {
 export default function ContactPage() {
   const { t, language } = useI18n();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const settings = store.getSettings();
+  const [settings, setSettings] = useState<SiteSettings>(store.getSettings());
+
+  useEffect(() => {
+    setSettings(store.getSettings());
+    const unsub = store.subscribe(() => {
+      setSettings(store.getSettings());
+    });
+    return () => unsub();
+  }, []);
 
   const [form, setForm] = useState({
     name: "",

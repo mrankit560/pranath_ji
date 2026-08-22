@@ -13,6 +13,7 @@ import {
   ExternalLink,
   ArrowRight,
 } from "lucide-react";
+import { formatEventDateRangeSafe } from "@/lib/utils/dateUtils";
 
 export const HeroUpcomingEvents: React.FC = () => {
   const { language } = useI18n();
@@ -33,47 +34,7 @@ export const HeroUpcomingEvents: React.FC = () => {
     return null;
   }
 
-  // Format date range (startAt to endAt)
-  const startDate = new Date(nextEvent.startAt);
-  const endDate = nextEvent.endAt ? new Date(nextEvent.endAt) : null;
-
-  const monthsEn = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-  const monthsHi = [
-    "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
-    "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
-  ];
-  const daysEn = [
-    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-  ];
-  const daysHi = [
-    "रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"
-  ];
-
-  let formattedDateRangeStr = "";
-  if (isEn) {
-    if (
-      endDate &&
-      endDate.getTime() !== startDate.getTime() &&
-      (endDate.getDate() !== startDate.getDate() || endDate.getMonth() !== startDate.getMonth())
-    ) {
-      formattedDateRangeStr = `${startDate.getDate()} ${monthsEn[startDate.getMonth()]} ${startDate.getFullYear()} (${daysEn[startDate.getDay()]}) – ${endDate.getDate()} ${monthsEn[endDate.getMonth()]} ${endDate.getFullYear()} (${daysEn[endDate.getDay()]})`;
-    } else {
-      formattedDateRangeStr = `${startDate.getDate()} ${monthsEn[startDate.getMonth()]} ${startDate.getFullYear()} (${daysEn[startDate.getDay()]})`;
-    }
-  } else {
-    if (
-      endDate &&
-      endDate.getTime() !== startDate.getTime() &&
-      (endDate.getDate() !== startDate.getDate() || endDate.getMonth() !== startDate.getMonth())
-    ) {
-      formattedDateRangeStr = `${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()} (${daysHi[startDate.getDay()]}) – ${endDate.getDate()} ${monthsHi[endDate.getMonth()]} ${endDate.getFullYear()} (${daysHi[endDate.getDay()]})`;
-    } else {
-      formattedDateRangeStr = `${startDate.getDate()} ${monthsHi[startDate.getMonth()]} ${startDate.getFullYear()} (${daysHi[startDate.getDay()]})`;
-    }
-  }
+  const formattedDateRangeStr = formatEventDateRangeSafe(nextEvent.startAt, nextEvent.endAt, isEn);
 
   return (
     <div className="w-full rounded-3xl border-2 border-gold-400/40 bg-gradient-to-r from-spiritual-navy/95 via-[#1A120C]/95 to-spiritual-navy/95 backdrop-blur-2xl p-5 sm:p-7 shadow-2xl shadow-black/90 relative overflow-hidden">

@@ -4,8 +4,9 @@ import React, { useState, useEffect } from "react";
 import { store } from "@/lib/data/store";
 import { EventItem } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Edit3, Calendar, MapPin, Radio, Sparkles, Save, X, Clock } from "lucide-react";
+import { Plus, Trash2, Edit3, Calendar, MapPin, Radio, Sparkles, Save, X, RotateCcw } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { formatEventDateRangeSafe, parseDateSafe } from "@/lib/utils/dateUtils";
 
 export default function AdminEventsPage() {
   const { language } = useI18n();
@@ -20,9 +21,8 @@ export default function AdminEventsPage() {
     titleEn: "",
     descriptionHi: "",
     descriptionEn: "",
-    startAt: "2026-09-04T09:00:00.000Z",
-    endAt: "2026-09-06T18:00:00.000Z",
-    hasSpecificTime: true,
+    startDate: "2026-08-30",
+    endDate: "2026-09-06",
     timeStr: "09:00 AM – 06:00 PM IST",
     location: "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड)",
     image: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800",
@@ -42,15 +42,23 @@ export default function AdminEventsPage() {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const startAtIso = form.startDate
+      ? `${form.startDate}T09:00:00.000Z`
+      : new Date().toISOString();
+
+    const endAtIso = form.endDate
+      ? `${form.endDate}T18:00:00.000Z`
+      : "";
+
     if (editingId) {
       store.updateEvent(editingId, {
         titleHi: form.titleHi,
         titleEn: form.titleEn,
         descriptionHi: form.descriptionHi,
         descriptionEn: form.descriptionEn,
-        startAt: form.startAt,
-        endAt: form.endAt,
-        hasSpecificTime: form.hasSpecificTime,
+        startAt: startAtIso,
+        endAt: endAtIso,
+        hasSpecificTime: Boolean(form.timeStr && form.timeStr.trim() !== ""),
         timeStr: form.timeStr,
         location: form.location,
         image: form.image,
@@ -66,9 +74,9 @@ export default function AdminEventsPage() {
         titleEn: form.titleEn,
         descriptionHi: form.descriptionHi,
         descriptionEn: form.descriptionEn,
-        startAt: form.startAt,
-        endAt: form.endAt,
-        hasSpecificTime: form.hasSpecificTime,
+        startAt: startAtIso,
+        endAt: endAtIso,
+        hasSpecificTime: Boolean(form.timeStr && form.timeStr.trim() !== ""),
         timeStr: form.timeStr,
         location: form.location,
         image: form.image,
@@ -85,9 +93,8 @@ export default function AdminEventsPage() {
       titleEn: "",
       descriptionHi: "",
       descriptionEn: "",
-      startAt: "2026-09-04T09:00:00.000Z",
-      endAt: "2026-09-06T18:00:00.000Z",
-      hasSpecificTime: true,
+      startDate: "2026-08-30",
+      endDate: "2026-09-06",
       timeStr: "09:00 AM – 06:00 PM IST",
       location: "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड)",
       image: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800",
@@ -100,14 +107,24 @@ export default function AdminEventsPage() {
 
   const handleEdit = (ev: EventItem) => {
     setEditingId(ev.id);
+    const parsedStart = parseDateSafe(ev.startAt);
+    const parsedEnd = parseDateSafe(ev.endAt);
+
+    const startFormatted = parsedStart
+      ? `${parsedStart.year}-${String(parsedStart.month + 1).padStart(2, "0")}-${String(parsedStart.day).padStart(2, "0")}`
+      : "2026-08-30";
+
+    const endFormatted = parsedEnd
+      ? `${parsedEnd.year}-${String(parsedEnd.month + 1).padStart(2, "0")}-${String(parsedEnd.day).padStart(2, "0")}`
+      : "";
+
     setForm({
       titleHi: ev.titleHi || "",
       titleEn: ev.titleEn || "",
       descriptionHi: ev.descriptionHi || "",
       descriptionEn: ev.descriptionEn || "",
-      startAt: ev.startAt || "2026-09-04T09:00:00.000Z",
-      endAt: ev.endAt || "",
-      hasSpecificTime: ev.hasSpecificTime ?? true,
+      startDate: startFormatted,
+      endDate: endFormatted,
       timeStr: ev.timeStr || "09:00 AM – 06:00 PM IST",
       location: ev.location || "श्री निजानंद आश्रम साढौली धाम, हरिद्वार",
       image: ev.image || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800",
@@ -138,7 +155,7 @@ export default function AdminEventsPage() {
           </h1>
           <p className="text-xs text-spiritual-ivory/60">
             {isEn
-              ? "Manage festivals and events for the year (the earliest event is automatically featured on the Home Page)"
+              ? "Manage festivals and events for the year (the earliest upcoming event is automatically featured on the Home Page)"
               : "वर्ष भर के उत्सवों एवं सत्संग कार्यक्रमों का प्रबंधन (निकटतम कार्यक्रम स्वतः होमपेज पर प्रदर्शित होता है)"}
           </p>
         </div>
@@ -217,26 +234,66 @@ export default function AdminEventsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Date Picker Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-black/40 border border-gold-500/20">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Event Date (ISO/Date) *" : "दिनांक (Start Date) *"}
+              <label className="block text-xs font-semibold text-gold-300 mb-1 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-gold-400" />
+                <span>{isEn ? "Start Date (प्रारंभ तिथि) *" : "कार्यक्रम प्रारंभ तिथि *"}</span>
               </label>
               <input
-                type="datetime-local"
-                value={form.startAt.slice(0, 16)}
-                onChange={(e) => setForm({ ...form, startAt: new Date(e.target.value).toISOString() })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                type="date"
+                required
+                value={form.startDate}
+                onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/70 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
 
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-semibold text-gold-300 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{isEn ? "End Date (समापन तिथि - बहु-दिवसीय उत्सव)" : "समापन तिथि (महोत्सव हेतु)"}</span>
+                </label>
+                {form.endDate && (
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, endDate: "" })}
+                    className="text-[10px] text-red-400 hover:underline flex items-center gap-0.5"
+                  >
+                    <span>{isEn ? "Clear (1-Day Event)" : "हटाएं (एकदिवसीय)"}</span>
+                  </button>
+                )}
+              </div>
+              <input
+                type="date"
+                value={form.endDate}
+                onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/70 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+              />
+            </div>
+
+            {/* Live Website Preview Banner */}
+            <div className="sm:col-span-2 p-3 rounded-xl bg-gold-500/10 border border-gold-400/30 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span className="font-semibold text-gold-300 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                <span>{isEn ? "Live Date Format on Website:" : "वेबसाइट पर दिखेगी यह तिथि:"}</span>
+              </span>
+              <span className="font-bold text-spiritual-ivory bg-black/50 px-3 py-1 rounded-lg border border-gold-500/20 font-devanagari">
+                {formatEventDateRangeSafe(form.startDate, form.endDate, isEn) || (isEn ? "Select start date" : "प्रारंभ तिथि चुनें")}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
                 {isEn ? "Event Type *" : "कार्यक्रम प्रकार *"}
               </label>
               <select
                 value={form.eventType}
-                onChange={(e) => setForm({ ...form, eventType: e.target.value })}
+                onChange={(e) => setForm({ ...form, eventType: e.target.value as any })}
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               >
                 <option value="festival">{isEn ? "Festival / Celebration" : "उत्सव / महोत्सव"}</option>
@@ -260,51 +317,19 @@ export default function AdminEventsPage() {
                 <option value="completed">{isEn ? "Completed" : "सम्पन्न (Completed)"}</option>
               </select>
             </div>
-          </div>
 
-          {/* Optional Time Section */}
-          <div className="p-3.5 rounded-xl bg-black/40 border border-gold-500/30 space-y-3">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="hasTimeCheck"
-                checked={form.hasSpecificTime}
-                onChange={(e) => setForm({ ...form, hasSpecificTime: e.target.checked })}
-                className="w-4 h-4 rounded text-gold-500 focus:ring-gold-400"
-              />
-              <label htmlFor="hasTimeCheck" className="text-xs font-semibold text-gold-300 cursor-pointer">
-                {isEn ? "Set specific start/end time for this event" : "इस कार्यक्रम के लिए निश्चित समय सेट करें (वैकल्पिक)"}
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">
+                {isEn ? "Time String (e.g. 09:00 AM – 06:00 PM)" : "समय विवरण (उदा. ०९:०० AM – ०६:०० PM)"}
               </label>
+              <input
+                type="text"
+                value={form.timeStr}
+                onChange={(e) => setForm({ ...form, timeStr: e.target.value })}
+                placeholder="09:00 AM – 06:00 PM IST"
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+              />
             </div>
-
-            {form.hasSpecificTime && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div>
-                  <label className="block text-[11px] text-gold-muted/80 mb-1">
-                    {isEn ? "Time Display String (e.g. 09:00 AM – 06:00 PM)" : "समय विवरण (उदा. प्रातः ०९:०० से सायं ०६:०० बजे)"}
-                  </label>
-                  <input
-                    type="text"
-                    value={form.timeStr}
-                    onChange={(e) => setForm({ ...form, timeStr: e.target.value })}
-                    placeholder="09:00 AM – 06:00 PM IST"
-                    className="w-full p-2 rounded-xl bg-black/70 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] text-gold-muted/80 mb-1">
-                    {isEn ? "End DateTime (Optional)" : "समापन तिथि/समय (वैकल्पिक)"}
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={form.endAt ? form.endAt.slice(0, 16) : ""}
-                    onChange={(e) => setForm({ ...form, endAt: e.target.value ? new Date(e.target.value).toISOString() : "" })}
-                    className="w-full p-2 rounded-xl bg-black/70 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                  />
-                </div>
-              </div>
-            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -398,16 +423,12 @@ export default function AdminEventsPage() {
                   <td className="p-3.5 font-bold text-spiritual-ivory max-w-xs">
                     {isEn ? e.titleEn || e.titleHi : e.titleHi}
                   </td>
-                  <td className="p-3.5 font-mono text-gold-300">
-                    <div>
-                      {new Date(e.startAt).toLocaleDateString(isEn ? "en-US" : "hi-IN", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                  <td className="p-3.5 text-gold-300">
+                    <div className="font-bold">
+                      {formatEventDateRangeSafe(e.startAt, e.endAt, isEn)}
                     </div>
                     {e.timeStr && (
-                      <div className="text-[10px] text-amber-400">
+                      <div className="text-[10px] text-amber-400 font-mono">
                         {e.timeStr}
                       </div>
                     )}

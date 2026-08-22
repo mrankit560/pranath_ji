@@ -75,6 +75,14 @@ class DataStore {
   private init() {
     if (!this.isClient()) return;
     this.loadFromStorage();
+    try {
+      window.addEventListener("storage", () => {
+        this.loadFromStorage();
+        this.notify();
+      });
+    } catch (e) {
+      // Ignore if window is not ready
+    }
   }
 
   private ensureLoaded() {

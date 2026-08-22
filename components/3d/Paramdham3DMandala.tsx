@@ -109,7 +109,7 @@ export const Paramdham3DMandala: React.FC = () => {
           style={{ transform: "translateZ(55px)" }}
         >
           <span className="text-base">🌌</span>
-          <span>{language === "hi" ? "परमधाम का दिव्य स्वरूप" : "Divine Paramdham"}</span>
+          <span>{language === "hi" ? "दिव्य परमधाम" : "Divine Paramdham"}</span>
         </Link>
 
         {/* Badge 3: Bottom Left */}
@@ -124,12 +124,12 @@ export const Paramdham3DMandala: React.FC = () => {
 
         {/* Badge 4: Bottom Right */}
         <Link
-          href="/about"
+          href="/meditation"
           className="absolute -bottom-3 right-0 sm:right-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
           style={{ transform: "translateZ(65px)" }}
         >
           <span className="text-base">🪷</span>
-          <span>{language === "hi" ? "सत्संग, सेवा, साधना" : "Satsang & Sadhana"}</span>
+          <span>{language === "hi" ? "ध्यान करें" : "Start Meditation"}</span>
         </Link>
       </div>
     </div>

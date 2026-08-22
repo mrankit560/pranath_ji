@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { HeroUpcomingEvents } from "./HeroUpcomingEvents";
 import { Paramdham3DMandala } from "@/components/3d/Paramdham3DMandala";
-import { BookOpen, FileText, Play, Flower2, Sparkles } from "lucide-react";
+import { BookOpen, FileText, Play, Flower2, Sparkles, Compass } from "lucide-react";
 
 export const HeroSection: React.FC = () => {
   const { t, language } = useI18n();
@@ -141,11 +141,11 @@ export const HeroSection: React.FC = () => {
               {language === "hi" ? "साढौली धाम" : "Sadhauli Dham"}
             </h1>
 
-            {/* Subtitle with Ornamental Flourish: श्री प्राणनाथ जी परमधाम (Mentioned Once) */}
+            {/* Subtitle with Ornamental Flourish: श्री प्राणनाथ जी वाणी */}
             <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-gold-300 mb-4">
               <span className="text-gold-500/80 text-xs sm:text-sm">❖ ────</span>
               <h2 className="text-base sm:text-xl md:text-2xl font-extrabold tracking-widest text-gold-gradient font-spiritual-heading uppercase leading-normal py-0.5 overflow-visible">
-                {t("hero.portal", "श्री प्राणनाथ जी परमधाम")}
+                {language === "hi" ? "श्री प्राणनाथ जी वाणी" : "Shri Prannath Ji Vani"}
               </h2>
               <span className="text-gold-500/80 text-xs sm:text-sm">──── ❖</span>
             </div>
@@ -166,7 +166,7 @@ export const HeroSection: React.FC = () => {
 
             {/* 4 Action Buttons / Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full max-w-2xl">
-              {/* Card 1: Read Scriptures (Maroon Glass) */}
+              {/* Card 1: Divya Brahm Vani (Maroon Glass) */}
               <Link
                 href="/library/tartam-vani"
                 className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-red-500/40 bg-gradient-to-b from-spiritual-maroon/60 to-spiritual-navy/80 backdrop-blur-md hover:border-gold-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-red-950/40"
@@ -175,7 +175,7 @@ export const HeroSection: React.FC = () => {
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors">
-                  {language === "hi" ? "शास्त्र पढ़ें" : "Read Scriptures"}
+                  {language === "hi" ? "दिव्य ब्रह्मवाणी" : "Divya Brahm Vani"}
                 </span>
                 <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
                   {language === "hi" ? "तारतम वाणी" : "Tartam Vani"}
@@ -214,19 +214,19 @@ export const HeroSection: React.FC = () => {
                 </span>
               </Link>
 
-              {/* Card 4: Start Meditation (Royal Purple Glass) */}
+              {/* Card 4: Aadhyatmik Gyan (Royal Purple / Amber Glass) */}
               <Link
-                href="/meditation"
+                href="/adhyatmik-gyan"
                 className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-purple-500/40 bg-gradient-to-b from-spiritual-purple/50 to-spiritual-navy/80 backdrop-blur-md hover:border-purple-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-950/40"
               >
                 <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300 mb-2 group-hover:bg-purple-500 group-hover:text-spiritual-dark transition-all">
-                  <Flower2 className="w-5 h-5" />
+                  <Compass className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-purple-300 transition-colors">
-                  {language === "hi" ? "ध्यान करें" : "Start Meditation"}
+                  {language === "hi" ? "आध्यात्मिक ज्ञान" : "Aadhyatmik Gyan"}
                 </span>
                 <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
-                  {language === "hi" ? "चितवनी" : "Chitwani"}
+                  {language === "hi" ? "सत्संग व विचार" : "Wisdom & Blogs"}
                 </span>
               </Link>
             </div>

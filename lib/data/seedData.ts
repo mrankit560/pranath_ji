@@ -468,7 +468,7 @@ export const initialEvents: EventItem[] = [
     descriptionHi: "साधकों के लिए अंतर्मुखी साधना, अष्ट प्रहर लीला चितवनी एवं तारतम वाणी के गूढ़ तत्वों पर विशेष विचार-विमर्श।",
     descriptionEn: "Intensive spiritual retreat focusing on inward contemplation, Asht Prahar Leela, and philosophical reflection.",
     startAt: "2026-08-30T10:00:00.000Z",
-    endAt: "2026-08-30T16:00:00.000Z",
+    endAt: "2026-09-06T18:00:00.000Z",
     hasSpecificTime: true,
     timeStr: "10:00 AM – 04:00 PM IST",
     location: "सत्संग भवन, साढौली धाम, हरिद्वार",

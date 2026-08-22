@@ -137,24 +137,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* Brand Logo & Title */}
             <Link
               href="/"
-              className="flex items-center gap-2 sm:gap-3 group flex-shrink-0 min-w-0"
+              className="flex items-center gap-2 sm:gap-3.5 group flex-shrink-0 min-w-0"
             >
-              <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
-                <div className="absolute inset-0 rounded-full bg-gold-400/20 blur-md group-hover:bg-gold-400/40 transition-all" />
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
+                <div className="absolute inset-0 rounded-full bg-gold-400/25 blur-md group-hover:bg-gold-400/50 transition-all" />
                 <Image
                   src="/assets/logo-emblem.png"
                   alt="Sadhauli Dham Emblem"
-                  width={48}
-                  height={48}
+                  width={52}
+                  height={52}
                   priority
-                  className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_10px_rgba(244,208,111,0.5)] transition-transform duration-300 group-hover:scale-105"
+                  className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_12px_rgba(244,208,111,0.6)] transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm sm:text-lg font-black text-gold-gradient font-spiritual-heading leading-tight tracking-wide whitespace-nowrap">
+                <span className="text-base sm:text-xl font-extrabold text-gold-gradient font-spiritual-heading leading-tight tracking-wide whitespace-nowrap drop-shadow-sm">
                   {isEn ? "Sadhauli Dham" : "साढौली धाम"}
                 </span>
-                <span className="text-[9px] sm:text-xs text-gold-muted/90 font-bold tracking-wider whitespace-nowrap">
+                <span className="text-[10px] sm:text-xs text-gold-muted/95 font-bold tracking-wider whitespace-nowrap">
                   {isEn ? "Haridwar (Uttarakhand)" : "हरिद्वार (उत्तराखण्ड)"}
                 </span>
               </div>

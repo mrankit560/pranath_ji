@@ -9,11 +9,5 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  },
-  "kv_namespaces": [
-    {
-      "binding": "PARAMDHAM_KV",
-      "id": "PARAMDHAM_KV"
-    }
-  ]
+  }
 }

@@ -26,14 +26,13 @@ export default function AdminEventsPage() {
   const isEn = language === "en";
 
   const [events, setEvents] = useState<EventItem[]>(() => store.getEvents());
+  const [earliestEvent, setEarliestEvent] = useState<EventItem | null>(() => store.getEarliestUpcomingEvent());
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [deleteCandidate, setDeleteCandidate] = useState<EventItem | null>(null);
-
-  const earliestEvent = store.getEarliestUpcomingEvent();
 
   const [form, setForm] = useState({
     titleHi: "",
@@ -53,8 +52,10 @@ export default function AdminEventsPage() {
 
   useEffect(() => {
     setEvents(store.getEvents());
+    setEarliestEvent(store.getEarliestUpcomingEvent());
     const unsub = store.subscribe(() => {
       setEvents(store.getEvents());
+      setEarliestEvent(store.getEarliestUpcomingEvent());
     });
     return () => unsub();
   }, []);
@@ -135,6 +136,7 @@ export default function AdminEventsPage() {
 
     // Immediately update local component state
     setEvents(store.getEvents());
+    setEarliestEvent(store.getEarliestUpcomingEvent());
     setIsSaving(false);
     setShowAddForm(false);
 
@@ -204,6 +206,7 @@ export default function AdminEventsPage() {
     store.deleteEvent(deleteCandidate.id);
     await store.saveToStorage("prannath_events_v2", store.getEvents());
     setEvents(store.getEvents());
+    setEarliestEvent(store.getEarliestUpcomingEvent());
     setIsSaving(false);
     setDeleteCandidate(null);
     showToast(

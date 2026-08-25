@@ -215,12 +215,12 @@
   "events": [
     {
       "id": "event-1",
-      "titleHi": "भव्य श्री कृष्ण जन्माष्टमी एवं तारतम ज्ञान महामहोत्सव",
+      "titleHi": "भव्य श्री कृष्ण जन्माष्टमी 2026 (अद्यतन उत्सव)",
       "titleEn": "Grand Shri Krishna Janmashtami & Tartam Gyan Mahotsav",
       "descriptionHi": "श्री निजानंद आश्रम साढौली धाम, हरिद्वार में तीन दिवसीय पावन आध्यात्मिक महोत्सव, जिसमें अखंड वाणी परायण, दिव्य सत्संग एवं भंडारा आयोजित होगा।",
       "descriptionEn": "Three-day sacred spiritual festival at Shri Nijanand Ashram Sadhauli Dham, Haridwar featuring Tartam Vani recitation, discourse, and Mahaprasad.",
-      "startAt": "2026-09-04T09:00:00.000Z",
-      "endAt": "2026-09-06T18:00:00.000Z",
+      "startAt": "2026-11-20T09:00:00.000Z",
+      "endAt": "2026-11-25T18:00:00.000Z",
       "hasSpecificTime": true,
       "timeStr": "09:00 AM – 06:00 PM IST",
       "location": "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड)",
@@ -575,5 +575,5 @@
     "password": "admin123",
     "updatedAt": "2026-08-25T15:57:07.771Z"
   },
-  "updatedAt": "2026-08-25T15:57:18.461Z"
+  "updatedAt": "2026-08-25T16:35:56.786Z"
 }

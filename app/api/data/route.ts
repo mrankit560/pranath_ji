@@ -87,9 +87,10 @@ export async function GET() {
   const data = readDatabase();
   return NextResponse.json(data, {
     headers: {
-      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
       "Pragma": "no-cache",
       "Expires": "0",
+      "Surrogate-Control": "no-store",
     },
   });
 }
@@ -120,20 +121,39 @@ export async function POST(req: NextRequest) {
     if (!success) {
       return NextResponse.json(
         { error: "Failed to persist data to server disk" },
-        { status: 500 }
+        {
+          status: 500,
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "Pragma": "no-cache",
+          },
+        }
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      updatedAt: updatedData.updatedAt,
-      data: updatedData,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        updatedAt: updatedData.updatedAt,
+        data: updatedData,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "Pragma": "no-cache",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("[API Data] Error handling POST request:", error);
     return NextResponse.json(
       { error: error?.message || "Internal server error" },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, no-cache",
+        },
+      }
     );
   }
 }

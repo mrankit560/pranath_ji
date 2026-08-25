@@ -33,7 +33,7 @@ import {
   initialChitwaniVideos,
 } from "./seedData";
 
-const initialAdminCredentials: AdminCredentials = {
+const defaultAdminCredentials: AdminCredentials = {
   username: "admin",
   email: "admin@sadhaulidham.com",
   password: "admin123",
@@ -41,6 +41,25 @@ const initialAdminCredentials: AdminCredentials = {
 };
 
 type Listener = () => void;
+
+function getServerDatabaseSnapshot(): any {
+  if (typeof window === "undefined") {
+    try {
+      // Safe Node require that doesn't trigger Webpack bundling in client build
+      const nodeRequire = eval("require");
+      const fs = nodeRequire("fs");
+      const path = nodeRequire("path");
+      const dbPath = path.join(process.cwd(), "data", "db.json");
+      if (fs.existsSync(dbPath)) {
+        const raw = fs.readFileSync(dbPath, "utf-8");
+        return JSON.parse(raw);
+      }
+    } catch {
+      // Running in environment without fs
+    }
+  }
+  return null;
+}
 
 class DataStore {
   private books: Book[] = initialBooks;
@@ -57,14 +76,13 @@ class DataStore {
   private aboutContent: AboutSectionContent = initialAboutContent;
   private chitwaniBooks: ChitwaniBook[] = initialChitwaniBooks;
   private chitwaniVideos: ChitwaniVideo[] = initialChitwaniVideos;
-  private adminCredentials: AdminCredentials = initialAdminCredentials;
+  private adminCredentials: AdminCredentials = defaultAdminCredentials;
 
   private bookmarks: string[] = [];
   private readingHistory: { bookId: string; title: string; page: number; updatedAt: string }[] = [];
   private listeners: Listener[] = [];
   private initialized = false;
   private isSyncing = false;
-  private lastLocalMutationTime = 0;
 
   constructor() {
     this.init();
@@ -75,7 +93,29 @@ class DataStore {
   }
 
   private init() {
-    if (!this.isClient()) return;
+    if (typeof window === "undefined") {
+      // Server-side (Node.js runtime): load latest disk database for SSR
+      const snapshot = getServerDatabaseSnapshot();
+      if (snapshot) {
+        if (Array.isArray(snapshot.books)) this.books = snapshot.books;
+        if (Array.isArray(snapshot.events)) this.events = snapshot.events;
+        if (Array.isArray(snapshot.dhams)) this.dhams = snapshot.dhams;
+        if (Array.isArray(snapshot.articles)) this.articles = snapshot.articles;
+        if (Array.isArray(snapshot.videos)) this.videos = snapshot.videos;
+        if (Array.isArray(snapshot.audioTracks)) this.audioTracks = snapshot.audioTracks;
+        if (Array.isArray(snapshot.chitwaniBooks)) this.chitwaniBooks = snapshot.chitwaniBooks;
+        if (Array.isArray(snapshot.chitwaniVideos)) this.chitwaniVideos = snapshot.chitwaniVideos;
+        if (Array.isArray(snapshot.scriptures)) this.scriptures = snapshot.scriptures;
+        if (Array.isArray(snapshot.topics)) this.topics = snapshot.topics;
+        if (snapshot.dailyThought) this.dailyThought = snapshot.dailyThought;
+        if (snapshot.settings) this.settings = snapshot.settings;
+        if (snapshot.aboutContent) this.aboutContent = snapshot.aboutContent;
+        if (snapshot.adminCredentials) this.adminCredentials = snapshot.adminCredentials;
+      }
+      return;
+    }
+
+    // Client-side: load from localStorage and sync with server API
     this.initialized = true;
     this.loadFromStorage();
     this.syncWithServer();
@@ -86,10 +126,11 @@ class DataStore {
         this.notify();
       });
       window.addEventListener("sadhauli_dham_store_updated", () => {
+        this.loadFromStorage();
         this.notify();
       });
-    } catch (e) {
-      // Ignore if window is not ready
+    } catch {
+      // Ignore if window event listeners are unavailable
     }
   }
 
@@ -105,82 +146,74 @@ class DataStore {
     if (!this.isClient() || this.isSyncing) return;
     this.isSyncing = true;
     try {
-      const res = await fetch(`/api/data?t=${Date.now()}`, {
+      const res = await fetch(`/api/data?t=${Date.now()}&nocache=${Math.random()}`, {
         cache: "no-store",
-        headers: { "Cache-Control": "no-cache" },
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+        },
       });
       if (res.ok) {
         const serverData = await res.json();
         if (serverData && typeof serverData === "object") {
           let hasUpdates = false;
-          const serverUpdatedTime = serverData.updatedAt ? new Date(serverData.updatedAt).getTime() : 0;
 
-          // Helper to check whether server data should overwrite local cache
-          const shouldApplyServerData = (storageKey: string) => {
-            const localSavedTime = Number(localStorage.getItem(`${storageKey}_timestamp`) || "0");
-            // If local edit happened recently and after server timestamp, preserve local edit
-            if (localSavedTime > serverUpdatedTime && (Date.now() - localSavedTime) < 300000) {
-              return false;
-            }
-            return true;
-          };
-
-          if (Array.isArray(serverData.books) && shouldApplyServerData("prannath_books_v2")) {
+          if (Array.isArray(serverData.books)) {
             this.books = serverData.books;
             localStorage.setItem("prannath_books_v2", JSON.stringify(this.books));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.events) && shouldApplyServerData("prannath_events_v2")) {
+          if (Array.isArray(serverData.events)) {
             this.events = serverData.events;
             localStorage.setItem("prannath_events_v2", JSON.stringify(this.events));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.dhams) && shouldApplyServerData("prannath_dhams_v2")) {
+          if (Array.isArray(serverData.dhams)) {
             this.dhams = serverData.dhams;
             localStorage.setItem("prannath_dhams_v2", JSON.stringify(this.dhams));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.articles) && shouldApplyServerData("prannath_articles_v2")) {
+          if (Array.isArray(serverData.articles)) {
             this.articles = serverData.articles;
             localStorage.setItem("prannath_articles_v2", JSON.stringify(this.articles));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.videos) && shouldApplyServerData("prannath_videos_v2")) {
+          if (Array.isArray(serverData.videos)) {
             this.videos = serverData.videos;
             localStorage.setItem("prannath_videos_v2", JSON.stringify(this.videos));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.audioTracks) && shouldApplyServerData("prannath_audio_v2")) {
+          if (Array.isArray(serverData.audioTracks)) {
             this.audioTracks = serverData.audioTracks;
             localStorage.setItem("prannath_audio_v2", JSON.stringify(this.audioTracks));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.chitwaniBooks) && shouldApplyServerData("prannath_chitwani_books_v2")) {
+          if (Array.isArray(serverData.chitwaniBooks)) {
             this.chitwaniBooks = serverData.chitwaniBooks;
             localStorage.setItem("prannath_chitwani_books_v2", JSON.stringify(this.chitwaniBooks));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.chitwaniVideos) && shouldApplyServerData("prannath_chitwani_videos_v2")) {
+          if (Array.isArray(serverData.chitwaniVideos)) {
             this.chitwaniVideos = serverData.chitwaniVideos;
             localStorage.setItem("prannath_chitwani_videos_v2", JSON.stringify(this.chitwaniVideos));
             hasUpdates = true;
           }
-          if (serverData.dailyThought && shouldApplyServerData("prannath_thought_v2")) {
+          if (serverData.dailyThought) {
             this.dailyThought = serverData.dailyThought;
             localStorage.setItem("prannath_thought_v2", JSON.stringify(this.dailyThought));
             hasUpdates = true;
           }
-          if (serverData.settings && shouldApplyServerData("prannath_settings_v2")) {
+          if (serverData.settings) {
             this.settings = serverData.settings;
             localStorage.setItem("prannath_settings_v2", JSON.stringify(this.settings));
             hasUpdates = true;
           }
-          if (serverData.aboutContent && shouldApplyServerData("prannath_about_v2")) {
+          if (serverData.aboutContent) {
             this.aboutContent = serverData.aboutContent;
             localStorage.setItem("prannath_about_v2", JSON.stringify(this.aboutContent));
             hasUpdates = true;
           }
-          if (serverData.adminCredentials && shouldApplyServerData("prannath_admin_credentials_v2")) {
+          if (serverData.adminCredentials) {
             this.adminCredentials = serverData.adminCredentials;
             localStorage.setItem("prannath_admin_credentials_v2", JSON.stringify(this.adminCredentials));
           }
@@ -191,7 +224,7 @@ class DataStore {
         }
       }
     } catch (err) {
-      console.warn("[Store] Server sync failed (offline or dev mode):", err);
+      console.warn("[Store] Server sync warning:", err);
     } finally {
       this.isSyncing = false;
     }
@@ -285,11 +318,10 @@ class DataStore {
     }
   }
 
-  // Save to client localStorage and asynchronously persist to server /api/data
+  // Save to client localStorage and persist to server /api/data
   public async saveToStorage(key: string, data: any): Promise<boolean> {
     if (!this.isClient()) return false;
     const now = Date.now();
-    this.lastLocalMutationTime = now;
 
     try {
       localStorage.setItem(key, JSON.stringify(data));
@@ -321,7 +353,10 @@ class DataStore {
       if (serverKey) {
         const response = await fetch("/api/data", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
           body: JSON.stringify({ key: serverKey, data }),
           keepalive: true,
         });
@@ -329,7 +364,7 @@ class DataStore {
       }
       return true;
     } catch (e) {
-      console.warn(`Could not save ${key} to storage:`, e);
+      console.warn("Could not save to localStorage or server:", e);
       return false;
     }
   }
@@ -342,65 +377,13 @@ class DataStore {
   }
 
   public notify() {
-    this.listeners.forEach((l) => {
+    this.listeners.forEach((listener) => {
       try {
-        l();
+        listener();
       } catch (err) {
-        console.error("Store listener error:", err);
+        console.error("Error in store listener:", err);
       }
     });
-  }
-
-  // --- Reset Store to Defaults ---
-  public async resetToDefaults() {
-    this.books = [...initialBooks];
-    this.videos = [...initialVideos];
-    this.audioTracks = [...initialAudioTracks];
-    this.events = [...initialEvents];
-    this.articles = [...initialArticles];
-    this.dhams = [...initialDhams];
-    this.aboutContent = { ...initialAboutContent };
-    this.chitwaniBooks = [...initialChitwaniBooks];
-    this.chitwaniVideos = [...initialChitwaniVideos];
-    this.dailyThought = { ...initialDailyThought };
-    this.settings = { ...initialSettings };
-
-    if (this.isClient()) {
-      localStorage.removeItem("prannath_books_v2");
-      localStorage.removeItem("prannath_videos_v2");
-      localStorage.removeItem("prannath_audio_v2");
-      localStorage.removeItem("prannath_events_v2");
-      localStorage.removeItem("prannath_articles_v2");
-      localStorage.removeItem("prannath_dhams_v2");
-      localStorage.removeItem("prannath_about_v2");
-      localStorage.removeItem("prannath_chitwani_books_v2");
-      localStorage.removeItem("prannath_chitwani_videos_v2");
-      localStorage.removeItem("prannath_thought_v2");
-      localStorage.removeItem("prannath_settings_v2");
-
-      try {
-        await fetch("/api/data", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fullData: {
-              books: this.books,
-              videos: this.videos,
-              audioTracks: this.audioTracks,
-              events: this.events,
-              articles: this.articles,
-              dhams: this.dhams,
-              aboutContent: this.aboutContent,
-              chitwaniBooks: this.chitwaniBooks,
-              chitwaniVideos: this.chitwaniVideos,
-              dailyThought: this.dailyThought,
-              settings: this.settings,
-            },
-          }),
-        });
-      } catch {}
-    }
-    this.notify();
   }
 
   // ==========================================
@@ -408,12 +391,21 @@ class DataStore {
   // ==========================================
   public getDhams(): HolyDham[] {
     this.ensureLoaded();
-    return [...this.dhams].sort((a, b) => a.order - b.order);
+    return [...this.dhams].sort((a, b) => (a.order || 0) - (b.order || 0));
+  }
+
+  public getDhamById(id: string): HolyDham | undefined {
+    this.ensureLoaded();
+    return this.dhams.find((d) => d.id === id);
   }
 
   public addDham(dham: Omit<HolyDham, "id">): HolyDham {
     this.ensureLoaded();
-    const newDham: HolyDham = { ...dham, id: `dham-${Date.now()}` };
+    const newDham: HolyDham = {
+      ...dham,
+      id: `dham-${Date.now()}`,
+      order: dham.order || this.dhams.length + 1,
+    };
     this.dhams.push(newDham);
     this.saveToStorage("prannath_dhams_v2", this.dhams);
     this.notify();
@@ -443,32 +435,11 @@ class DataStore {
   }
 
   // ==========================================
-  // 2. ABOUT US CONTENT
-  // ==========================================
-  public getAboutContent(): AboutSectionContent {
-    this.ensureLoaded();
-    return { ...this.aboutContent };
-  }
-
-  public updateAboutContent(updates: Partial<AboutSectionContent>) {
-    this.ensureLoaded();
-    this.aboutContent = { ...this.aboutContent, ...updates };
-    this.saveToStorage("prannath_about_v2", this.aboutContent);
-    this.notify();
-  }
-
-  // ==========================================
-  // 3. BOOKS & PDF LIBRARY
+  // 2. BOOKS & SCRIPTURES
   // ==========================================
   public getBooks(): Book[] {
     this.ensureLoaded();
     return [...this.books];
-  }
-
-  public getBooksByCategory(category: string): Book[] {
-    this.ensureLoaded();
-    if (category === "all") return [...this.books];
-    return this.books.filter((b) => b.category === category);
   }
 
   public getBookById(id: string): Book | undefined {
@@ -476,16 +447,25 @@ class DataStore {
     return this.books.find((b) => b.id === id);
   }
 
-  public addBook(book: Omit<Book, "id" | "createdAt" | "updatedAt">): Book {
+  public getBooksByCategory(category: string): Book[] {
     this.ensureLoaded();
-    const now = new Date().toISOString();
+    return this.books.filter((b) => b.category === category);
+  }
+
+  public getFeaturedBooks(): Book[] {
+    this.ensureLoaded();
+    return this.books.filter((b) => b.featured);
+  }
+
+  public addBook(book: any): Book {
+    this.ensureLoaded();
     const newBook: Book = {
-      ...book,
       id: `book-${Date.now()}`,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: new Date().toISOString().split("T")[0],
+      updatedAt: new Date().toISOString().split("T")[0],
+      ...book,
     };
-    this.books.unshift(newBook);
+    this.books.push(newBook);
     this.saveToStorage("prannath_books_v2", this.books);
     this.notify();
     return newBook;
@@ -498,7 +478,7 @@ class DataStore {
     this.books[idx] = {
       ...this.books[idx],
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString().split("T")[0],
     };
     this.saveToStorage("prannath_books_v2", this.books);
     this.notify();
@@ -517,8 +497,98 @@ class DataStore {
     return false;
   }
 
+  public getScriptures(): Scripture[] {
+    this.ensureLoaded();
+    return [...this.scriptures];
+  }
+
+  public getScriptureById(id: string): Scripture | undefined {
+    this.ensureLoaded();
+    return this.scriptures.find((s) => s.id === id);
+  }
+
   // ==========================================
-  // 4. ARTICLES & BLOGS (Shri Prannath Ji, Aadhyatmik Gyan, Chitwani)
+  // 3. CHITWANI BOOKS & VIDEOS
+  // ==========================================
+  public getChitwaniBooks(): ChitwaniBook[] {
+    this.ensureLoaded();
+    return [...this.chitwaniBooks];
+  }
+
+  public getChitwaniBookById(id: string): ChitwaniBook | undefined {
+    this.ensureLoaded();
+    return this.chitwaniBooks.find((cb) => cb.id === id);
+  }
+
+  public addChitwaniBook(book: Omit<ChitwaniBook, "id">): ChitwaniBook {
+    this.ensureLoaded();
+    const newBook: ChitwaniBook = { ...book, id: `chitwani-book-${Date.now()}` };
+    this.chitwaniBooks.push(newBook);
+    this.saveToStorage("prannath_chitwani_books_v2", this.chitwaniBooks);
+    this.notify();
+    return newBook;
+  }
+
+  public updateChitwaniBook(id: string, updates: Partial<ChitwaniBook>): boolean {
+    this.ensureLoaded();
+    const idx = this.chitwaniBooks.findIndex((cb) => cb.id === id);
+    if (idx === -1) return false;
+    this.chitwaniBooks[idx] = { ...this.chitwaniBooks[idx], ...updates };
+    this.saveToStorage("prannath_chitwani_books_v2", this.chitwaniBooks);
+    this.notify();
+    return true;
+  }
+
+  public deleteChitwaniBook(id: string): boolean {
+    this.ensureLoaded();
+    const initialLen = this.chitwaniBooks.length;
+    this.chitwaniBooks = this.chitwaniBooks.filter((cb) => cb.id !== id);
+    if (this.chitwaniBooks.length !== initialLen) {
+      this.saveToStorage("prannath_chitwani_books_v2", this.chitwaniBooks);
+      this.notify();
+      return true;
+    }
+    return false;
+  }
+
+  public getChitwaniVideos(): ChitwaniVideo[] {
+    this.ensureLoaded();
+    return [...this.chitwaniVideos];
+  }
+
+  public addChitwaniVideo(video: Omit<ChitwaniVideo, "id">): ChitwaniVideo {
+    this.ensureLoaded();
+    const newVideo: ChitwaniVideo = { ...video, id: `chitwani-vid-${Date.now()}` };
+    this.chitwaniVideos.unshift(newVideo);
+    this.saveToStorage("prannath_chitwani_videos_v2", this.chitwaniVideos);
+    this.notify();
+    return newVideo;
+  }
+
+  public updateChitwaniVideo(id: string, updates: Partial<ChitwaniVideo>): boolean {
+    this.ensureLoaded();
+    const idx = this.chitwaniVideos.findIndex((v) => v.id === id);
+    if (idx === -1) return false;
+    this.chitwaniVideos[idx] = { ...this.chitwaniVideos[idx], ...updates };
+    this.saveToStorage("prannath_chitwani_videos_v2", this.chitwaniVideos);
+    this.notify();
+    return true;
+  }
+
+  public deleteChitwaniVideo(id: string): boolean {
+    this.ensureLoaded();
+    const initialLen = this.chitwaniVideos.length;
+    this.chitwaniVideos = this.chitwaniVideos.filter((v) => v.id !== id);
+    if (this.chitwaniVideos.length !== initialLen) {
+      this.saveToStorage("prannath_chitwani_videos_v2", this.chitwaniVideos);
+      this.notify();
+      return true;
+    }
+    return false;
+  }
+
+  // ==========================================
+  // 4. ARTICLES & BLOGS & PHILOSOPHY
   // ==========================================
   public getArticles(): Article[] {
     this.ensureLoaded();
@@ -586,83 +656,13 @@ class DataStore {
     return false;
   }
 
-  // ==========================================
-  // 5. CHITWANI BOOKS & VIDEOS
-  // ==========================================
-  public getChitwaniBooks(): ChitwaniBook[] {
+  public getSpiritualTopics(): SpiritualTopic[] {
     this.ensureLoaded();
-    return [...this.chitwaniBooks];
-  }
-
-  public addChitwaniBook(book: Omit<ChitwaniBook, "id">): ChitwaniBook {
-    this.ensureLoaded();
-    const newBook: ChitwaniBook = { ...book, id: `chitwani-book-${Date.now()}` };
-    this.chitwaniBooks.unshift(newBook);
-    this.saveToStorage("prannath_chitwani_books_v2", this.chitwaniBooks);
-    this.notify();
-    return newBook;
-  }
-
-  public updateChitwaniBook(id: string, updates: Partial<ChitwaniBook>): boolean {
-    this.ensureLoaded();
-    const idx = this.chitwaniBooks.findIndex((b) => b.id === id);
-    if (idx === -1) return false;
-    this.chitwaniBooks[idx] = { ...this.chitwaniBooks[idx], ...updates };
-    this.saveToStorage("prannath_chitwani_books_v2", this.chitwaniBooks);
-    this.notify();
-    return true;
-  }
-
-  public deleteChitwaniBook(id: string): boolean {
-    this.ensureLoaded();
-    const initialLen = this.chitwaniBooks.length;
-    this.chitwaniBooks = this.chitwaniBooks.filter((b) => b.id !== id);
-    if (this.chitwaniBooks.length !== initialLen) {
-      this.saveToStorage("prannath_chitwani_books_v2", this.chitwaniBooks);
-      this.notify();
-      return true;
-    }
-    return false;
-  }
-
-  public getChitwaniVideos(): ChitwaniVideo[] {
-    this.ensureLoaded();
-    return [...this.chitwaniVideos];
-  }
-
-  public addChitwaniVideo(video: Omit<ChitwaniVideo, "id">): ChitwaniVideo {
-    this.ensureLoaded();
-    const newVideo: ChitwaniVideo = { ...video, id: `chitwani-vid-${Date.now()}` };
-    this.chitwaniVideos.unshift(newVideo);
-    this.saveToStorage("prannath_chitwani_videos_v2", this.chitwaniVideos);
-    this.notify();
-    return newVideo;
-  }
-
-  public updateChitwaniVideo(id: string, updates: Partial<ChitwaniVideo>): boolean {
-    this.ensureLoaded();
-    const idx = this.chitwaniVideos.findIndex((v) => v.id === id);
-    if (idx === -1) return false;
-    this.chitwaniVideos[idx] = { ...this.chitwaniVideos[idx], ...updates };
-    this.saveToStorage("prannath_chitwani_videos_v2", this.chitwaniVideos);
-    this.notify();
-    return true;
-  }
-
-  public deleteChitwaniVideo(id: string): boolean {
-    this.ensureLoaded();
-    const initialLen = this.chitwaniVideos.length;
-    this.chitwaniVideos = this.chitwaniVideos.filter((v) => v.id !== id);
-    if (this.chitwaniVideos.length !== initialLen) {
-      this.saveToStorage("prannath_chitwani_videos_v2", this.chitwaniVideos);
-      this.notify();
-      return true;
-    }
-    return false;
+    return [...this.topics];
   }
 
   // ==========================================
-  // 6. FESTIVAL EVENTS & EARLIEST EVENT
+  // 5. FESTIVAL EVENTS & EARLIEST UPCOMING EVENT
   // ==========================================
   public getEvents(): EventItem[] {
     this.ensureLoaded();
@@ -686,8 +686,12 @@ class DataStore {
     const live = sorted.find((e) => e.status === "live");
     if (live) return live;
 
-    // 3. Fallback to latest scheduled event
+    // 3. Fallback to earliest scheduled event
     return sorted.length > 0 ? sorted[0] : null;
+  }
+
+  public getNextUpcomingEvent(): EventItem | null {
+    return this.getEarliestUpcomingEvent();
   }
 
   public addEvent(event: Omit<EventItem, "id">): EventItem {
@@ -722,24 +726,29 @@ class DataStore {
   }
 
   // ==========================================
-  // 7. VIDEOS (Media Centre)
+  // 6. VIDEOS
   // ==========================================
   public getVideos(): Video[] {
     this.ensureLoaded();
     return [...this.videos];
   }
 
-  public addVideo(video: Omit<Video, "id" | "publishedAt">): Video {
+  public getFeaturedVideos(): Video[] {
     this.ensureLoaded();
-    const newVid: Video = {
-      ...video,
+    return this.videos.filter((v) => v.featured);
+  }
+
+  public addVideo(video: any): Video {
+    this.ensureLoaded();
+    const newVideo: Video = {
       id: `vid-${Date.now()}`,
       publishedAt: new Date().toISOString().split("T")[0],
+      ...video,
     };
-    this.videos.unshift(newVid);
+    this.videos.unshift(newVideo);
     this.saveToStorage("prannath_videos_v2", this.videos);
     this.notify();
-    return newVid;
+    return newVideo;
   }
 
   public updateVideo(id: string, updates: Partial<Video>): boolean {
@@ -765,31 +774,40 @@ class DataStore {
   }
 
   // ==========================================
-  // 8. SCRIPTURES, AUDIO, THOUGHT, SETTINGS
+  // 7. AUDIO TRACKS
   // ==========================================
-  public getScriptures(): Scripture[] {
-    this.ensureLoaded();
-    return [...this.scriptures];
-  }
-
   public getAudioTracks(): AudioTrack[] {
     this.ensureLoaded();
-    return [...this.audioTracks];
+    return [...this.audioTracks].sort((a, b) => (a.order || 0) - (b.order || 0));
   }
 
   public addAudioTrack(track: Omit<AudioTrack, "id">): AudioTrack {
     this.ensureLoaded();
-    const newTrack: AudioTrack = { ...track, id: `audio-${Date.now()}` };
+    const newTrack: AudioTrack = {
+      ...track,
+      id: `audio-${Date.now()}`,
+      order: track.order || this.audioTracks.length + 1,
+    };
     this.audioTracks.push(newTrack);
     this.saveToStorage("prannath_audio_v2", this.audioTracks);
     this.notify();
     return newTrack;
   }
 
+  public updateAudioTrack(id: string, updates: Partial<AudioTrack>): boolean {
+    this.ensureLoaded();
+    const idx = this.audioTracks.findIndex((a) => a.id === id);
+    if (idx === -1) return false;
+    this.audioTracks[idx] = { ...this.audioTracks[idx], ...updates };
+    this.saveToStorage("prannath_audio_v2", this.audioTracks);
+    this.notify();
+    return true;
+  }
+
   public deleteAudioTrack(id: string): boolean {
     this.ensureLoaded();
     const initialLen = this.audioTracks.length;
-    this.audioTracks = this.audioTracks.filter((t) => t.id !== id);
+    this.audioTracks = this.audioTracks.filter((a) => a.id !== id);
     if (this.audioTracks.length !== initialLen) {
       this.saveToStorage("prannath_audio_v2", this.audioTracks);
       this.notify();
@@ -798,60 +816,110 @@ class DataStore {
     return false;
   }
 
+  // ==========================================
+  // 8. DAILY THOUGHT
+  // ==========================================
   public getDailyThought(): DailyThought {
     this.ensureLoaded();
     return { ...this.dailyThought };
   }
 
-  public updateDailyThought(thought: Partial<DailyThought>) {
+  public updateDailyThought(thought: Partial<DailyThought>): void {
     this.ensureLoaded();
     this.dailyThought = { ...this.dailyThought, ...thought };
     this.saveToStorage("prannath_thought_v2", this.dailyThought);
     this.notify();
   }
 
+  // ==========================================
+  // 9. SITE SETTINGS
+  // ==========================================
   public getSettings(): SiteSettings {
     this.ensureLoaded();
     return { ...this.settings };
   }
 
-  public updateSettings(settings: Partial<SiteSettings>) {
+  public updateSettings(settings: Partial<SiteSettings>): void {
     this.ensureLoaded();
     this.settings = { ...this.settings, ...settings };
     this.saveToStorage("prannath_settings_v2", this.settings);
     this.notify();
   }
 
+  // ==========================================
+  // 10. ABOUT CONTENT
+  // ==========================================
+  public getAboutContent(): AboutSectionContent {
+    this.ensureLoaded();
+    return { ...this.aboutContent };
+  }
+
+  public updateAboutContent(content: Partial<AboutSectionContent>): void {
+    this.ensureLoaded();
+    this.aboutContent = { ...this.aboutContent, ...content };
+    this.saveToStorage("prannath_about_v2", this.aboutContent);
+    this.notify();
+  }
+
+  // ==========================================
+  // 11. ADMIN AUTH & CREDENTIALS
+  // ==========================================
+  public getAdminCredentials(): AdminCredentials {
+    this.ensureLoaded();
+    return { ...this.adminCredentials };
+  }
+
+  public updateAdminCredentials(creds: Partial<AdminCredentials>): void {
+    this.ensureLoaded();
+    this.adminCredentials = {
+      ...this.adminCredentials,
+      ...creds,
+      updatedAt: new Date().toISOString(),
+    };
+    this.saveToStorage("prannath_admin_credentials_v2", this.adminCredentials);
+    this.notify();
+  }
+
+  public verifyAdminCredentials(user: string, pass: string): boolean {
+    this.ensureLoaded();
+    return (
+      (user === this.adminCredentials.username || user === this.adminCredentials.email) &&
+      pass === this.adminCredentials.password
+    );
+  }
+
+  public isAdminAuthenticated(): boolean {
+    if (!this.isClient()) return false;
+    return localStorage.getItem("prannath_admin_session") === "true";
+  }
+
+  public setAdminSession(auth: boolean, email?: string): void {
+    if (!this.isClient()) return;
+    if (auth) {
+      localStorage.setItem("prannath_admin_session", "true");
+      if (email) {
+        localStorage.setItem("prannath_admin_email", email);
+      }
+    } else {
+      localStorage.removeItem("prannath_admin_session");
+      localStorage.removeItem("prannath_admin_email");
+    }
+    this.notify();
+  }
+
+  // ==========================================
+  // 12. STATS & BOOKMARKS & HISTORY
+  // ==========================================
   public getStats(): PortalStats {
     this.ensureLoaded();
     return {
-      pdfBooksCount: this.books.length + 500,
-      videosCount: this.videos.length + 100,
-      seekersCount: 50000,
-      countriesCount: 100,
+      pdfBooksCount: this.books.length + this.chitwaniBooks.length,
+      videosCount: this.videos.length + this.chitwaniVideos.length,
+      seekersCount: this.stats.seekersCount || 108000,
+      countriesCount: this.stats.countriesCount || 45,
     };
   }
 
-  // ==========================================
-  // 9. SPIRITUAL TOPICS (Philosophy)
-  // ==========================================
-  public getSpiritualTopics(): SpiritualTopic[] {
-    this.ensureLoaded();
-    return [...(this.topics || initialSpiritualTopics)];
-  }
-
-  public getSpiritualTopicById(id: string): SpiritualTopic | undefined {
-    this.ensureLoaded();
-    return (this.topics || initialSpiritualTopics).find((t) => t.id === id);
-  }
-
-  public getNextUpcomingEvent(): EventItem | null {
-    return this.getEarliestUpcomingEvent();
-  }
-
-  // ==========================================
-  // 10. BOOKMARKS & READING HISTORY
-  // ==========================================
   public getBookmarks(): string[] {
     this.ensureLoaded();
     return [...this.bookmarks];
@@ -859,15 +927,42 @@ class DataStore {
 
   public toggleBookmark(bookId: string): boolean {
     this.ensureLoaded();
-    const exists = this.bookmarks.includes(bookId);
-    if (exists) {
-      this.bookmarks = this.bookmarks.filter((id) => id !== bookId);
+    const idx = this.bookmarks.indexOf(bookId);
+    let isBookmarked = false;
+    if (idx > -1) {
+      this.bookmarks.splice(idx, 1);
     } else {
       this.bookmarks.push(bookId);
+      isBookmarked = true;
     }
     this.saveToStorage("prannath_bookmarks_v2", this.bookmarks);
     this.notify();
-    return !exists;
+    return isBookmarked;
+  }
+
+  public isBookmarked(bookId: string): boolean {
+    this.ensureLoaded();
+    return this.bookmarks.includes(bookId);
+  }
+
+  public saveReadingProgress(bookId: string, title: string, page: number): void {
+    this.ensureLoaded();
+    const existing = this.readingHistory.findIndex((h) => h.bookId === bookId);
+    const item = { bookId, title, page, updatedAt: new Date().toISOString() };
+    if (existing > -1) {
+      this.readingHistory[existing] = item;
+    } else {
+      this.readingHistory.unshift(item);
+      if (this.readingHistory.length > 20) this.readingHistory.pop();
+    }
+    this.saveToStorage("prannath_reading_history_v2", this.readingHistory);
+    this.notify();
+  }
+
+  public getReadingProgress(bookId: string): number {
+    this.ensureLoaded();
+    const record = this.readingHistory.find((h) => h.bookId === bookId);
+    return record ? record.page : 1;
   }
 
   public getReadingHistory() {
@@ -875,79 +970,27 @@ class DataStore {
     return [...this.readingHistory];
   }
 
-  public updateReadingHistory(bookId: string, title: string, page: number) {
-    this.ensureLoaded();
-    const idx = this.readingHistory.findIndex((h) => h.bookId === bookId);
-    const now = new Date().toISOString();
-    if (idx !== -1) {
-      this.readingHistory[idx] = { bookId, title, page, updatedAt: now };
-    } else {
-      this.readingHistory.unshift({ bookId, title, page, updatedAt: now });
+  public getRecentReadingHistory() {
+    return this.getReadingHistory();
+  }
+
+  public resetToDefaults(): void {
+    this.books = [...initialBooks];
+    this.events = [...initialEvents];
+    this.dhams = [...initialDhams];
+    this.articles = [...initialArticles];
+    this.videos = [...initialVideos];
+    this.audioTracks = [...initialAudioTracks];
+    this.chitwaniBooks = [...initialChitwaniBooks];
+    this.chitwaniVideos = [...initialChitwaniVideos];
+    this.dailyThought = { ...initialDailyThought };
+    this.settings = { ...initialSettings };
+    this.aboutContent = { ...initialAboutContent };
+    this.adminCredentials = { ...defaultAdminCredentials };
+    if (this.isClient()) {
+      localStorage.clear();
     }
-    this.saveToStorage("prannath_reading_history_v2", this.readingHistory);
     this.notify();
-  }
-
-  public saveReadingProgress(bookId: string, title: string, page: number) {
-    this.updateReadingHistory(bookId, title, page);
-  }
-
-  public getReadingProgress(bookId: string): number {
-    this.ensureLoaded();
-    const item = this.readingHistory.find((h) => h.bookId === bookId);
-    return item ? item.page : 1;
-  }
-
-  // ---------------- ADMIN CREDENTIALS & SECURITY ----------------
-  public getAdminCredentials(): AdminCredentials {
-    this.ensureLoaded();
-    return { ...this.adminCredentials };
-  }
-
-  public updateAdminCredentials(updates: Partial<AdminCredentials>): boolean {
-    this.ensureLoaded();
-    this.adminCredentials = {
-      ...this.adminCredentials,
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-    this.saveToStorage("prannath_admin_credentials_v2", this.adminCredentials);
-    this.notify();
-    return true;
-  }
-
-  public verifyAdminCredentials(userOrEmail: string, pass: string): boolean {
-    this.ensureLoaded();
-    const input = (userOrEmail || "").trim().toLowerCase();
-    const validUser = (this.adminCredentials.username || "admin").trim().toLowerCase();
-    const validEmail = (this.adminCredentials.email || "admin@sadhaulidham.com").trim().toLowerCase();
-    const validPass = this.adminCredentials.password || "admin123";
-
-    const isUserMatch = Boolean(input && (input === validUser || input === validEmail));
-    const isPassMatch = Boolean(pass && pass === validPass);
-    return isUserMatch && isPassMatch;
-  }
-
-  public setAdminSession(active: boolean, emailOrUser?: string): void {
-    if (!this.isClient()) return;
-    if (active) {
-      localStorage.setItem("prannath_user_role", "admin");
-      localStorage.setItem("prannath_admin_session", "active");
-      if (emailOrUser) {
-        localStorage.setItem("prannath_user_email", emailOrUser);
-      }
-    } else {
-      localStorage.removeItem("prannath_user_role");
-      localStorage.removeItem("prannath_admin_session");
-      localStorage.removeItem("prannath_user_email");
-    }
-  }
-
-  public isAdminAuthenticated(): boolean {
-    if (!this.isClient()) return false;
-    const role = localStorage.getItem("prannath_user_role");
-    const session = localStorage.getItem("prannath_admin_session");
-    return role === "admin" && session === "active";
   }
 }
 

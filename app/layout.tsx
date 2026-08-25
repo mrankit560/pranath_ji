@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n/context";
+import { ThemeProvider } from "@/lib/theme/context";
 import { AudioProvider } from "@/lib/audio/AudioContext";
 import { LanguageWelcomeModal } from "@/components/header/LanguageWelcomeModal";
 import { PersistentAudioPlayer } from "@/components/audio/PersistentAudioPlayer";
@@ -65,13 +66,15 @@ export default function RootLayout({
   return (
     <html lang="hi" className="dark">
       <body className="bg-[#080605] text-[#F7F1E3] antialiased selection:bg-gold-500 selection:text-black">
-        <I18nProvider>
-          <AudioProvider>
-            <LanguageWelcomeModal />
-            {children}
-            <PersistentAudioPlayer />
-          </AudioProvider>
-        </I18nProvider>
+        <ThemeProvider>
+          <I18nProvider>
+            <AudioProvider>
+              <LanguageWelcomeModal />
+              {children}
+              <PersistentAudioPlayer />
+            </AudioProvider>
+          </I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

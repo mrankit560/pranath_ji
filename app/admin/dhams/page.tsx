@@ -26,9 +26,13 @@ export default function AdminDhamsPage() {
   const { language } = useI18n();
   const isEn = language === "en";
 
-  const [dhams, setDhams] = useState<HolyDham[]>(store.getDhams());
+  const [dhams, setDhams] = useState<HolyDham[]>(() => store.getDhams());
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [deleteCandidate, setDeleteCandidate] = useState<HolyDham | null>(null);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
     nameHi: "",
@@ -48,11 +52,19 @@ export default function AdminDhamsPage() {
   const [previewSlideIdx, setPreviewSlideIdx] = useState(0);
 
   useEffect(() => {
+    setDhams(store.getDhams());
     const unsub = store.subscribe(() => {
       setDhams(store.getDhams());
     });
     return () => unsub();
   }, []);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
 
   const handleAddImageUrl = () => {
     if (!newImageUrl.trim()) return;
@@ -110,8 +122,9 @@ export default function AdminDhamsPage() {
     setForm({ ...form, imageUrl: imgUrl });
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
 
     const validImages =
       form.images && form.images.length > 0
@@ -119,6 +132,8 @@ export default function AdminDhamsPage() {
         : [form.imageUrl || "/assets/sadhauli-dham-2.jpg"];
 
     const primaryCover = form.imageUrl || validImages[0] || "/assets/sadhauli-dham-2.jpg";
+
+    let savedId = editingId;
 
     if (editingId) {
       store.updateDham(editingId, {
@@ -134,9 +149,16 @@ export default function AdminDhamsPage() {
         order: Number(form.order),
         featured: form.featured,
       });
+      await store.saveToStorage("prannath_dhams_v2", store.getDhams());
+      showToast(
+        isEn
+          ? `✓ Holy Dham "${form.nameEn || form.nameHi}" updated and saved to database!`
+          : `✓ पावन धाम "${form.nameHi}" की जानकारी डेटाबेस में सुरक्षित हो गई!`
+      );
+      setHighlightedId(editingId);
       setEditingId(null);
     } else {
-      store.addDham({
+      const created = store.addDham({
         nameHi: form.nameHi,
         nameEn: form.nameEn,
         descriptionHi: form.descriptionHi,
@@ -149,8 +171,18 @@ export default function AdminDhamsPage() {
         order: Number(form.order),
         featured: form.featured,
       });
+      savedId = created.id;
+      await store.saveToStorage("prannath_dhams_v2", store.getDhams());
+      setHighlightedId(created.id);
+      showToast(
+        isEn
+          ? `✓ New Holy Dham "${form.nameEn || form.nameHi}" added and saved to database!`
+          : `✓ नया धाम "${form.nameHi}" डेटाबेस में सफलतापूर्वक जुड़ गया!`
+      );
     }
 
+    setDhams(store.getDhams());
+    setIsSaving(false);
     setShowAddForm(false);
     setForm({
       nameHi: "",
@@ -189,29 +221,97 @@ export default function AdminDhamsPage() {
     });
     setPreviewSlideIdx(0);
     setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = (id: string) => {
-    const confirmMsg = isEn
-      ? "Are you sure you want to delete this Holy Dham location?"
-      : "क्या आप वाकई इस पावन धाम स्थान को हटाना चाहते हैं?";
-    if (confirm(confirmMsg)) {
-      store.deleteDham(id);
-    }
+  const confirmDelete = async () => {
+    if (!deleteCandidate) return;
+    const name = deleteCandidate.nameHi || deleteCandidate.nameEn;
+    setIsSaving(true);
+    store.deleteDham(deleteCandidate.id);
+    await store.saveToStorage("prannath_dhams_v2", store.getDhams());
+    setDhams(store.getDhams());
+    setIsSaving(false);
+    setDeleteCandidate(null);
+    showToast(
+      isEn
+        ? `✓ Holy Dham "${name}" deleted from database.`
+        : `✓ पावन धाम "${name}" डेटाबेस से हटा दिया गया।`
+    );
   };
 
   return (
     <div className="space-y-6 max-w-6xl">
+      {/* In-App Delete Confirmation Modal */}
+      {deleteCandidate && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">
+                {isEn ? "Delete Holy Dham?" : "पावन धाम हटाएं?"}
+              </h3>
+              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+                {isEn
+                  ? `Are you sure you want to delete "${deleteCandidate.nameEn || deleteCandidate.nameHi}"?`
+                  : `क्या आप वाकई "${deleteCandidate.nameHi}" को हटाना चाहते हैं?`}
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg transition-all"
+              >
+                {isEn ? "Yes, Delete Now" : "हाँ, तुरंत हटाएं"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteCandidate(null)}
+                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+              >
+                {isEn ? "Cancel" : "रद्द करें"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification Alert */}
+      {toastMessage && (
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-emerald-300">
+              {isEn ? "Database Updated" : "डेटाबेस अपडेट"}
+            </div>
+            <div className="text-xs text-spiritual-ivory font-medium">
+              {toastMessage}
+            </div>
+          </div>
+          <button
+            onClick={() => setToastMessage(null)}
+            className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Top Header */}
       <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
         <div>
-          <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible">
-            {isEn ? "Holy Dham Locations & Photo Gallery CMS" : "पावन आश्रम व धाम फोटो गैलरी प्रबंधन"}
+          <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
+            {isEn ? "Holy Dhams & Ashrams CMS" : "पावन धाम व आश्रम प्रबंधन"}
           </h1>
           <p className="text-xs text-spiritual-ivory/60">
             {isEn
-              ? "Upload multiple photos, manage sliders, update descriptions and Google Maps coordinates for Holy Dhams"
-              : "साढौली धाम, गोंदर धाम एवं अन्य आश्रमों के लिए कई फोटो अपलोड करें, स्लाइडर प्रबंधित करें व मैप्स लिंक अपडेट करें"}
+              ? "Manage sacred Prannathi ashrams (Sadhauli Dham, Gondar Dham, Surat, Panna etc.) with Multiple Photos & Sliders"
+              : "साढौली धाम, गोंदर धाम, सूरत, पन्ना आदि पावन तीर्थों की तस्वीरें, गैलरी, गूगल मैप्स व संपर्क प्रबंधित करें"}
           </p>
         </div>
 
@@ -220,7 +320,7 @@ export default function AdminDhamsPage() {
             setEditingId(null);
             setShowAddForm(!showAddForm);
           }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -229,41 +329,40 @@ export default function AdminDhamsPage() {
                 ? "Close Form"
                 : "फॉर्म बंद करें"
               : isEn
-              ? "Add Holy Dham"
+              ? "Add New Dham"
               : "नया धाम जोड़ें"}
           </span>
         </button>
       </div>
 
-      {/* Add / Edit Form with Multi-Photo Uploader & Live Slider Preview */}
+      {/* Add / Edit Form */}
       {showAddForm && (
         <form
           onSubmit={handleSave}
-          className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-6 animate-fade-in"
+          className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 space-y-6 animate-fade-in shadow-2xl bg-spiritual-navy/80"
         >
-          <div className="flex items-center justify-between pb-2 border-b border-gold-500/20">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-gold-400" />
-              <h3 className="text-sm font-bold text-gold-300 uppercase tracking-wider">
-                {editingId
-                  ? isEn
-                    ? "Edit Holy Dham & Photo Slider"
-                    : "धाम व फोटो स्लाइडर संपादित करें"
-                  : isEn
-                  ? "Add New Holy Dham Location"
-                  : "नया पावन धाम व फोटो गैलरी जोड़ें"}
-              </h3>
-            </div>
+          <div className="flex items-center justify-between border-b border-gold-500/20 pb-3">
+            <h2 className="text-base font-bold text-gold-300 font-spiritual-heading">
+              {editingId
+                ? isEn
+                  ? "Edit Holy Dham Details"
+                  : "पावन धाम विवरण संपादित करें"
+                : isEn
+                ? "Add New Holy Dham to Portal"
+                : "पोर्टल में नया पावन धाम जोड़ें"}
+            </h2>
             <button
               type="button"
-              onClick={() => setShowAddForm(false)}
-              className="p-1 text-spiritual-ivory/60 hover:text-gold-300"
+              onClick={() => {
+                setEditingId(null);
+                setShowAddForm(false);
+              }}
+              className="p-1 rounded-lg hover:bg-white/10 text-spiritual-ivory/70"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Names */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
@@ -281,30 +380,30 @@ export default function AdminDhamsPage() {
 
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Dham Name (English)" : "धाम का नाम (English)"}
+                {isEn ? "Dham Name (English) *" : "धाम का नाम (अंग्रेज़ी) *"}
               </label>
               <input
                 type="text"
+                required
                 value={form.nameEn}
                 onChange={(e) => setForm({ ...form, nameEn: e.target.value })}
-                placeholder="Shri Nijanand Aashram Sadhauli Dham"
+                placeholder="e.g. Shri Nijanand Ashram Sadhauli Dham"
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
 
-          {/* Location & Map & Phone */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Location / City *" : "स्थान / शहर (Location) *"}
+                {isEn ? "Location / City *" : "स्थान / शहर *"}
               </label>
               <input
                 type="text"
                 required
                 value={form.location}
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
-                placeholder="हरिद्वार, उत्तराखण्ड"
+                placeholder="उदा. हरिद्वार, उत्तराखण्ड"
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
@@ -325,7 +424,7 @@ export default function AdminDhamsPage() {
 
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Contact Phone Number" : "सम्पर्क फोन नंबर (Phone)"}
+                {isEn ? "Contact Phone" : "संपर्क फोन नंबर"}
               </label>
               <input
                 type="text"
@@ -337,187 +436,100 @@ export default function AdminDhamsPage() {
             </div>
           </div>
 
-          {/* ================================================================= */}
-          {/* MULTI-PHOTO GALLERY & SLIDER MANAGEMENT SECTION */}
-          {/* ================================================================= */}
-          <div className="p-5 rounded-2xl bg-black/50 border border-gold-500/30 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-gold-500/20">
-              <div className="flex items-center gap-2">
-                <Camera className="w-4 h-4 text-gold-400" />
-                <span className="text-xs font-bold text-gold-300 uppercase tracking-wider">
-                  {isEn ? "Dham Photo Gallery & Slider Images" : "धाम फोटो गैलरी एवं स्लाइडर तस्वीरें"}
-                </span>
-                <span className="px-2 py-0.5 rounded-md bg-gold-500/20 text-[10px] font-bold text-gold-300">
-                  {form.images.length} {isEn ? "Photos" : "तस्वीरें"}
-                </span>
+          {/* Multiple Photo Gallery & Cover Selector */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-black/40 border border-gold-500/30 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gold-500/20 pb-3">
+              <div>
+                <h3 className="text-xs font-bold text-gold-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Camera className="w-4 h-4 text-gold-400" />
+                  <span>{isEn ? "Dham Photo Gallery & Slider Images" : "धाम फोटो गैलरी एवं स्लाइडर तस्वीरें"}</span>
+                </h3>
+                <p className="text-[11px] text-spiritual-ivory/60">
+                  {isEn
+                    ? "Upload multiple high-resolution photos of the temple, mandir complex, and events"
+                    : "मंदिर, आश्रम परिसर एवं आयोजनों की एक से अधिक तस्वीरें अपलोड करें"}
+                </p>
               </div>
 
-              <span className="text-[11px] text-spiritual-ivory/60">
-                {isEn
-                  ? "Upload photos from device or paste image URLs"
-                  : "कंप्यूटर/फोन से फोटो अपलोड करें या इमेज लिंक जोड़ें"}
-              </span>
-            </div>
-
-            {/* Input Options: 1. Paste URL | 2. Upload from Device */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Option A: Add Photo URL */}
-              <div className="space-y-1.5">
-                <label className="block text-[11px] font-semibold text-gold-muted">
-                  {isEn ? "Add Photo by URL / Path:" : "फोटो लिंक द्वारा जोड़ें (URL/Path):"}
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                    placeholder="उदा. /assets/sadhauli-dham-1.jpg या https://..."
-                    className="flex-1 p-2 rounded-xl bg-black/70 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddImageUrl}
-                    className="px-3 py-2 rounded-xl bg-gold-500/20 hover:bg-gold-500 text-gold-300 hover:text-spiritual-dark text-xs font-bold transition-colors flex items-center gap-1 border border-gold-400/40"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>{isEn ? "Add" : "जोड़ें"}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Option B: Local File Upload */}
-              <div className="space-y-1.5">
-                <label className="block text-[11px] font-semibold text-gold-muted">
-                  {isEn ? "Upload Photos from Device:" : "डिवाइस से फोटो अपलोड करें:"}
-                </label>
-                <label className="flex items-center justify-center gap-2 p-2 rounded-xl bg-black/70 border border-dashed border-gold-400/50 hover:border-gold-400 cursor-pointer text-xs text-gold-300 transition-colors">
-                  <Upload className="w-4 h-4 text-gold-400" />
-                  <span>{isEn ? "Choose Image Files..." : "फोटो फाइल चुनें (JPG, PNG)..."}</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            </div>
-
-            {/* Thumbnail Strip with Cover Selection & Delete */}
-            <div className="space-y-2 pt-2">
-              <label className="block text-[11px] font-semibold text-gold-muted">
-                {isEn ? "Current Photos (Click Star to Set Cover):" : "वर्तमान तस्वीरें (कवर फोटो सेट करने के लिए स्टार पर क्लिक करें):"}
+              <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform self-start sm:self-auto">
+                <Upload className="w-3.5 h-3.5" />
+                <span>{isEn ? "Upload Photos" : "तस्वीरें अपलोड करें"}</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
               </label>
+            </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                {form.images.map((img, idx) => {
-                  const isCover = img === form.imageUrl;
-                  return (
-                    <div
-                      key={idx}
-                      className={`group relative rounded-xl overflow-hidden border-2 transition-all aspect-video bg-black/80 ${
-                        isCover
-                          ? "border-gold-400 shadow-[0_0_12px_rgba(244,208,111,0.6)] scale-102"
-                          : "border-gold-500/20 hover:border-gold-500/60"
-                      }`}
-                    >
-                      <Image
-                        src={img}
-                        alt={`Dham photo ${idx + 1}`}
-                        fill
-                        className="object-cover"
-                      />
+            {/* Quick URL Input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newImageUrl}
+                onChange={(e) => setNewImageUrl(e.target.value)}
+                placeholder={isEn ? "Or paste image web URL (https://...)" : "या वेब फोटो लिंक (URL) पेस्ट करें"}
+                className="flex-1 p-2 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleAddImageUrl}
+                className="px-4 py-2 rounded-xl bg-gold-500/20 border border-gold-500/40 text-gold-300 text-xs font-bold hover:bg-gold-500/30"
+              >
+                {isEn ? "Add URL" : "जोड़ें"}
+              </button>
+            </div>
 
-                      {/* Cover Badge */}
-                      {isCover && (
-                        <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-gold-500 text-spiritual-dark text-[9px] font-extrabold shadow-sm flex items-center gap-0.5">
-                          <Star className="w-2.5 h-2.5 fill-current" />
-                          <span>{isEn ? "Cover" : "मुख्य"}</span>
-                        </span>
-                      )}
+            {/* Gallery Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2">
+              {form.images.map((img, idx) => {
+                const isCover = form.imageUrl === img;
+                return (
+                  <div
+                    key={idx}
+                    className={`group relative rounded-xl overflow-hidden aspect-[4/3] bg-black/60 border-2 transition-all ${
+                      isCover ? "border-gold-400 ring-2 ring-gold-400/40 shadow-lg" : "border-gold-500/20 hover:border-gold-500/50"
+                    }`}
+                  >
+                    <Image src={img} alt={`Dham Photo ${idx + 1}`} fill className="object-cover" />
 
-                      {/* Hover Actions Bar */}
-                      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-1">
-                        {!isCover && (
-                          <button
-                            type="button"
-                            onClick={() => handleSetCover(img)}
-                            className="p-1.5 rounded-lg bg-gold-500/30 hover:bg-gold-500 text-gold-300 hover:text-spiritual-dark transition-colors"
-                            title={isEn ? "Set as Cover Photo" : "मुख्य फोटो बनाएं"}
-                          >
-                            <Star className="w-3.5 h-3.5" />
-                          </button>
-                        )}
+                    {isCover && (
+                      <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-gold-500 text-spiritual-dark text-[9px] font-extrabold flex items-center gap-0.5 shadow">
+                        <Star className="w-2.5 h-2.5 fill-current" />
+                        <span>COVER</span>
+                      </div>
+                    )}
+
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
+                      {!isCover && (
                         <button
                           type="button"
-                          onClick={() => handleRemoveImage(idx)}
-                          className="p-1.5 rounded-lg bg-red-500/30 hover:bg-red-500 text-red-300 hover:text-white transition-colors"
-                          title={isEn ? "Delete Photo" : "फोटो हटाएं"}
+                          onClick={() => handleSetCover(img)}
+                          className="px-2 py-1 rounded bg-gold-gradient text-spiritual-dark text-[10px] font-bold shadow hover:scale-105"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          {isEn ? "Make Cover" : "कवर बनाएं"}
                         </button>
-                      </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(idx)}
+                        className="p-1 rounded-lg bg-red-600/80 text-white hover:bg-red-600"
+                        title={isEn ? "Remove" : "हटाएं"}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
-
-            {/* Live Slider Preview Box */}
-            {form.images.length > 0 && (
-              <div className="mt-4 pt-3 border-t border-gold-500/20">
-                <div className="flex items-center justify-between text-[11px] text-gold-muted mb-2">
-                  <span className="font-semibold">{isEn ? "Live Slider Preview:" : "लाइव स्लाइडर पूर्वावलोकन:"}</span>
-                  <span>
-                    {previewSlideIdx + 1} / {form.images.length}
-                  </span>
-                </div>
-
-                <div className="relative h-44 sm:h-52 w-full max-w-lg mx-auto rounded-2xl overflow-hidden border border-gold-500/40 bg-black">
-                  <Image
-                    src={form.images[previewSlideIdx] || form.imageUrl}
-                    alt="Slider Preview"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-
-                  {form.images.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPreviewSlideIdx((prev) =>
-                            prev === 0 ? form.images.length - 1 : prev - 1
-                          )
-                        }
-                        className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/70 hover:bg-gold-500 text-gold-300 hover:text-spiritual-dark transition-colors"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPreviewSlideIdx((prev) =>
-                            prev === form.images.length - 1 ? 0 : prev + 1
-                          )
-                        }
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/70 hover:bg-gold-500 text-gold-300 hover:text-spiritual-dark transition-colors"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Description */}
           <div>
             <label className="block text-xs font-semibold text-gold-300 mb-1">
-              {isEn ? "Description (Hindi) *" : "विवरण (हिन्दी) *"}
+              {isEn ? "Description & Spiritual Importance (Hindi) *" : "धाम परिचय एवं आध्यात्मिक महत्व (हिन्दी) *"}
             </label>
             <textarea
               rows={3}
@@ -533,15 +545,29 @@ export default function AdminDhamsPage() {
           <div className="flex items-center gap-3 pt-2 border-t border-gold-500/20">
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5"
+              disabled={isSaving}
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 disabled:opacity-50 disabled:pointer-events-none hover:scale-105 transition-transform"
             >
-              <Save className="w-4 h-4" />
-              <span>{editingId ? (isEn ? "Update Dham" : "धाम अपडेट करें") : (isEn ? "Save Dham" : "धाम सेव करें")}</span>
+              <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
+              <span>
+                {isSaving
+                  ? isEn
+                    ? "Saving to Database..."
+                    : "डेटाबेस में सहेजा जा रहा है..."
+                  : editingId
+                  ? isEn
+                    ? "Update Dham"
+                    : "धाम अपडेट करें"
+                  : isEn
+                  ? "Save Dham"
+                  : "धाम सेव करें"}
+              </span>
             </button>
             <button
               type="button"
+              disabled={isSaving}
               onClick={() => setShowAddForm(false)}
-              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70"
+              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70 disabled:opacity-50"
             >
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
@@ -553,7 +579,7 @@ export default function AdminDhamsPage() {
       <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/60 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Cover & Name" : "कवर फोटो व नाम"}</th>
                 <th className="p-3.5">{isEn ? "Gallery" : "गैलरी तस्वीरें"}</th>
@@ -566,9 +592,17 @@ export default function AdminDhamsPage() {
               {dhams.map((dham) => {
                 const photosCount = (dham.images && dham.images.length) || 1;
                 const coverPhoto = dham.imageUrl || dham.images?.[0] || "/assets/sadhauli-dham-2.jpg";
+                const isHighlighted = highlightedId === dham.id;
 
                 return (
-                  <tr key={dham.id} className="hover:bg-gold-500/5 transition-colors">
+                  <tr
+                    key={dham.id}
+                    className={`transition-colors ${
+                      isHighlighted
+                        ? "bg-amber-500/20 ring-1 ring-gold-400"
+                        : "hover:bg-gold-500/5"
+                    }`}
+                  >
                     <td className="p-3.5 flex items-center gap-3">
                       <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-gold-500/30">
                         <Image src={coverPhoto} alt={dham.nameHi} fill className="object-cover" />
@@ -604,18 +638,18 @@ export default function AdminDhamsPage() {
                       </a>
                     </td>
 
-                    <td className="p-3.5 text-right space-x-2">
+                    <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
                       <button
                         onClick={() => handleEdit(dham)}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20"
-                        title={isEn ? "Edit" : "संपादित करें"}
+                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Edit Dham" : "संपादित करें"}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => handleDelete(dham.id)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20"
-                        title={isEn ? "Delete" : "हटाएं"}
+                        onClick={() => setDeleteCandidate(dham)}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Delete Dham" : "हटाएं"}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>

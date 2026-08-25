@@ -48,14 +48,19 @@ export default function AdminSettingsPage() {
     return () => unsub();
   }, []);
 
-  const handleSaveSettings = (e: React.FormEvent) => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     store.updateSettings(settings);
+    await store.saveToStorage("prannath_settings_v2", settings);
+    setIsSaving(false);
     setToast(true);
     setTimeout(() => setToast(false), 2500);
   };
 
-  const handleUpdateCredentials = (e: React.FormEvent) => {
+  const handleUpdateCredentials = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
 
@@ -84,11 +89,14 @@ export default function AdminSettingsPage() {
       }
     }
 
+    setIsSaving(true);
     store.updateAdminCredentials({
       username: cleanUser,
       email: cleanEmail,
       ...(newPassword ? { password: newPassword } : {}),
     });
+    await store.saveToStorage("prannath_admin_credentials_v2", store.getAdminCredentials());
+    setIsSaving(false);
 
     setAuthToast(true);
     setCurrentPassword("");

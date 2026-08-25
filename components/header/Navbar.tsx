@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSelector } from "./LanguageSelector";
+import { ThemeToggle } from "./ThemeToggle";
 import {
   Menu,
   X,
@@ -221,9 +222,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               })}
             </nav>
 
-            {/* Right Action Icons: Language Selector, Search, Mobile Menu Button */}
+            {/* Right Action Icons: Language Selector, Theme Toggle, Search, Mobile Menu Button */}
             <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
               <LanguageSelector />
+              <ThemeToggle />
 
               <button
                 onClick={onOpenSearch}

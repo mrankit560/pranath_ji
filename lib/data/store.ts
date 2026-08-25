@@ -63,6 +63,8 @@ class DataStore {
   private readingHistory: { bookId: string; title: string; page: number; updatedAt: string }[] = [];
   private listeners: Listener[] = [];
   private initialized = false;
+  private isSyncing = false;
+  private lastLocalMutationTime = 0;
 
   constructor() {
     this.init();
@@ -74,10 +76,16 @@ class DataStore {
 
   private init() {
     if (!this.isClient()) return;
+    this.initialized = true;
     this.loadFromStorage();
+    this.syncWithServer();
+
     try {
       window.addEventListener("storage", () => {
         this.loadFromStorage();
+        this.notify();
+      });
+      window.addEventListener("sadhauli_dham_store_updated", () => {
         this.notify();
       });
     } catch (e) {
@@ -89,6 +97,103 @@ class DataStore {
     if (!this.initialized && this.isClient()) {
       this.loadFromStorage();
       this.initialized = true;
+    }
+  }
+
+  // Asynchronously sync with the persistent server disk database (/api/data)
+  public async syncWithServer(): Promise<void> {
+    if (!this.isClient() || this.isSyncing) return;
+    this.isSyncing = true;
+    try {
+      const res = await fetch(`/api/data?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
+      if (res.ok) {
+        const serverData = await res.json();
+        if (serverData && typeof serverData === "object") {
+          let hasUpdates = false;
+          const serverUpdatedTime = serverData.updatedAt ? new Date(serverData.updatedAt).getTime() : 0;
+
+          // Helper to check whether server data should overwrite local cache
+          const shouldApplyServerData = (storageKey: string) => {
+            const localSavedTime = Number(localStorage.getItem(`${storageKey}_timestamp`) || "0");
+            // If local edit happened recently and after server timestamp, preserve local edit
+            if (localSavedTime > serverUpdatedTime && (Date.now() - localSavedTime) < 300000) {
+              return false;
+            }
+            return true;
+          };
+
+          if (Array.isArray(serverData.books) && shouldApplyServerData("prannath_books_v2")) {
+            this.books = serverData.books;
+            localStorage.setItem("prannath_books_v2", JSON.stringify(this.books));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.events) && shouldApplyServerData("prannath_events_v2")) {
+            this.events = serverData.events;
+            localStorage.setItem("prannath_events_v2", JSON.stringify(this.events));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.dhams) && shouldApplyServerData("prannath_dhams_v2")) {
+            this.dhams = serverData.dhams;
+            localStorage.setItem("prannath_dhams_v2", JSON.stringify(this.dhams));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.articles) && shouldApplyServerData("prannath_articles_v2")) {
+            this.articles = serverData.articles;
+            localStorage.setItem("prannath_articles_v2", JSON.stringify(this.articles));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.videos) && shouldApplyServerData("prannath_videos_v2")) {
+            this.videos = serverData.videos;
+            localStorage.setItem("prannath_videos_v2", JSON.stringify(this.videos));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.audioTracks) && shouldApplyServerData("prannath_audio_v2")) {
+            this.audioTracks = serverData.audioTracks;
+            localStorage.setItem("prannath_audio_v2", JSON.stringify(this.audioTracks));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.chitwaniBooks) && shouldApplyServerData("prannath_chitwani_books_v2")) {
+            this.chitwaniBooks = serverData.chitwaniBooks;
+            localStorage.setItem("prannath_chitwani_books_v2", JSON.stringify(this.chitwaniBooks));
+            hasUpdates = true;
+          }
+          if (Array.isArray(serverData.chitwaniVideos) && shouldApplyServerData("prannath_chitwani_videos_v2")) {
+            this.chitwaniVideos = serverData.chitwaniVideos;
+            localStorage.setItem("prannath_chitwani_videos_v2", JSON.stringify(this.chitwaniVideos));
+            hasUpdates = true;
+          }
+          if (serverData.dailyThought && shouldApplyServerData("prannath_thought_v2")) {
+            this.dailyThought = serverData.dailyThought;
+            localStorage.setItem("prannath_thought_v2", JSON.stringify(this.dailyThought));
+            hasUpdates = true;
+          }
+          if (serverData.settings && shouldApplyServerData("prannath_settings_v2")) {
+            this.settings = serverData.settings;
+            localStorage.setItem("prannath_settings_v2", JSON.stringify(this.settings));
+            hasUpdates = true;
+          }
+          if (serverData.aboutContent && shouldApplyServerData("prannath_about_v2")) {
+            this.aboutContent = serverData.aboutContent;
+            localStorage.setItem("prannath_about_v2", JSON.stringify(this.aboutContent));
+            hasUpdates = true;
+          }
+          if (serverData.adminCredentials && shouldApplyServerData("prannath_admin_credentials_v2")) {
+            this.adminCredentials = serverData.adminCredentials;
+            localStorage.setItem("prannath_admin_credentials_v2", JSON.stringify(this.adminCredentials));
+          }
+
+          if (hasUpdates) {
+            this.notify();
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("[Store] Server sync failed (offline or dev mode):", err);
+    } finally {
+      this.isSyncing = false;
     }
   }
 
@@ -180,12 +285,52 @@ class DataStore {
     }
   }
 
-  private saveToStorage(key: string, data: any) {
-    if (!this.isClient()) return;
+  // Save to client localStorage and asynchronously persist to server /api/data
+  public async saveToStorage(key: string, data: any): Promise<boolean> {
+    if (!this.isClient()) return false;
+    const now = Date.now();
+    this.lastLocalMutationTime = now;
+
     try {
       localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem(`${key}_timestamp`, String(now));
+      localStorage.setItem("prannath_last_global_mutation", String(now));
+
+      // Dispatch real-time local event across tabs & components
+      try {
+        window.dispatchEvent(new CustomEvent("sadhauli_dham_store_updated", { detail: { key, timestamp: now } }));
+      } catch {}
+
+      // Map storage keys to server JSON database keys
+      const keyMap: Record<string, string> = {
+        prannath_books_v2: "books",
+        prannath_videos_v2: "videos",
+        prannath_audio_v2: "audioTracks",
+        prannath_events_v2: "events",
+        prannath_articles_v2: "articles",
+        prannath_dhams_v2: "dhams",
+        prannath_about_v2: "aboutContent",
+        prannath_chitwani_books_v2: "chitwaniBooks",
+        prannath_chitwani_videos_v2: "chitwaniVideos",
+        prannath_thought_v2: "dailyThought",
+        prannath_settings_v2: "settings",
+        prannath_admin_credentials_v2: "adminCredentials",
+      };
+
+      const serverKey = keyMap[key];
+      if (serverKey) {
+        const response = await fetch("/api/data", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: serverKey, data }),
+          keepalive: true,
+        });
+        return response.ok;
+      }
+      return true;
     } catch (e) {
-      console.warn(`Could not save ${key} to localStorage:`, e);
+      console.warn(`Could not save ${key} to storage:`, e);
+      return false;
     }
   }
 
@@ -196,7 +341,7 @@ class DataStore {
     };
   }
 
-  private notify() {
+  public notify() {
     this.listeners.forEach((l) => {
       try {
         l();
@@ -207,7 +352,7 @@ class DataStore {
   }
 
   // --- Reset Store to Defaults ---
-  public resetToDefaults() {
+  public async resetToDefaults() {
     this.books = [...initialBooks];
     this.videos = [...initialVideos];
     this.audioTracks = [...initialAudioTracks];
@@ -232,6 +377,28 @@ class DataStore {
       localStorage.removeItem("prannath_chitwani_videos_v2");
       localStorage.removeItem("prannath_thought_v2");
       localStorage.removeItem("prannath_settings_v2");
+
+      try {
+        await fetch("/api/data", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fullData: {
+              books: this.books,
+              videos: this.videos,
+              audioTracks: this.audioTracks,
+              events: this.events,
+              articles: this.articles,
+              dhams: this.dhams,
+              aboutContent: this.aboutContent,
+              chitwaniBooks: this.chitwaniBooks,
+              chitwaniVideos: this.chitwaniVideos,
+              dailyThought: this.dailyThought,
+              settings: this.settings,
+            },
+          }),
+        });
+      } catch {}
     }
     this.notify();
   }
@@ -785,4 +952,3 @@ class DataStore {
 }
 
 export const store = new DataStore();
-

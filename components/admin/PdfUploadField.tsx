@@ -9,6 +9,7 @@ interface PdfUploadFieldProps {
   value: string;
   onChange: (url: string) => void;
   required?: boolean;
+  maxSizeMB?: number;
 }
 
 export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
@@ -16,6 +17,7 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
   value,
   onChange,
   required = false,
+  maxSizeMB = 100,
 }) => {
   const { language } = useI18n();
   const isEn = language === "en";
@@ -33,9 +35,8 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
       return;
     }
 
-    // Max 100MB for PDFs
-    if (file.size > 100 * 1024 * 1024) {
-      setError(isEn ? "PDF file size must be less than 100MB." : "PDF फ़ाइल का आकार 100MB से कम होना चाहिए।");
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      setError(isEn ? `PDF file size must be less than ${maxSizeMB}MB.` : `PDF फ़ाइल का आकार ${maxSizeMB}MB से कम होना चाहिए।`);
       return;
     }
 

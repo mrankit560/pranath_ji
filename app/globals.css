@@ -304,14 +304,48 @@ h1, h2, h3, h4, h5, h6 {
   transform-style: preserve-3d;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* ========================================================
+   LIGHT THEME MODE (Spiritual Warm Ivory & Saffron Palette)
+   ======================================================== */
+html[data-theme="light"], html.light, html.light body {
+  background-color: #fcf9f2 !important;
+  color: #2b1f13 !important;
 }
+
+html.light .spiritual-glass-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(184, 134, 11, 0.25) !important;
+  box-shadow: 0 10px 30px -5px rgba(184, 134, 11, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light header {
+  background: rgba(255, 252, 245, 0.95) !important;
+  border-bottom-color: rgba(184, 134, 11, 0.2) !important;
+}
+
+html.light .text-spiritual-ivory {
+  color: #26190e !important;
+}
+
+html.light .text-spiritual-ivory\/70,
+html.light .text-spiritual-ivory\/60,
+html.light .text-spiritual-ivory\/80 {
+  color: #5c432d !important;
+}
+
+html.light .bg-spiritual-navy,
+html.light .bg-spiritual-navy\/80,
+html.light .bg-spiritual-navy\/90,
+html.light .bg-spiritual-navy\/95 {
+  background-color: rgba(255, 252, 245, 0.96) !important;
+}
+
+html.light .bg-black\/60,
+html.light .bg-black\/70,
+html.light .bg-black\/80 {
+  background-color: rgba(245, 238, 222, 0.9) !important;
+}
+
 
 
 

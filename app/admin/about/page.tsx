@@ -41,13 +41,13 @@ export default function AdminAboutPage() {
     return () => unsub();
   }, []);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const qList = form.questionsHi.split("\n").map((q) => q.trim()).filter(Boolean);
     const sList = form.servicesListHi.split("\n").map((s) => s.trim()).filter(Boolean);
 
-    store.updateAboutContent({
+    const updatedAbout = {
       titleHi: form.titleHi,
       titleEn: form.titleEn,
       welcomeHi: form.welcomeHi,
@@ -64,7 +64,10 @@ export default function AdminAboutPage() {
       messageHeadingHi: form.messageHeadingHi,
       messageQuoteHi: form.messageQuoteHi,
       messageCtaHi: form.messageCtaHi,
-    });
+    };
+
+    store.updateAboutContent(updatedAbout);
+    await store.saveToStorage("prannath_about_v2", updatedAbout);
 
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);

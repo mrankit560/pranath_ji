@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { store } from "@/lib/data/store";
 import { Book } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Edit3, BookOpen, Save, X, Download } from "lucide-react";
+import { Plus, Trash2, Edit3, BookOpen, Save, X, Download, CheckCircle } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { PdfUploadField } from "@/components/admin/PdfUploadField";
 
@@ -12,9 +12,13 @@ export default function AdminBooksPage() {
   const { language } = useI18n();
   const isEn = language === "en";
 
-  const [books, setBooks] = useState<Book[]>(store.getBooks());
+  const [books, setBooks] = useState<Book[]>(() => store.getBooks());
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [deleteCandidate, setDeleteCandidate] = useState<Book | null>(null);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
     titleHi: "",
@@ -35,14 +39,25 @@ export default function AdminBooksPage() {
   });
 
   useEffect(() => {
+    setBooks(store.getBooks());
     const unsub = store.subscribe(() => {
       setBooks(store.getBooks());
     });
     return () => unsub();
   }, []);
 
-  const handleSave = (e: React.FormEvent) => {
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+
+    let savedId = editingId;
 
     if (editingId) {
       store.updateBook(editingId, {
@@ -62,9 +77,16 @@ export default function AdminBooksPage() {
         featured: form.featured,
         published: form.published,
       });
+      await store.saveToStorage("prannath_books_v2", store.getBooks());
+      showToast(
+        isEn
+          ? `✓ Book "${form.titleEn || form.titleHi}" updated and saved to database!`
+          : `✓ पुस्तक "${form.titleHi}" डेटाबेस में सफलतापूर्वक सुरक्षित हो गई!`
+      );
+      setHighlightedId(editingId);
       setEditingId(null);
     } else {
-      store.addBook({
+      const created = store.addBook({
         titleHi: form.titleHi,
         titleEn: form.titleEn,
         authorHi: form.authorHi,
@@ -81,9 +103,20 @@ export default function AdminBooksPage() {
         featured: form.featured,
         published: form.published,
       });
+      savedId = created.id;
+      await store.saveToStorage("prannath_books_v2", store.getBooks());
+      setHighlightedId(created.id);
+      showToast(
+        isEn
+          ? `✓ New Book "${form.titleEn || form.titleHi}" added and saved to database!`
+          : `✓ नई पुस्तक "${form.titleHi}" डेटाबेस में सफलतापूर्वक जुड़ गई!`
+      );
     }
 
+    setBooks(store.getBooks());
+    setIsSaving(false);
     setShowAddForm(false);
+
     setForm({
       titleHi: "",
       titleEn: "",
@@ -123,19 +156,87 @@ export default function AdminBooksPage() {
       published: book.published ?? true,
     });
     setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = (id: string) => {
-    const confirmMsg = isEn
-      ? "Are you sure you want to delete this PDF book?"
-      : "क्या आप वाकई इस PDF पुस्तक को हटाना चाहते हैं?";
-    if (confirm(confirmMsg)) {
-      store.deleteBook(id);
-    }
+  const confirmDelete = async () => {
+    if (!deleteCandidate) return;
+    const title = deleteCandidate.titleHi || deleteCandidate.titleEn;
+    setIsSaving(true);
+    store.deleteBook(deleteCandidate.id);
+    await store.saveToStorage("prannath_books_v2", store.getBooks());
+    setBooks(store.getBooks());
+    setIsSaving(false);
+    setDeleteCandidate(null);
+    showToast(
+      isEn
+        ? `✓ Book "${title}" deleted from database.`
+        : `✓ पुस्तक "${title}" डेटाबेस से सफलतापूर्वक हटा दी गई।`
+    );
   };
 
   return (
     <div className="space-y-6 max-w-6xl">
+      {/* In-App Delete Confirmation Modal */}
+      {deleteCandidate && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">
+                {isEn ? "Delete PDF Book?" : "पुस्तक हटाएं?"}
+              </h3>
+              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+                {isEn
+                  ? `Are you sure you want to permanently delete "${deleteCandidate.titleEn || deleteCandidate.titleHi}"?`
+                  : `क्या आप वाकई "${deleteCandidate.titleHi}" को डेटाबेस से हटाना चाहते हैं?`}
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg transition-all"
+              >
+                {isEn ? "Yes, Delete Now" : "हाँ, तुरंत हटाएं"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteCandidate(null)}
+                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+              >
+                {isEn ? "Cancel" : "रद्द करें"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification Alert */}
+      {toastMessage && (
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-emerald-300">
+              {isEn ? "Database Updated" : "डेटाबेस अपडेट"}
+            </div>
+            <div className="text-xs text-spiritual-ivory font-medium">
+              {toastMessage}
+            </div>
+          </div>
+          <button
+            onClick={() => setToastMessage(null)}
+            className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Top Header */}
       <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
         <div>
@@ -154,7 +255,7 @@ export default function AdminBooksPage() {
             setEditingId(null);
             setShowAddForm(!showAddForm);
           }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -163,32 +264,35 @@ export default function AdminBooksPage() {
                 ? "Close Form"
                 : "फॉर्म बंद करें"
               : isEn
-              ? "Add New PDF Book"
-              : "नई PDF पुस्तक जोड़ें"}
+              ? "Add New Book"
+              : "नई पुस्तक जोड़ें"}
           </span>
         </button>
       </div>
 
-      {/* Add / Edit Form */}
+      {/* Add / Edit Book Form */}
       {showAddForm && (
         <form
           onSubmit={handleSave}
-          className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in"
+          className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 space-y-5 animate-fade-in shadow-2xl bg-spiritual-navy/80"
         >
-          <div className="flex items-center justify-between pb-2 border-b border-gold-500/20">
-            <h3 className="text-sm font-bold text-gold-300 uppercase tracking-wider">
+          <div className="flex items-center justify-between border-b border-gold-500/20 pb-3">
+            <h2 className="text-base font-bold text-gold-300 font-spiritual-heading">
               {editingId
                 ? isEn
-                  ? "Edit PDF Book"
+                  ? "Edit PDF Book Details"
                   : "पुस्तक विवरण संपादित करें"
                 : isEn
-                ? "Add New PDF Book"
-                : "नई पुस्तक जोड़ें"}
-            </h3>
+                ? "Add New PDF Book to Library"
+                : "ग्रंथालय में नई PDF पुस्तक जोड़ें"}
+            </h2>
             <button
               type="button"
-              onClick={() => setShowAddForm(false)}
-              className="p-1 text-spiritual-ivory/60 hover:text-gold-300"
+              onClick={() => {
+                setEditingId(null);
+                setShowAddForm(false);
+              }}
+              className="p-1 rounded-lg hover:bg-white/10 text-spiritual-ivory/70"
             >
               <X className="w-4 h-4" />
             </button>
@@ -204,20 +308,20 @@ export default function AdminBooksPage() {
                 required
                 value={form.titleHi}
                 onChange={(e) => setForm({ ...form, titleHi: e.target.value })}
-                placeholder="उदा. श्री बीतक साहेब"
+                placeholder="उदा. श्री बीतक साहेब (प्रामाणिक संस्करण)"
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Book Title (English)" : "पुस्तक शीर्षक (English)"}
+                {isEn ? "Book Title (English)" : "पुस्तक शीर्षक (अंग्रेज़ी)"}
               </label>
               <input
                 type="text"
                 value={form.titleEn}
                 onChange={(e) => setForm({ ...form, titleEn: e.target.value })}
-                placeholder="e.g., Shri Bitak Saheb"
+                placeholder="e.g. Shri Bitak Saheb"
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               />
             </div>
@@ -226,28 +330,24 @@ export default function AdminBooksPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Book Category *" : "पुस्तक श्रेणी *"}
+                {isEn ? "Category *" : "श्रेणी *"}
               </label>
               <select
                 value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                onChange={(e) => setForm({ ...form, category: e.target.value as Book["category"] })}
                 className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
               >
-                <option value="bitak_saheb">
-                  {isEn ? "2. Shree Bitak Saheb" : "२. श्री बीतक साहेब"}
-                </option>
-                <option value="tartam_vani">
-                  {isEn ? "3. Tartam Vani" : "३. तारतम वाणी"}
-                </option>
-                <option value="other">
-                  {isEn ? "4. Other Books" : "४. अन्य पुस्तकें"}
-                </option>
+                <option value="bitak_saheb">{isEn ? "Shri Bitak Saheb" : "श्री बीतक साहेब"}</option>
+                <option value="tartam_vani">{isEn ? "Shri Tartam Vani" : "श्री तारतम वाणी"}</option>
+                <option value="commentary">{isEn ? "Commentary / Teeka" : "टीका एवं भाष्य"}</option>
+                <option value="biography">{isEn ? "Charitra / Biography" : "चरित्र व जीवन गाथा"}</option>
+                <option value="spiritual">{isEn ? "Spiritual / Other" : "आध्यात्मिक ज्ञान"}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Author / Commentator" : "लेखक / टीकाकार"}
+                {isEn ? "Author / Research Cell (Hindi)" : "लेखक / शोध पीठ (हिन्दी)"}
               </label>
               <input
                 type="text"
@@ -259,7 +359,7 @@ export default function AdminBooksPage() {
 
             <div>
               <label className="block text-xs font-semibold text-gold-300 mb-1">
-                {isEn ? "Total Pages Count" : "कुल पृष्ठ संख्या (Pages)"}
+                {isEn ? "Page Count" : "कुल पृष्ठ संख्या"}
               </label>
               <input
                 type="number"
@@ -270,30 +370,28 @@ export default function AdminBooksPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-2xl bg-black/40 border border-gold-500/20">
-            {/* Book Cover Photo Upload */}
+          {/* Book Cover Image & PDF Document Upload Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ImageUploadField
-              label={isEn ? "Book Cover Photo *" : "पुस्तक कवर फोटो (Cover Photo) *"}
+              label={isEn ? "Book Cover Image (Local Upload / URL)" : "पुस्तक मुखपृष्ठ (कवर फोटो)"}
               value={form.coverUrl}
               onChange={(url) => setForm({ ...form, coverUrl: url })}
-              recommendedSize="600 × 900 px"
-              aspectRatio="2:3 (पोर्ट्रेट बुक कवर)"
-              maxSizeMB={5}
-              helperText={isEn ? "Shows as the main book cover in PDF Library" : "लाइब्रेरी में पुस्तक के मुख्य कवर के रूप में दिखेगी"}
+              recommendedSize="600 × 900 px (3:4 Book Ratio)"
+              aspectRatio="3:4 (पोर्ट्रेट पुस्तक)"
+              maxSizeMB={4}
             />
 
-            {/* Book PDF Upload */}
             <PdfUploadField
-              label={isEn ? "Book PDF File Document *" : "पुस्तक PDF फाइल (E-Book File) *"}
+              label={isEn ? "Scripture PDF File (Upload / Link) *" : "शास्त्र PDF ग्रन्थ (अपलोड / लिंक) *"}
               value={form.pdfUrl}
               onChange={(url) => setForm({ ...form, pdfUrl: url })}
-              required
+              maxSizeMB={50}
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gold-300 mb-1">
-              {isEn ? "Short Book Description (Hindi)" : "संक्षिप्त पुस्तक विवरण (हिन्दी)"}
+              {isEn ? "Short Summary / Overview (Hindi)" : "संक्षिप्त सारांश / परिचय (हिन्दी)"}
             </label>
             <textarea
               rows={2}
@@ -323,15 +421,32 @@ export default function AdminBooksPage() {
           <div className="flex items-center gap-3 pt-2">
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5"
+              disabled={isSaving}
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none"
             >
-              <Save className="w-4 h-4" />
-              <span>{editingId ? (isEn ? "Update Book" : "पुस्तक अपडेट करें") : (isEn ? "Save Book" : "पुस्तक सेव करें")}</span>
+              <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
+              <span>
+                {isSaving
+                  ? isEn
+                    ? "Saving to Database..."
+                    : "डेटाबेस में सहेजा जा रहा है..."
+                  : editingId
+                  ? isEn
+                    ? "Update Book"
+                    : "पुस्तक अपडेट करें"
+                  : isEn
+                  ? "Save Book"
+                  : "पुस्तक सेव करें"}
+              </span>
             </button>
             <button
               type="button"
-              onClick={() => setShowAddForm(false)}
-              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70"
+              disabled={isSaving}
+              onClick={() => {
+                setEditingId(null);
+                setShowAddForm(false);
+              }}
+              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70 hover:bg-white/5 disabled:opacity-50"
             >
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
@@ -341,9 +456,15 @@ export default function AdminBooksPage() {
 
       {/* Books Table */}
       <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
+        <div className="p-4 bg-spiritual-navy/80 border-b border-gold-500/20 flex items-center justify-between">
+          <div className="text-xs text-gold-300 font-bold">
+            📚 {isEn ? "Total PDF Books:" : "कुल सूचीबद्ध पुस्तकें:"} {books.length}
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/60 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Book Title" : "पुस्तक शीर्षक"}</th>
                 <th className="p-3.5">{isEn ? "Category" : "श्रेणी"}</th>
@@ -353,41 +474,51 @@ export default function AdminBooksPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gold-500/10">
-              {books.map((book) => (
-                <tr key={book.id} className="hover:bg-gold-500/5 transition-colors">
-                  <td className="p-3.5 font-bold text-spiritual-ivory max-w-sm">
-                    {isEn ? book.titleEn || book.titleHi : book.titleHi}
-                    {book.bookBlogHi && (
-                      <span className="ml-2 text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">
-                        {isEn ? "Has Blog" : "समीक्षा उपलब्ध"}
+              {books.map((book) => {
+                const isHighlighted = highlightedId === book.id;
+                return (
+                  <tr
+                    key={book.id}
+                    className={`transition-colors ${
+                      isHighlighted
+                        ? "bg-amber-500/20 ring-1 ring-gold-400"
+                        : "hover:bg-gold-500/5"
+                    }`}
+                  >
+                    <td className="p-3.5 font-bold text-spiritual-ivory max-w-sm">
+                      {isEn ? book.titleEn || book.titleHi : book.titleHi}
+                      {book.bookBlogHi && (
+                        <span className="ml-2 text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">
+                          {isEn ? "Has Blog" : "समीक्षा उपलब्ध"}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3.5">
+                      <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] uppercase font-bold">
+                        {book.category.replace("_", " ")}
                       </span>
-                    )}
-                  </td>
-                  <td className="p-3.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] uppercase font-bold">
-                      {book.category.replace("_", " ")}
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-spiritual-ivory/70">{book.authorHi || book.authorEn}</td>
-                  <td className="p-3.5 font-mono text-gold-300">{book.pages}</td>
-                  <td className="p-3.5 text-right space-x-2">
-                    <button
-                      onClick={() => handleEdit(book)}
-                      className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20"
-                      title={isEn ? "Edit" : "संपादित करें"}
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(book.id)}
-                      className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20"
-                      title={isEn ? "Delete" : "हटाएं"}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="p-3.5 text-spiritual-ivory/70">{book.authorHi || book.authorEn}</td>
+                    <td className="p-3.5 font-mono text-gold-300">{book.pages}</td>
+                    <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
+                      <button
+                        onClick={() => handleEdit(book)}
+                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Edit Book" : "पुस्तक संपादित करें"}
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setDeleteCandidate(book)}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Delete Book" : "पुस्तक हटाएं"}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import {
   initialBooks,
   initialScriptures,
@@ -21,9 +19,6 @@ import {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const DB_FILE = path.join(DATA_DIR, "db.json");
 
 function getDefaultData() {
   return {
@@ -51,40 +46,89 @@ function getDefaultData() {
   };
 }
 
-function readDatabase() {
+// Helper to safely access Cloudflare KV binding if present
+function getCloudflareKv(): any {
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (typeof globalThis !== "undefined") {
+      const g = globalThis as any;
+      if (g.PARAMDHAM_KV) return g.PARAMDHAM_KV;
+      if (g.DATA_STORE) return g.DATA_STORE;
+      if (g.PARAMDHAM_DB) return g.PARAMDHAM_DB;
+      if (g.__ENV__?.PARAMDHAM_KV) return g.__ENV__.PARAMDHAM_KV;
+      if (g.env?.PARAMDHAM_KV) return g.env.PARAMDHAM_KV;
     }
-    if (!fs.existsSync(DB_FILE)) {
+    if (typeof process !== "undefined" && (process as any).env) {
+      const p = (process as any).env;
+      if (p.PARAMDHAM_KV) return p.PARAMDHAM_KV;
+      if (p.DATA_STORE) return p.DATA_STORE;
+    }
+  } catch {}
+  return null;
+}
+
+function readNodeDiskDatabase() {
+  try {
+    const nodeRequire = eval("require");
+    const fs = nodeRequire("fs");
+    const path = nodeRequire("path");
+    const dataDir = path.join(process.cwd(), "data");
+    const dbFile = path.join(dataDir, "db.json");
+
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    if (!fs.existsSync(dbFile)) {
       const defaultData = getDefaultData();
-      fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2), "utf-8");
+      fs.writeFileSync(dbFile, JSON.stringify(defaultData, null, 2), "utf-8");
       return defaultData;
     }
-    const content = fs.readFileSync(DB_FILE, "utf-8");
+    const content = fs.readFileSync(dbFile, "utf-8");
     return JSON.parse(content);
-  } catch (error) {
-    console.error("[API Data] Failed to read database, returning defaults:", error);
+  } catch {
     return getDefaultData();
   }
 }
 
-function writeDatabase(data: any) {
+function writeNodeDiskDatabase(data: any) {
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    const nodeRequire = eval("require");
+    const fs = nodeRequire("fs");
+    const path = nodeRequire("path");
+    const dataDir = path.join(process.cwd(), "data");
+    const dbFile = path.join(dataDir, "db.json");
+
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
     }
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), "utf-8");
+    fs.writeFileSync(dbFile, JSON.stringify(data, null, 2), "utf-8");
     return true;
-  } catch (error) {
-    console.error("[API Data] Failed to write database:", error);
+  } catch {
     return false;
   }
 }
 
-// GET: Retrieve the complete data store
+// GET: Retrieve the complete data store (From Cloudflare KV or Local Disk)
 export async function GET() {
-  const data = readDatabase();
+  const kv = getCloudflareKv();
+  if (kv) {
+    try {
+      const raw = await kv.get("paramdham_portal_data", "json");
+      if (raw && typeof raw === "object") {
+        return NextResponse.json(raw, {
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "Surrogate-Control": "no-store",
+          },
+        });
+      }
+    } catch (err) {
+      console.warn("[API Data] KV read failed, falling back to disk snapshot:", err);
+    }
+  }
+
+  const data = readNodeDiskDatabase();
   return NextResponse.json(data, {
     headers: {
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
@@ -99,43 +143,50 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const currentData = readDatabase();
+    const kv = getCloudflareKv();
+    let currentData: any = null;
+
+    if (kv) {
+      try {
+        currentData = await kv.get("paramdham_portal_data", "json");
+      } catch {}
+    }
+    if (!currentData) {
+      currentData = readNodeDiskDatabase();
+    }
 
     let updatedData = { ...currentData };
 
     if (body.key && body.data !== undefined) {
-      // Partial key update (e.g. { key: "events", data: [...] })
       updatedData[body.key] = body.data;
     } else if (body.fullData) {
-      // Full database replacement
       updatedData = { ...currentData, ...body.fullData };
     } else {
-      // Direct merge of passed fields
       updatedData = { ...currentData, ...body };
     }
 
     updatedData.updatedAt = new Date().toISOString();
 
-    const success = writeDatabase(updatedData);
-
-    if (!success) {
-      return NextResponse.json(
-        { error: "Failed to persist data to server disk" },
-        {
-          status: 500,
-          headers: {
-            "Cache-Control": "no-store, no-cache, must-revalidate",
-            "Pragma": "no-cache",
-          },
-        }
-      );
+    // 1. Write to Cloudflare KV if available
+    let kvSaved = false;
+    if (kv) {
+      try {
+        await kv.put("paramdham_portal_data", JSON.stringify(updatedData));
+        kvSaved = true;
+      } catch (kvErr) {
+        console.error("[API Data] KV write error:", kvErr);
+      }
     }
+
+    // 2. Write to Node Disk if available (localhost)
+    const diskSaved = writeNodeDiskDatabase(updatedData);
 
     return NextResponse.json(
       {
         success: true,
         updatedAt: updatedData.updatedAt,
         data: updatedData,
+        storage: { kv: kvSaved, disk: diskSaved },
       },
       {
         headers: {

@@ -79,6 +79,17 @@ export default function AdminEventsPage() {
       ? `${form.endDate}T18:00:00.000Z`
       : "";
 
+    const payload = {
+      id: editingId,
+      titleHi: form.titleHi,
+      titleEn: form.titleEn,
+      startAt: startAtIso,
+      endAt: endAtIso,
+      timeStr: form.timeStr,
+      location: form.location,
+      status: form.status,
+    };
+    console.log("SAVE ATTEMPT", payload);
     let savedId = editingId;
 
     if (editingId) {
@@ -99,7 +110,8 @@ export default function AdminEventsPage() {
         status: form.status,
       });
       // Force disk save and await
-      await store.saveToStorage("prannath_events_v2", store.getEvents());
+      const saveSuccess = await store.saveToStorage("prannath_events_v2", store.getEvents());
+      console.log("SAVE RESULT", { success: saveSuccess, eventsCount: store.getEvents().length }, saveSuccess ? null : "Failed to persist");
       showToast(
         isEn
           ? `✓ Event "${form.titleEn || form.titleHi}" updated and saved to database!`

@@ -157,63 +157,75 @@ class DataStore {
         const serverData = await res.json();
         if (serverData && typeof serverData === "object") {
           let hasUpdates = false;
+          const serverUpdatedTime = serverData.updatedAt ? new Date(serverData.updatedAt).getTime() : 0;
 
-          if (Array.isArray(serverData.books)) {
+          // Helper to check whether server data should overwrite local cache.
+          // If the user made a local edit in this browser after or equal to the server's build timestamp,
+          // we PRESERVE the user's edits and NEVER let a stale edge/Cloudflare snapshot overwrite them!
+          const shouldApplyServerData = (storageKey: string) => {
+            const localSavedTime = Number(localStorage.getItem(`${storageKey}_timestamp`) || "0");
+            if (localSavedTime > 0 && localSavedTime >= serverUpdatedTime) {
+              return false;
+            }
+            return true;
+          };
+
+          if (Array.isArray(serverData.books) && shouldApplyServerData("prannath_books_v2")) {
             this.books = serverData.books;
             localStorage.setItem("prannath_books_v2", JSON.stringify(this.books));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.events)) {
+          if (Array.isArray(serverData.events) && shouldApplyServerData("prannath_events_v2")) {
             this.events = serverData.events;
             localStorage.setItem("prannath_events_v2", JSON.stringify(this.events));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.dhams)) {
+          if (Array.isArray(serverData.dhams) && shouldApplyServerData("prannath_dhams_v2")) {
             this.dhams = serverData.dhams;
             localStorage.setItem("prannath_dhams_v2", JSON.stringify(this.dhams));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.articles)) {
+          if (Array.isArray(serverData.articles) && shouldApplyServerData("prannath_articles_v2")) {
             this.articles = serverData.articles;
             localStorage.setItem("prannath_articles_v2", JSON.stringify(this.articles));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.videos)) {
+          if (Array.isArray(serverData.videos) && shouldApplyServerData("prannath_videos_v2")) {
             this.videos = serverData.videos;
             localStorage.setItem("prannath_videos_v2", JSON.stringify(this.videos));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.audioTracks)) {
+          if (Array.isArray(serverData.audioTracks) && shouldApplyServerData("prannath_audio_v2")) {
             this.audioTracks = serverData.audioTracks;
             localStorage.setItem("prannath_audio_v2", JSON.stringify(this.audioTracks));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.chitwaniBooks)) {
+          if (Array.isArray(serverData.chitwaniBooks) && shouldApplyServerData("prannath_chitwani_books_v2")) {
             this.chitwaniBooks = serverData.chitwaniBooks;
             localStorage.setItem("prannath_chitwani_books_v2", JSON.stringify(this.chitwaniBooks));
             hasUpdates = true;
           }
-          if (Array.isArray(serverData.chitwaniVideos)) {
+          if (Array.isArray(serverData.chitwaniVideos) && shouldApplyServerData("prannath_chitwani_videos_v2")) {
             this.chitwaniVideos = serverData.chitwaniVideos;
             localStorage.setItem("prannath_chitwani_videos_v2", JSON.stringify(this.chitwaniVideos));
             hasUpdates = true;
           }
-          if (serverData.dailyThought) {
+          if (serverData.dailyThought && shouldApplyServerData("prannath_thought_v2")) {
             this.dailyThought = serverData.dailyThought;
             localStorage.setItem("prannath_thought_v2", JSON.stringify(this.dailyThought));
             hasUpdates = true;
           }
-          if (serverData.settings) {
+          if (serverData.settings && shouldApplyServerData("prannath_settings_v2")) {
             this.settings = serverData.settings;
             localStorage.setItem("prannath_settings_v2", JSON.stringify(this.settings));
             hasUpdates = true;
           }
-          if (serverData.aboutContent) {
+          if (serverData.aboutContent && shouldApplyServerData("prannath_about_v2")) {
             this.aboutContent = serverData.aboutContent;
             localStorage.setItem("prannath_about_v2", JSON.stringify(this.aboutContent));
             hasUpdates = true;
           }
-          if (serverData.adminCredentials) {
+          if (serverData.adminCredentials && shouldApplyServerData("prannath_admin_credentials_v2")) {
             this.adminCredentials = serverData.adminCredentials;
             localStorage.setItem("prannath_admin_credentials_v2", JSON.stringify(this.adminCredentials));
           }
@@ -351,6 +363,7 @@ class DataStore {
 
       const serverKey = keyMap[key];
       if (serverKey) {
+        console.log("SAVE ATTEMPT /api/data", { serverKey, itemsCount: Array.isArray(data) ? data.length : 1 });
         const response = await fetch("/api/data", {
           method: "POST",
           headers: {
@@ -360,6 +373,7 @@ class DataStore {
           body: JSON.stringify({ key: serverKey, data }),
           keepalive: true,
         });
+        console.log("SAVE RESULT /api/data", { ok: response.ok, status: response.status, statusText: response.statusText });
         return response.ok;
       }
       return true;

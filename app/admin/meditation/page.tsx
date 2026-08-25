@@ -14,6 +14,7 @@ import {
   FileText,
   Save,
   X,
+  CheckCircle,
 } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { PdfUploadField } from "@/components/admin/PdfUploadField";
@@ -23,12 +24,15 @@ export default function AdminMeditationPage() {
   const isEn = language === "en";
 
   const [activeTab, setActiveTab] = useState<"articles" | "books" | "videos">("articles");
-  const [articles, setArticles] = useState<Article[]>(store.getChitwaniArticles());
-  const [books, setBooks] = useState<ChitwaniBook[]>(store.getChitwaniBooks());
-  const [videos, setVideos] = useState<ChitwaniVideo[]>(store.getChitwaniVideos());
+  const [articles, setArticles] = useState<Article[]>(() => store.getChitwaniArticles());
+  const [books, setBooks] = useState<ChitwaniBook[]>(() => store.getChitwaniBooks());
+  const [videos, setVideos] = useState<ChitwaniVideo[]>(() => store.getChitwaniVideos());
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [deleteCandidate, setDeleteCandidate] = useState<{ type: "article" | "book" | "video"; item: any } | null>(null);
 
   // Form states
   const [articleForm, setArticleForm] = useState({
@@ -65,6 +69,9 @@ export default function AdminMeditationPage() {
   });
 
   useEffect(() => {
+    setArticles(store.getChitwaniArticles());
+    setBooks(store.getChitwaniBooks());
+    setVideos(store.getChitwaniVideos());
     const unsub = store.subscribe(() => {
       setArticles(store.getChitwaniArticles());
       setBooks(store.getChitwaniBooks());
@@ -73,8 +80,16 @@ export default function AdminMeditationPage() {
     return () => unsub();
   }, []);
 
-  const handleSaveArticle = (e: React.FormEvent) => {
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  };
+
+  const handleSaveArticle = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     if (editingId) {
       store.updateArticle(editingId, {
         titleHi: articleForm.titleHi,
@@ -87,6 +102,8 @@ export default function AdminMeditationPage() {
         author: articleForm.author,
         readTime: articleForm.readTime,
       });
+      await store.saveToStorage("prannath_articles_v2", store.getArticles());
+      showToast(isEn ? "✓ Chitwani Article updated and saved to database!" : "✓ चितवनी लेख डेटाबेस में अपडेट हो गया!");
       setEditingId(null);
     } else {
       store.addArticle({
@@ -104,12 +121,17 @@ export default function AdminMeditationPage() {
         readTime: articleForm.readTime,
         status: "published",
       });
+      await store.saveToStorage("prannath_articles_v2", store.getArticles());
+      showToast(isEn ? "✓ New Chitwani Article added and saved to database!" : "✓ नया चितवनी लेख डेटाबेस में जुड़ गया!");
     }
+    setArticles(store.getChitwaniArticles());
+    setIsSaving(false);
     setShowAddForm(false);
   };
 
-  const handleSaveBook = (e: React.FormEvent) => {
+  const handleSaveBook = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     if (editingId) {
       store.updateChitwaniBook(editingId, {
         titleHi: bookForm.titleHi,
@@ -121,6 +143,8 @@ export default function AdminMeditationPage() {
         pdfUrl: bookForm.pdfUrl,
         pages: Number(bookForm.pages),
       });
+      await store.saveToStorage("prannath_chitwani_books_v2", store.getChitwaniBooks());
+      showToast(isEn ? "✓ Chitwani Book updated and saved to database!" : "✓ चितवनी पुस्तक डेटाबेस में अपडेट हो गई!");
       setEditingId(null);
     } else {
       store.addChitwaniBook({
@@ -133,12 +157,17 @@ export default function AdminMeditationPage() {
         pdfUrl: bookForm.pdfUrl,
         pages: Number(bookForm.pages),
       });
+      await store.saveToStorage("prannath_chitwani_books_v2", store.getChitwaniBooks());
+      showToast(isEn ? "✓ New Chitwani Book added and saved to database!" : "✓ नई चितवनी पुस्तक डेटाबेस में जुड़ गई!");
     }
+    setBooks(store.getChitwaniBooks());
+    setIsSaving(false);
     setShowAddForm(false);
   };
 
-  const handleSaveVideo = (e: React.FormEvent) => {
+  const handleSaveVideo = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     if (editingId) {
       store.updateChitwaniVideo(editingId, {
         titleHi: videoForm.titleHi,
@@ -149,6 +178,8 @@ export default function AdminMeditationPage() {
         descriptionHi: videoForm.descriptionHi,
         descriptionEn: videoForm.descriptionEn,
       });
+      await store.saveToStorage("prannath_chitwani_videos_v2", store.getChitwaniVideos());
+      showToast(isEn ? "✓ Chitwani Video updated and saved to database!" : "✓ चितवनी वीडियो डेटाबेस में अपडेट हो गया!");
       setEditingId(null);
     } else {
       store.addChitwaniVideo({
@@ -160,12 +191,86 @@ export default function AdminMeditationPage() {
         descriptionHi: videoForm.descriptionHi,
         descriptionEn: videoForm.descriptionEn,
       });
+      await store.saveToStorage("prannath_chitwani_videos_v2", store.getChitwaniVideos());
+      showToast(isEn ? "✓ New Chitwani Video added and saved to database!" : "✓ नया चितवनी वीडियो डेटाबेस में जुड़ गया!");
     }
+    setVideos(store.getChitwaniVideos());
+    setIsSaving(false);
     setShowAddForm(false);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteCandidate) return;
+    setIsSaving(true);
+    if (deleteCandidate.type === "article") {
+      store.deleteArticle(deleteCandidate.item.id);
+      await store.saveToStorage("prannath_articles_v2", store.getArticles());
+      setArticles(store.getChitwaniArticles());
+    } else if (deleteCandidate.type === "book") {
+      store.deleteChitwaniBook(deleteCandidate.item.id);
+      await store.saveToStorage("prannath_chitwani_books_v2", store.getChitwaniBooks());
+      setBooks(store.getChitwaniBooks());
+    } else if (deleteCandidate.type === "video") {
+      store.deleteChitwaniVideo(deleteCandidate.item.id);
+      await store.saveToStorage("prannath_chitwani_videos_v2", store.getChitwaniVideos());
+      setVideos(store.getChitwaniVideos());
+    }
+    setIsSaving(false);
+    setDeleteCandidate(null);
+    showToast(isEn ? "✓ Item removed from database." : "✓ सामग्री डेटाबेस से हटा दी गई।");
   };
 
   return (
     <div className="space-y-6 max-w-6xl">
+      {/* Toast Notification Alert */}
+      {toastMessage && (
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-emerald-300">{isEn ? "Database Updated" : "डेटाबेस अपडेट"}</div>
+            <div className="text-xs text-spiritual-ivory font-medium">{toastMessage}</div>
+          </div>
+          <button onClick={() => setToastMessage(null)} className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* In-App Delete Confirmation Modal */}
+      {deleteCandidate && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">{isEn ? "Delete Item?" : "सामग्री हटाएं?"}</h3>
+              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+                {isEn ? "Are you sure you want to permanently delete this item from the database?" : "क्या आप वाकई इसे डेटाबेस से हटाना चाहते हैं?"}
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-lg transition-all"
+              >
+                {isEn ? "Yes, Delete Now" : "हाँ, तुरंत हटाएं"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteCandidate(null)}
+                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+              >
+                {isEn ? "Cancel" : "रद्द करें"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header Banner */}
       <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
         <div>
@@ -184,7 +289,7 @@ export default function AdminMeditationPage() {
             setEditingId(null);
             setShowAddForm(!showAddForm);
           }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -199,506 +304,264 @@ export default function AdminMeditationPage() {
         </button>
       </div>
 
-      {/* Subcategory Switcher Tabs */}
-      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-black/50 border border-gold-500/30 max-w-md">
+      {/* Tab Navigation */}
+      <div className="flex gap-2 border-b border-gold-500/20 pb-3">
         <button
           onClick={() => {
             setActiveTab("articles");
             setShowAddForm(false);
+            setEditingId(null);
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === "articles"
               ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-              : "text-spiritual-ivory/70 hover:text-gold-300"
+              : "bg-spiritual-card text-spiritual-ivory/70 hover:text-gold-300"
           }`}
         >
-          {isEn ? "1. Articles" : "१. लेख (Blogs)"}
+          <FileText className="w-4 h-4" />
+          <span>{isEn ? "1. Chitwani Articles" : "१. चितवनी विधि लेख"}</span>
         </button>
 
         <button
           onClick={() => {
             setActiveTab("books");
             setShowAddForm(false);
+            setEditingId(null);
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === "books"
               ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-              : "text-spiritual-ivory/70 hover:text-gold-300"
+              : "bg-spiritual-card text-spiritual-ivory/70 hover:text-gold-300"
           }`}
         >
-          {isEn ? "2. Books" : "२. ग्रन्थ (PDFs)"}
+          <BookOpen className="w-4 h-4" />
+          <span>{isEn ? "2. Chitwani Books (PDF)" : "२. चितवनी ग्रन्थ (PDF)"}</span>
         </button>
 
         <button
           onClick={() => {
             setActiveTab("videos");
             setShowAddForm(false);
+            setEditingId(null);
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === "videos"
               ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-              : "text-spiritual-ivory/70 hover:text-gold-300"
+              : "bg-spiritual-card text-spiritual-ivory/70 hover:text-gold-300"
           }`}
         >
-          {isEn ? "3. Videos" : "३. वीडियो"}
+          <Play className="w-4 h-4" />
+          <span>{isEn ? "3. Video Guides" : "३. वीडियो मार्गदर्शिका"}</span>
         </button>
       </div>
 
-      {/* TAB 1: CHITWANI ARTICLES FORM & TABLE */}
-      {activeTab === "articles" && (
-        <div className="space-y-6">
-          {showAddForm && (
-            <form
-              onSubmit={handleSaveArticle}
-              className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in"
+      {/* Dynamic Tab Form */}
+      {showAddForm && activeTab === "articles" && (
+        <form onSubmit={handleSaveArticle} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80">
+          <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider">{isEn ? "Chitwani Article Details" : "चितवनी लेख विवरण"}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Title (Hindi) *" : "शीर्षक (हिन्दी) *"}</label>
+              <input
+                type="text"
+                required
+                value={articleForm.titleHi}
+                onChange={(e) => setArticleForm({ ...articleForm, titleHi: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Title (English)" : "शीर्षक (अंग्रेज़ी)"}</label>
+              <input
+                type="text"
+                value={articleForm.titleEn}
+                onChange={(e) => setArticleForm({ ...articleForm, titleEn: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Content (Hindi) *" : "लेख सामग्री (हिन्दी) *"}</label>
+            <textarea
+              required
+              rows={6}
+              value={articleForm.contentHi}
+              onChange={(e) => setArticleForm({ ...articleForm, contentHi: e.target.value })}
+              className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+            />
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
             >
-              <h3 className="text-sm font-bold text-gold-300 uppercase">
-                {editingId ? (isEn ? "Edit Chitwani Article" : "चितवनी लेख संपादित करें") : (isEn ? "Write New Chitwani Article" : "नया चितवनी लेख लिखें")}
-              </h3>
+              <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
+              <span>{isSaving ? "Saving..." : isEn ? "Save Article" : "लेख सेव करें"}</span>
+            </button>
+            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70">
+              {isEn ? "Cancel" : "रद्द करें"}
+            </button>
+          </div>
+        </form>
+      )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Title (Hindi) *" : "शीर्षक (हिन्दी) *"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={articleForm.titleHi}
-                    onChange={(e) => setArticleForm({ ...articleForm, titleHi: e.target.value })}
-                    placeholder="उदा. चितवनी कैसे करें? सरल विधि"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
-                  />
-                </div>
+      {showAddForm && activeTab === "books" && (
+        <form onSubmit={handleSaveBook} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80">
+          <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider">{isEn ? "Chitwani Book Details" : "चितवनी ग्रन्थ विवरण"}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Book Title (Hindi) *" : "ग्रन्थ नाम (हिन्दी) *"}</label>
+              <input
+                type="text"
+                required
+                value={bookForm.titleHi}
+                onChange={(e) => setBookForm({ ...bookForm, titleHi: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Book Title (English)" : "ग्रन्थ नाम (अंग्रेज़ी)"}</label>
+              <input
+                type="text"
+                value={bookForm.titleEn}
+                onChange={(e) => setBookForm({ ...bookForm, titleEn: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+              />
+            </div>
+          </div>
+          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20 space-y-4">
+            <ImageUploadField
+              label={isEn ? "Cover Photo *" : "कवर फोटो *"}
+              value={bookForm.coverUrl}
+              onChange={(url) => setBookForm({ ...bookForm, coverUrl: url })}
+            />
+            <PdfUploadField
+              label={isEn ? "PDF Document Link *" : "PDF दस्तावेज़ लिंक *"}
+              value={bookForm.pdfUrl}
+              onChange={(url) => setBookForm({ ...bookForm, pdfUrl: url })}
+            />
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
+            >
+              <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
+              <span>{isSaving ? "Saving..." : isEn ? "Save Book" : "ग्रन्थ सेव करें"}</span>
+            </button>
+            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70">
+              {isEn ? "Cancel" : "रद्द करें"}
+            </button>
+          </div>
+        </form>
+      )}
 
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Title (English)" : "शीर्षक (English)"}
-                  </label>
-                  <input
-                    type="text"
-                    value={articleForm.titleEn}
-                    onChange={(e) => setArticleForm({ ...articleForm, titleEn: e.target.value })}
-                    placeholder="How to Practice Chitwani Meditation"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-                  />
-                </div>
-              </div>
+      {showAddForm && activeTab === "videos" && (
+        <form onSubmit={handleSaveVideo} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80">
+          <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider">{isEn ? "Chitwani Video Guide Details" : "चितवनी वीडियो विवरण"}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Video Title (Hindi) *" : "वीडियो शीर्षक (हिन्दी) *"}</label>
+              <input
+                type="text"
+                required
+                value={videoForm.titleHi}
+                onChange={(e) => setVideoForm({ ...videoForm, titleHi: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "YouTube Video ID *" : "यूट्यूब वीडियो ID *"}</label>
+              <input
+                type="text"
+                required
+                value={videoForm.youtubeId}
+                onChange={(e) => setVideoForm({ ...videoForm, youtubeId: e.target.value })}
+                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
+            >
+              <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
+              <span>{isSaving ? "Saving..." : isEn ? "Save Video" : "वीडियो सेव करें"}</span>
+            </button>
+            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70">
+              {isEn ? "Cancel" : "रद्द करें"}
+            </button>
+          </div>
+        </form>
+      )}
 
-              <div>
-                <label className="block text-xs font-semibold text-gold-300 mb-1">
-                  {isEn ? "Short Summary (Hindi)" : "संक्षिप्त सारांश (हिन्दी)"}
-                </label>
-                <input
-                  type="text"
-                  value={articleForm.summaryHi}
-                  onChange={(e) => setArticleForm({ ...articleForm, summaryHi: e.target.value })}
-                  placeholder="चितवनी के ५ चरणों का संक्षिप्त सार..."
-                  className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
-                />
-              </div>
-
-              <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
-                <ImageUploadField
-                  label={isEn ? "Article Featured Image" : "चितवनी लेख मुख्य फोटो"}
-                  value={articleForm.featuredImage}
-                  onChange={(url) => setArticleForm({ ...articleForm, featuredImage: url })}
-                  recommendedSize="1200 × 675 px"
-                  aspectRatio="16:9 (आलेख थंबनेल)"
-                  maxSizeMB={5}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gold-300 mb-1">
-                  {isEn ? "Full Article Content (Hindi) *" : "सम्पूर्ण लेख सामग्री (हिन्दी) *"}
-                </label>
-                <textarea
-                  rows={8}
-                  required
-                  value={articleForm.contentHi}
-                  onChange={(e) => setArticleForm({ ...articleForm, contentHi: e.target.value })}
-                  placeholder="यहाँ चितवनी ध्यान विधि, चरण एवं अनुभव विस्तार से लिखें..."
-                  className="w-full p-3 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari leading-relaxed"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{isEn ? "Save Article" : "लेख सेव करें"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70"
-                >
-                  {isEn ? "Cancel" : "रद्द करें"}
-                </button>
-              </div>
-            </form>
-          )}
-
-          <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30">
-            <table className="w-full text-left text-xs text-spiritual-ivory">
-              <thead className="bg-black/60 border-b border-gold-500/30 text-gold-300 uppercase font-semibold">
-                <tr>
-                  <th className="p-3.5">{isEn ? "Title" : "शीर्षक"}</th>
-                  <th className="p-3.5">{isEn ? "Author" : "लेखक"}</th>
-                  <th className="p-3.5 text-right">{isEn ? "Actions" : "कार्य"}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gold-500/10">
-                {articles.map((art) => (
-                  <tr key={art.id} className="hover:bg-gold-500/5">
-                    <td className="p-3.5 font-bold text-spiritual-ivory">
-                      {isEn ? art.titleEn || art.titleHi : art.titleHi}
-                    </td>
-                    <td className="p-3.5 text-spiritual-ivory/70">{art.author}</td>
-                    <td className="p-3.5 text-right space-x-2">
+      {/* Tab Lists */}
+      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs text-spiritual-ivory">
+            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+              <tr>
+                <th className="p-3.5">{isEn ? "Title" : "शीर्षक"}</th>
+                <th className="p-3.5">{isEn ? "Author / Speaker" : "लेखक / वक्ता"}</th>
+                <th className="p-3.5 text-right">{isEn ? "Actions" : "कार्य"}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gold-500/10">
+              {activeTab === "articles" &&
+                articles.map((a) => (
+                  <tr key={a.id} className="hover:bg-gold-500/5 transition-colors">
+                    <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? a.titleEn || a.titleHi : a.titleHi}</td>
+                    <td className="p-3.5 text-spiritual-ivory/70">{a.author}</td>
+                    <td className="p-3.5 text-right">
                       <button
-                        onClick={() => {
-                          setEditingId(art.id);
-                          setArticleForm({
-                            titleHi: art.titleHi,
-                            titleEn: art.titleEn,
-                            summaryHi: art.summaryHi || "",
-                            summaryEn: art.summaryEn || "",
-                            contentHi: art.contentHi,
-                            contentEn: art.contentEn,
-                            featuredImage: art.featuredImage,
-                            author: art.author,
-                            readTime: art.readTime || "7 min read",
-                          });
-                          setShowAddForm(true);
-                        }}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => store.deleteArticle(art.id)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20"
+                        onClick={() => setDeleteCandidate({ type: "article", item: a })}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
 
-      {/* TAB 2: CHITWANI BOOKS */}
-      {activeTab === "books" && (
-        <div className="space-y-6">
-          {showAddForm && (
-            <form
-              onSubmit={handleSaveBook}
-              className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in"
-            >
-              <h3 className="text-sm font-bold text-gold-300 uppercase">
-                {editingId ? (isEn ? "Edit Chitwani Book" : "चितवनी ग्रन्थ संपादित करें") : (isEn ? "Add Chitwani Book" : "नया चितवनी ग्रन्थ जोड़ें")}
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Book Title (Hindi) *" : "ग्रन्थ शीर्षक (हिन्दी) *"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={bookForm.titleHi}
-                    onChange={(e) => setBookForm({ ...bookForm, titleHi: e.target.value })}
-                    placeholder="उदा. चितवनी साधना मार्गदर्शिका"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Book Title (English)" : "ग्रन्थ शीर्षक (English)"}
-                  </label>
-                  <input
-                    type="text"
-                    value={bookForm.titleEn}
-                    onChange={(e) => setBookForm({ ...bookForm, titleEn: e.target.value })}
-                    placeholder="Chitwani Sadhna Manual"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 rounded-2xl bg-black/40 border border-gold-500/20">
-                <ImageUploadField
-                  label={isEn ? "Book Cover Photo *" : "ग्रन्थ कवर फोटो (Cover Photo) *"}
-                  value={bookForm.coverUrl}
-                  onChange={(url) => setBookForm({ ...bookForm, coverUrl: url })}
-                  recommendedSize="600 × 900 px"
-                  aspectRatio="2:3 (पोर्ट्रेट बुक कवर)"
-                  maxSizeMB={5}
-                />
-
-                <PdfUploadField
-                  label={isEn ? "Meditation Book PDF *" : "चितवनी ग्रन्थ PDF फाइल *"}
-                  value={bookForm.pdfUrl}
-                  onChange={(url) => setBookForm({ ...bookForm, pdfUrl: url })}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gold-300 mb-1">
-                  {isEn ? "Pages Count" : "कुल पृष्ठ (Pages)"}
-                </label>
-                <input
-                  type="number"
-                  value={bookForm.pages}
-                  onChange={(e) => setBookForm({ ...bookForm, pages: Number(e.target.value) })}
-                  className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gold-300 mb-1">
-                  {isEn ? "Description (Hindi)" : "विवरण (हिन्दी)"}
-                </label>
-                <textarea
-                  rows={2}
-                  value={bookForm.descriptionHi}
-                  onChange={(e) => setBookForm({ ...bookForm, descriptionHi: e.target.value })}
-                  placeholder="ग्रन्थ का संक्षिप्त परिचय..."
-                  className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari resize-none"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{isEn ? "Save Book" : "ग्रन्थ सेव करें"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70"
-                >
-                  {isEn ? "Cancel" : "रद्द करें"}
-                </button>
-              </div>
-            </form>
-          )}
-
-          <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30">
-            <table className="w-full text-left text-xs text-spiritual-ivory">
-              <thead className="bg-black/60 border-b border-gold-500/30 text-gold-300 uppercase font-semibold">
-                <tr>
-                  <th className="p-3.5">{isEn ? "Book Title" : "ग्रन्थ शीर्षक"}</th>
-                  <th className="p-3.5">{isEn ? "Pages" : "पृष्ठ"}</th>
-                  <th className="p-3.5 text-right">{isEn ? "Actions" : "कार्य"}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gold-500/10">
-                {books.map((book) => (
-                  <tr key={book.id} className="hover:bg-gold-500/5">
-                    <td className="p-3.5 font-bold text-spiritual-ivory">
-                      {isEn ? book.titleEn || book.titleHi : book.titleHi}
-                    </td>
-                    <td className="p-3.5 font-mono text-gold-300">{book.pages}</td>
-                    <td className="p-3.5 text-right space-x-2">
+              {activeTab === "books" &&
+                books.map((b) => (
+                  <tr key={b.id} className="hover:bg-gold-500/5 transition-colors">
+                    <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? b.titleEn || b.titleHi : b.titleHi}</td>
+                    <td className="p-3.5 text-spiritual-ivory/70">{b.author}</td>
+                    <td className="p-3.5 text-right">
                       <button
-                        onClick={() => {
-                          setEditingId(book.id);
-                          setBookForm({
-                            titleHi: book.titleHi,
-                            titleEn: book.titleEn,
-                            descriptionHi: book.descriptionHi,
-                            descriptionEn: book.descriptionEn,
-                            author: book.author,
-                            coverUrl: book.coverUrl,
-                            pdfUrl: book.pdfUrl,
-                            pages: book.pages,
-                          });
-                          setShowAddForm(true);
-                        }}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => store.deleteChitwaniBook(book.id)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20"
+                        onClick={() => setDeleteCandidate({ type: "book", item: b })}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
 
-      {/* TAB 3: CHITWANI VIDEOS */}
-      {activeTab === "videos" && (
-        <div className="space-y-6">
-          {showAddForm && (
-            <form
-              onSubmit={handleSaveVideo}
-              className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in"
-            >
-              <h3 className="text-sm font-bold text-gold-300 uppercase">
-                {editingId ? (isEn ? "Edit Chitwani Video" : "चितवनी वीडियो संपादित करें") : (isEn ? "Add Chitwani Video" : "नया चितवनी वीडियो जोड़ें")}
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Video Title (Hindi) *" : "वीडियो शीर्षक (हिन्दी) *"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={videoForm.titleHi}
-                    onChange={(e) => setVideoForm({ ...videoForm, titleHi: e.target.value })}
-                    placeholder="उदा. चितवनी ध्यान विधि — अभ्यास सत्र"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "YouTube Video ID *" : "यूट्यूब वीडियो ID (11 chars) *"}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={videoForm.youtubeId}
-                    onChange={(e) => setVideoForm({ ...videoForm, youtubeId: e.target.value })}
-                    placeholder="उदा. dQw4w9WgXcQ"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Speaker / Guide" : "मार्गदर्शक / वक्ता"}
-                  </label>
-                  <input
-                    type="text"
-                    value={videoForm.speaker}
-                    onChange={(e) => setVideoForm({ ...videoForm, speaker: e.target.value })}
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">
-                    {isEn ? "Duration" : "अवधि (Duration)"}
-                  </label>
-                  <input
-                    type="text"
-                    value={videoForm.duration}
-                    onChange={(e) => setVideoForm({ ...videoForm, duration: e.target.value })}
-                    placeholder="25:00"
-                    className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gold-300 mb-1">
-                  {isEn ? "Description (Hindi)" : "विवरण (हिन्दी)"}
-                </label>
-                <textarea
-                  rows={2}
-                  value={videoForm.descriptionHi}
-                  onChange={(e) => setVideoForm({ ...videoForm, descriptionHi: e.target.value })}
-                  className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari resize-none"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{isEn ? "Save Video Guide" : "वीडियो सेव करें"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70"
-                >
-                  {isEn ? "Cancel" : "रद्द करें"}
-                </button>
-              </div>
-            </form>
-          )}
-
-          <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30">
-            <table className="w-full text-left text-xs text-spiritual-ivory">
-              <thead className="bg-black/60 border-b border-gold-500/30 text-gold-300 uppercase font-semibold">
-                <tr>
-                  <th className="p-3.5">{isEn ? "Video Title" : "वीडियो शीर्षक"}</th>
-                  <th className="p-3.5">{isEn ? "Speaker" : "वक्ता"}</th>
-                  <th className="p-3.5">{isEn ? "Duration" : "अवधि"}</th>
-                  <th className="p-3.5 text-right">{isEn ? "Actions" : "कार्य"}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gold-500/10">
-                {videos.map((vid) => (
-                  <tr key={vid.id} className="hover:bg-gold-500/5">
-                    <td className="p-3.5 font-bold text-spiritual-ivory">
-                      {isEn ? vid.titleEn || vid.titleHi : vid.titleHi}
-                    </td>
-                    <td className="p-3.5 text-spiritual-ivory/70">{vid.speaker}</td>
-                    <td className="p-3.5 font-mono text-gold-300">{vid.duration}</td>
-                    <td className="p-3.5 text-right space-x-2">
+              {activeTab === "videos" &&
+                videos.map((v) => (
+                  <tr key={v.id} className="hover:bg-gold-500/5 transition-colors">
+                    <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? v.titleEn || v.titleHi : v.titleHi}</td>
+                    <td className="p-3.5 text-spiritual-ivory/70">{v.speaker}</td>
+                    <td className="p-3.5 text-right">
                       <button
-                        onClick={() => {
-                          setEditingId(vid.id);
-                          setVideoForm({
-                            titleHi: vid.titleHi,
-                            titleEn: vid.titleEn,
-                            youtubeId: vid.youtubeId,
-                            speaker: vid.speaker,
-                            duration: vid.duration,
-                            descriptionHi: vid.descriptionHi,
-                            descriptionEn: vid.descriptionEn,
-                          });
-                          setShowAddForm(true);
-                        }}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => store.deleteChitwaniVideo(vid.id)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20"
+                        onClick={() => setDeleteCandidate({ type: "video", item: v })}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
     </div>
   );
 }

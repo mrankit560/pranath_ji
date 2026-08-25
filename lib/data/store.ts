@@ -141,7 +141,7 @@ class DataStore {
     }
   }
 
-  // Asynchronously sync with the persistent server disk database (/api/data)
+  // Asynchronously sync with the persistent Supabase cloud database (/api/data)
   public async syncWithServer(): Promise<void> {
     if (!this.isClient() || this.isSyncing) return;
     this.isSyncing = true;
@@ -156,83 +156,56 @@ class DataStore {
       if (res.ok) {
         const serverData = await res.json();
         if (serverData && typeof serverData === "object") {
-          let hasUpdates = false;
-          const serverUpdatedTime = serverData.updatedAt ? new Date(serverData.updatedAt).getTime() : 0;
-
-          // Helper to check whether server data should overwrite local cache.
-          // If the user made a local edit in this browser after or equal to the server's build timestamp,
-          // we PRESERVE the user's edits and NEVER let a stale edge/Cloudflare snapshot overwrite them!
-          const shouldApplyServerData = (storageKey: string) => {
-            const localSavedTime = Number(localStorage.getItem(`${storageKey}_timestamp`) || "0");
-            if (localSavedTime > 0 && localSavedTime >= serverUpdatedTime) {
-              return false;
-            }
-            return true;
-          };
-
-          if (Array.isArray(serverData.books) && shouldApplyServerData("prannath_books_v2")) {
+          if (Array.isArray(serverData.books)) {
             this.books = serverData.books;
             localStorage.setItem("prannath_books_v2", JSON.stringify(this.books));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.events) && shouldApplyServerData("prannath_events_v2")) {
+          if (Array.isArray(serverData.events)) {
             this.events = serverData.events;
             localStorage.setItem("prannath_events_v2", JSON.stringify(this.events));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.dhams) && shouldApplyServerData("prannath_dhams_v2")) {
+          if (Array.isArray(serverData.dhams)) {
             this.dhams = serverData.dhams;
             localStorage.setItem("prannath_dhams_v2", JSON.stringify(this.dhams));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.articles) && shouldApplyServerData("prannath_articles_v2")) {
+          if (Array.isArray(serverData.articles)) {
             this.articles = serverData.articles;
             localStorage.setItem("prannath_articles_v2", JSON.stringify(this.articles));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.videos) && shouldApplyServerData("prannath_videos_v2")) {
+          if (Array.isArray(serverData.videos)) {
             this.videos = serverData.videos;
             localStorage.setItem("prannath_videos_v2", JSON.stringify(this.videos));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.audioTracks) && shouldApplyServerData("prannath_audio_v2")) {
+          if (Array.isArray(serverData.audioTracks)) {
             this.audioTracks = serverData.audioTracks;
             localStorage.setItem("prannath_audio_v2", JSON.stringify(this.audioTracks));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.chitwaniBooks) && shouldApplyServerData("prannath_chitwani_books_v2")) {
+          if (Array.isArray(serverData.chitwaniBooks)) {
             this.chitwaniBooks = serverData.chitwaniBooks;
             localStorage.setItem("prannath_chitwani_books_v2", JSON.stringify(this.chitwaniBooks));
-            hasUpdates = true;
           }
-          if (Array.isArray(serverData.chitwaniVideos) && shouldApplyServerData("prannath_chitwani_videos_v2")) {
+          if (Array.isArray(serverData.chitwaniVideos)) {
             this.chitwaniVideos = serverData.chitwaniVideos;
             localStorage.setItem("prannath_chitwani_videos_v2", JSON.stringify(this.chitwaniVideos));
-            hasUpdates = true;
           }
-          if (serverData.dailyThought && shouldApplyServerData("prannath_thought_v2")) {
+          if (serverData.dailyThought) {
             this.dailyThought = serverData.dailyThought;
             localStorage.setItem("prannath_thought_v2", JSON.stringify(this.dailyThought));
-            hasUpdates = true;
           }
-          if (serverData.settings && shouldApplyServerData("prannath_settings_v2")) {
+          if (serverData.settings) {
             this.settings = serverData.settings;
             localStorage.setItem("prannath_settings_v2", JSON.stringify(this.settings));
-            hasUpdates = true;
           }
-          if (serverData.aboutContent && shouldApplyServerData("prannath_about_v2")) {
+          if (serverData.aboutContent) {
             this.aboutContent = serverData.aboutContent;
             localStorage.setItem("prannath_about_v2", JSON.stringify(this.aboutContent));
-            hasUpdates = true;
           }
-          if (serverData.adminCredentials && shouldApplyServerData("prannath_admin_credentials_v2")) {
+          if (serverData.adminCredentials) {
             this.adminCredentials = serverData.adminCredentials;
             localStorage.setItem("prannath_admin_credentials_v2", JSON.stringify(this.adminCredentials));
           }
 
-          if (hasUpdates) {
-            this.notify();
-          }
+          this.notify();
         }
       }
     } catch (err) {

@@ -156,53 +156,61 @@ class DataStore {
       if (res.ok) {
         const serverData = await res.json();
         if (serverData && typeof serverData === "object") {
+          const safeSetLocal = (k: string, val: any) => {
+            try {
+              localStorage.setItem(k, JSON.stringify(val));
+            } catch (err) {
+              console.warn(`[Store] Could not write ${k} to localStorage:`, err);
+            }
+          };
+
           if (Array.isArray(serverData.books)) {
             this.books = serverData.books;
-            localStorage.setItem("prannath_books_v2", JSON.stringify(this.books));
+            safeSetLocal("prannath_books_v2", this.books);
           }
           if (Array.isArray(serverData.events)) {
             this.events = serverData.events;
-            localStorage.setItem("prannath_events_v2", JSON.stringify(this.events));
+            safeSetLocal("prannath_events_v2", this.events);
           }
           if (Array.isArray(serverData.dhams)) {
             this.dhams = serverData.dhams;
-            localStorage.setItem("prannath_dhams_v2", JSON.stringify(this.dhams));
+            safeSetLocal("prannath_dhams_v2", this.dhams);
           }
           if (Array.isArray(serverData.articles)) {
             this.articles = serverData.articles;
-            localStorage.setItem("prannath_articles_v2", JSON.stringify(this.articles));
+            safeSetLocal("prannath_articles_v2", this.articles);
           }
           if (Array.isArray(serverData.videos)) {
             this.videos = serverData.videos;
-            localStorage.setItem("prannath_videos_v2", JSON.stringify(this.videos));
+            safeSetLocal("prannath_videos_v2", this.videos);
           }
           if (Array.isArray(serverData.audioTracks)) {
             this.audioTracks = serverData.audioTracks;
-            localStorage.setItem("prannath_audio_v2", JSON.stringify(this.audioTracks));
+            safeSetLocal("prannath_audio_v2", this.audioTracks);
           }
           if (Array.isArray(serverData.chitwaniBooks)) {
             this.chitwaniBooks = serverData.chitwaniBooks;
-            localStorage.setItem("prannath_chitwani_books_v2", JSON.stringify(this.chitwaniBooks));
+            safeSetLocal("prannath_chitwani_books_v2", this.chitwaniBooks);
           }
           if (Array.isArray(serverData.chitwaniVideos)) {
             this.chitwaniVideos = serverData.chitwaniVideos;
-            localStorage.setItem("prannath_chitwani_videos_v2", JSON.stringify(this.chitwaniVideos));
+            safeSetLocal("prannath_chitwani_videos_v2", this.chitwaniVideos);
           }
           if (serverData.dailyThought) {
             this.dailyThought = serverData.dailyThought;
-            localStorage.setItem("prannath_thought_v2", JSON.stringify(this.dailyThought));
+            safeSetLocal("prannath_thought_v2", this.dailyThought);
           }
           if (serverData.settings) {
             this.settings = serverData.settings;
-            localStorage.setItem("prannath_settings_v2", JSON.stringify(this.settings));
+            safeSetLocal("prannath_settings_v2", this.settings);
           }
           if (serverData.aboutContent) {
             this.aboutContent = serverData.aboutContent;
-            localStorage.setItem("prannath_about_v2", JSON.stringify(this.aboutContent));
+            safeSetLocal("prannath_about_v2", this.aboutContent);
           }
           if (serverData.adminCredentials) {
             this.adminCredentials = serverData.adminCredentials;
-            localStorage.setItem("prannath_admin_credentials_v2", JSON.stringify(this.adminCredentials));
+            safeSetLocal("prannath_admin_credentials_v2", this.adminCredentials);
           }
 
           this.notify();
@@ -308,35 +316,44 @@ class DataStore {
     if (!this.isClient()) return false;
     const now = Date.now();
 
+    // 1. Safe localStorage write
     try {
       localStorage.setItem(key, JSON.stringify(data));
       localStorage.setItem(`${key}_timestamp`, String(now));
       localStorage.setItem("prannath_last_global_mutation", String(now));
+    } catch (e) {
+      console.warn(`[Store] LocalStorage write error for ${key}:`, e);
+    }
 
-      // Dispatch real-time local event across tabs & components
+    // 2. Dispatch real-time local event across tabs & components
+    try {
+      window.dispatchEvent(
+        new CustomEvent("sadhauli_dham_store_updated", {
+          detail: { key, timestamp: now },
+        })
+      );
+    } catch {}
+
+    // 3. Map storage keys to server database keys & persist via /api/data
+    const keyMap: Record<string, string> = {
+      prannath_books_v2: "books",
+      prannath_videos_v2: "videos",
+      prannath_audio_v2: "audioTracks",
+      prannath_events_v2: "events",
+      prannath_articles_v2: "articles",
+      prannath_dhams_v2: "dhams",
+      prannath_about_v2: "aboutContent",
+      prannath_chitwani_books_v2: "chitwaniBooks",
+      prannath_chitwani_videos_v2: "chitwaniVideos",
+      prannath_thought_v2: "dailyThought",
+      prannath_settings_v2: "settings",
+      prannath_admin_credentials_v2: "adminCredentials",
+    };
+
+    const serverKey = keyMap[key];
+    if (serverKey) {
       try {
-        window.dispatchEvent(new CustomEvent("sadhauli_dham_store_updated", { detail: { key, timestamp: now } }));
-      } catch {}
-
-      // Map storage keys to server JSON database keys
-      const keyMap: Record<string, string> = {
-        prannath_books_v2: "books",
-        prannath_videos_v2: "videos",
-        prannath_audio_v2: "audioTracks",
-        prannath_events_v2: "events",
-        prannath_articles_v2: "articles",
-        prannath_dhams_v2: "dhams",
-        prannath_about_v2: "aboutContent",
-        prannath_chitwani_books_v2: "chitwaniBooks",
-        prannath_chitwani_videos_v2: "chitwaniVideos",
-        prannath_thought_v2: "dailyThought",
-        prannath_settings_v2: "settings",
-        prannath_admin_credentials_v2: "adminCredentials",
-      };
-
-      const serverKey = keyMap[key];
-      if (serverKey) {
-        console.log("SAVE ATTEMPT /api/data", { serverKey, itemsCount: Array.isArray(data) ? data.length : 1 });
+        console.log(`[Store] Sending ${serverKey} to /api/data...`);
         const response = await fetch("/api/data", {
           method: "POST",
           headers: {
@@ -346,14 +363,19 @@ class DataStore {
           body: JSON.stringify({ key: serverKey, data }),
           keepalive: true,
         });
-        console.log("SAVE RESULT /api/data", { ok: response.ok, status: response.status, statusText: response.statusText });
+        const result = await response.json().catch(() => ({}));
+        console.log(`[Store] Save result for ${serverKey}:`, {
+          ok: response.ok,
+          status: response.status,
+          result,
+        });
         return response.ok;
+      } catch (err) {
+        console.error(`[Store] Failed to POST ${serverKey} to /api/data:`, err);
+        return false;
       }
-      return true;
-    } catch (e) {
-      console.warn("Could not save to localStorage or server:", e);
-      return false;
     }
+    return true;
   }
 
   public subscribe(listener: Listener): () => void {

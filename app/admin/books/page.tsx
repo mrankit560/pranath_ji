@@ -77,7 +77,8 @@ export default function AdminBooksPage() {
         featured: form.featured,
         published: form.published,
       });
-      await store.saveToStorage("prannath_books_v2", store.getBooks());
+      const saveSuccess = await store.saveToStorage("prannath_books_v2", store.getBooks());
+      console.log("[Admin Books] Book updated successfully:", { id: editingId, saveSuccess });
       showToast(
         isEn
           ? `✓ Book "${form.titleEn || form.titleHi}" updated and saved to database!`
@@ -104,7 +105,8 @@ export default function AdminBooksPage() {
         published: form.published,
       });
       savedId = created.id;
-      await store.saveToStorage("prannath_books_v2", store.getBooks());
+      const saveSuccess = await store.saveToStorage("prannath_books_v2", store.getBooks());
+      console.log("[Admin Books] New book created successfully:", { id: created.id, saveSuccess });
       setHighlightedId(created.id);
       showToast(
         isEn

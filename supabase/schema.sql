@@ -223,3 +223,19 @@ CREATE POLICY "Anon Full Access Chitwani Videos" ON public.chitwani_videos FOR A
 CREATE POLICY "Anon Full Access Settings" ON public.site_settings FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Full Access About" ON public.about_content FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Full Access Thought" ON public.daily_thought FOR ALL USING (true) WITH CHECK (true);
+
+-- 12. STORAGE BUCKET & POLICIES FOR UPLOADS (PDF Books, Covers, Images)
+INSERT INTO storage.buckets (id, name, public, file_size_limit)
+VALUES ('uploads', 'uploads', true, 52428800)
+ON CONFLICT (id) DO UPDATE SET public = true, file_size_limit = 52428800;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public Read Storage Uploads') THEN
+    CREATE POLICY "Public Read Storage Uploads" ON storage.objects FOR SELECT USING (bucket_id = 'uploads');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Anon Full Access Storage Uploads') THEN
+    CREATE POLICY "Anon Full Access Storage Uploads" ON storage.objects FOR ALL USING (bucket_id = 'uploads') WITH CHECK (bucket_id = 'uploads');
+  END IF;
+END $$;
+

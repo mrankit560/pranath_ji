@@ -21,6 +21,27 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
+// Helper to safely sync server disk data/db.json in Node runtime
+function syncDiskDatabase(key: string, data: any) {
+  if (typeof window === "undefined") {
+    try {
+      const nodeRequire = eval("require");
+      const fs = nodeRequire("fs");
+      const path = nodeRequire("path");
+      const dbPath = path.join(process.cwd(), "data", "db.json");
+      if (fs.existsSync(dbPath)) {
+        const raw = fs.readFileSync(dbPath, "utf-8");
+        const currentObj = JSON.parse(raw);
+        currentObj[key] = data;
+        currentObj.updatedAt = new Date().toISOString();
+        fs.writeFileSync(dbPath, JSON.stringify(currentObj, null, 2), "utf-8");
+      }
+    } catch (e) {
+      // Ignore if filesystem is not available
+    }
+  }
+}
+
 // Helper to convert snake_case DB row to camelCase EventItem
 function mapDbEventToApp(row: any) {
   return {
@@ -29,8 +50,8 @@ function mapDbEventToApp(row: any) {
     titleEn: row.title_en || "",
     descriptionHi: row.description_hi || "",
     descriptionEn: row.description_en || "",
-    startAt: row.start_at,
-    endAt: row.end_at || "",
+    startAt: row.start_at ? new Date(row.start_at).toISOString() : "",
+    endAt: row.end_at ? new Date(row.end_at).toISOString() : "",
     hasSpecificTime: row.has_specific_time ?? true,
     timeStr: row.time_str || "",
     location: row.location || "",
@@ -63,6 +84,35 @@ function mapDbBookToApp(row: any) {
     published: row.published ?? true,
     createdAt: row.created_at ? new Date(row.created_at).toISOString().split("T")[0] : "2026-08-25",
     updatedAt: row.updated_at ? new Date(row.updated_at).toISOString().split("T")[0] : "2026-08-25",
+  };
+}
+
+// Helper to convert snake_case DB row to camelCase ChitwaniBook
+function mapDbChitwaniBookToApp(row: any) {
+  return {
+    id: row.id,
+    titleHi: row.title_hi,
+    titleEn: row.title_en || "",
+    descriptionHi: row.description_hi || "",
+    descriptionEn: row.description_en || "",
+    author: row.author || "",
+    coverUrl: row.cover_url || "",
+    pdfUrl: row.pdf_url || "",
+    pages: row.pages || 1,
+  };
+}
+
+// Helper to convert snake_case DB row to camelCase ChitwaniVideo
+function mapDbChitwaniVideoToApp(row: any) {
+  return {
+    id: row.id,
+    titleHi: row.title_hi,
+    titleEn: row.title_en || "",
+    youtubeId: row.youtube_id,
+    speaker: row.speaker || "",
+    duration: row.duration || "",
+    descriptionHi: row.description_hi || "",
+    descriptionEn: row.description_en || "",
   };
 }
 
@@ -166,16 +216,20 @@ export async function GET() {
       articlesRes,
       videosRes,
       audioRes,
+      chitwaniBooksRes,
+      chitwaniVideosRes,
       settingsRes,
       aboutRes,
       thoughtRes,
     ] = await Promise.all([
       supabase.from("events").select("*").order("start_at", { ascending: true }),
-      supabase.from("books").select("*"),
+      supabase.from("books").select("*").order("created_at", { ascending: false }),
       supabase.from("dhams").select("*").order("order_num", { ascending: true }),
       supabase.from("articles").select("*").order("published_at", { ascending: false }),
       supabase.from("videos").select("*").order("created_at", { ascending: false }),
       supabase.from("audio_tracks").select("*").order("order_num", { ascending: true }),
+      supabase.from("chitwani_books").select("*"),
+      supabase.from("chitwani_videos").select("*"),
       supabase.from("site_settings").select("*").eq("id", "primary").maybeSingle(),
       supabase.from("about_content").select("*").eq("id", "primary").maybeSingle(),
       supabase.from("daily_thought").select("*").eq("id", "primary").maybeSingle(),
@@ -187,6 +241,8 @@ export async function GET() {
     const articles = articlesRes.data && articlesRes.data.length > 0 ? articlesRes.data.map(mapDbArticleToApp) : initialArticles;
     const videos = videosRes.data && videosRes.data.length > 0 ? videosRes.data.map(mapDbVideoToApp) : initialVideos;
     const audioTracks = audioRes.data && audioRes.data.length > 0 ? audioRes.data.map(mapDbAudioToApp) : initialAudioTracks;
+    const chitwaniBooks = chitwaniBooksRes.data && chitwaniBooksRes.data.length > 0 ? chitwaniBooksRes.data.map(mapDbChitwaniBookToApp) : initialChitwaniBooks;
+    const chitwaniVideos = chitwaniVideosRes.data && chitwaniVideosRes.data.length > 0 ? chitwaniVideosRes.data.map(mapDbChitwaniVideoToApp) : initialChitwaniVideos;
     const settings = settingsRes.data ? mapDbSettingsToApp(settingsRes.data) : initialSettings;
     const aboutContent = aboutRes.data?.data || initialAboutContent;
     const dailyThought = thoughtRes.data
@@ -215,8 +271,8 @@ export async function GET() {
       settings,
       dhams,
       aboutContent,
-      chitwaniBooks: initialChitwaniBooks,
-      chitwaniVideos: initialChitwaniVideos,
+      chitwaniBooks,
+      chitwaniVideos,
       adminCredentials: {
         username: "admin",
         email: "admin@sadhaulidham.com",
@@ -244,6 +300,8 @@ export async function GET() {
         articles: initialArticles,
         videos: initialVideos,
         audioTracks: initialAudioTracks,
+        chitwaniBooks: initialChitwaniBooks,
+        chitwaniVideos: initialChitwaniVideos,
         settings: initialSettings,
         aboutContent: initialAboutContent,
         dailyThought: initialDailyThought,
@@ -256,13 +314,16 @@ export async function GET() {
   }
 }
 
-// POST: Write updates directly to Supabase PostgreSQL database
+// POST: Write updates directly to Supabase PostgreSQL database & sync disk
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { key, data } = body;
 
-    console.log(`[API Supabase POST] Writing key="${key}" to Supabase cloud database...`);
+    console.log(`[API Supabase POST] Writing key="${key}" to database...`);
+
+    // Sync disk snapshot in background for Node/SSR runtime
+    syncDiskDatabase(key, data);
 
     if (key === "events" && Array.isArray(data)) {
       const rows = data.map((e: any) => ({
@@ -287,7 +348,10 @@ export async function POST(req: NextRequest) {
       // Delete removed rows if any
       const existingIds = rows.map((r: any) => r.id);
       if (existingIds.length > 0) {
-        await supabase.from("events").delete().not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+        await supabase
+          .from("events")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
       }
       const { error } = await supabase.from("events").upsert(rows);
       if (error) throw error;
@@ -311,6 +375,15 @@ export async function POST(req: NextRequest) {
         published: b.published ?? true,
         updated_at: new Date().toISOString(),
       }));
+
+      // Delete removed books if any
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("books")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
       const { error } = await supabase.from("books").upsert(rows);
       if (error) throw error;
     } else if (key === "dhams" && Array.isArray(data)) {
@@ -329,6 +402,13 @@ export async function POST(req: NextRequest) {
         featured: d.featured ?? true,
         updated_at: new Date().toISOString(),
       }));
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("dhams")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
       const { error } = await supabase.from("dhams").upsert(rows);
       if (error) throw error;
     } else if (key === "articles" && Array.isArray(data)) {
@@ -349,6 +429,13 @@ export async function POST(req: NextRequest) {
         status: a.status || "published",
         updated_at: new Date().toISOString(),
       }));
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("articles")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
       const { error } = await supabase.from("articles").upsert(rows);
       if (error) throw error;
     } else if (key === "videos" && Array.isArray(data)) {
@@ -368,6 +455,13 @@ export async function POST(req: NextRequest) {
         is_live: v.isLive ?? false,
         updated_at: new Date().toISOString(),
       }));
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("videos")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
       const { error } = await supabase.from("videos").upsert(rows);
       if (error) throw error;
     } else if (key === "audioTracks" && Array.isArray(data)) {
@@ -384,7 +478,57 @@ export async function POST(req: NextRequest) {
         published: au.published ?? true,
         updated_at: new Date().toISOString(),
       }));
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("audio_tracks")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
       const { error } = await supabase.from("audio_tracks").upsert(rows);
+      if (error) throw error;
+    } else if (key === "chitwaniBooks" && Array.isArray(data)) {
+      const rows = data.map((cb: any) => ({
+        id: cb.id,
+        title_hi: cb.titleHi,
+        title_en: cb.titleEn || "",
+        description_hi: cb.descriptionHi || "",
+        description_en: cb.descriptionEn || "",
+        author: cb.author || "",
+        cover_url: cb.coverUrl || "",
+        pdf_url: cb.pdfUrl || "",
+        pages: cb.pages || 1,
+        updated_at: new Date().toISOString(),
+      }));
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("chitwani_books")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
+      const { error } = await supabase.from("chitwani_books").upsert(rows);
+      if (error) throw error;
+    } else if (key === "chitwaniVideos" && Array.isArray(data)) {
+      const rows = data.map((cv: any) => ({
+        id: cv.id,
+        title_hi: cv.titleHi,
+        title_en: cv.titleEn || "",
+        youtube_id: cv.youtubeId,
+        speaker: cv.speaker || "",
+        duration: cv.duration || "",
+        description_hi: cv.descriptionHi || "",
+        description_en: cv.descriptionEn || "",
+        updated_at: new Date().toISOString(),
+      }));
+      const existingIds = rows.map((r: any) => r.id);
+      if (existingIds.length > 0) {
+        await supabase
+          .from("chitwani_videos")
+          .delete()
+          .not("id", "in", `(${existingIds.map((id: string) => `"${id}"`).join(",")})`);
+      }
+      const { error } = await supabase.from("chitwani_videos").upsert(rows);
       if (error) throw error;
     } else if (key === "settings" && data) {
       const { error } = await supabase.from("site_settings").upsert({
@@ -437,7 +581,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("[API Supabase POST Error]:", error);
     return NextResponse.json(
-      { error: error?.message || "Failed to write to Supabase" },
+      { error: error?.message || "Failed to write to database" },
       { status: 500 }
     );
   }

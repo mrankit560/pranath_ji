@@ -49,12 +49,17 @@ export default function AdminDashboardPage() {
     return () => unsub();
   }, []);
 
-  const handleSaveThought = (e: React.FormEvent) => {
+  const [isSavingThought, setIsSavingThought] = useState(false);
+
+  const handleSaveThought = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSavingThought(true);
     store.updateDailyThought({
       quoteHi: editQuoteHi,
       quoteEn: editQuoteEn,
     });
+    await store.saveToStorage("prannath_thought_v2", store.getDailyThought());
+    setIsSavingThought(false);
     setIsSavedQuote(true);
     setTimeout(() => setIsSavedQuote(false), 2500);
   };
@@ -233,9 +238,16 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform"
+              disabled={isSavingThought}
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50"
             >
-              {isEn ? "Save Quote" : "विचार अपडेट करें"}
+              {isSavingThought
+                ? isEn
+                  ? "Saving..."
+                  : "सेव हो रहा है..."
+                : isEn
+                ? "Save Quote"
+                : "विचार अपडेट करें"}
             </button>
             {isSavedQuote && (
               <span className="text-xs text-emerald-400 font-semibold animate-fade-in">

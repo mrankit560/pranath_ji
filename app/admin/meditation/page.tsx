@@ -220,6 +220,54 @@ export default function AdminMeditationPage() {
     showToast(isEn ? "✓ Item removed from database." : "✓ सामग्री डेटाबेस से हटा दी गई।");
   };
 
+  const handleEditArticle = (art: Article) => {
+    setEditingId(art.id);
+    setArticleForm({
+      titleHi: art.titleHi || "",
+      titleEn: art.titleEn || "",
+      summaryHi: art.summaryHi || "",
+      summaryEn: art.summaryEn || "",
+      contentHi: art.contentHi || "",
+      contentEn: art.contentEn || "",
+      featuredImage: art.featuredImage || "/assets/paramdham-mandala.png",
+      author: art.author || "साधना पीठ, साढौली धाम",
+      readTime: art.readTime || "7 min read",
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleEditBook = (book: ChitwaniBook) => {
+    setEditingId(book.id);
+    setBookForm({
+      titleHi: book.titleHi || "",
+      titleEn: book.titleEn || "",
+      descriptionHi: book.descriptionHi || "",
+      descriptionEn: book.descriptionEn || "",
+      author: book.author || "श्री निजानंद आश्रम, साढौली धाम",
+      coverUrl: book.coverUrl || "/assets/paramdham-mandala.png",
+      pdfUrl: book.pdfUrl || "/assets/chitwani-guide.pdf",
+      pages: book.pages || 120,
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleEditVideo = (video: ChitwaniVideo) => {
+    setEditingId(video.id);
+    setVideoForm({
+      titleHi: video.titleHi || "",
+      titleEn: video.titleEn || "",
+      youtubeId: video.youtubeId || "",
+      speaker: video.speaker || "पूज्य संत वृंद",
+      duration: video.duration || "25:00",
+      descriptionHi: video.descriptionHi || "",
+      descriptionEn: video.descriptionEn || "",
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="space-y-6 max-w-6xl">
       {/* Toast Notification Alert */}
@@ -517,12 +565,24 @@ export default function AdminMeditationPage() {
                     <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? a.titleEn || a.titleHi : a.titleHi}</td>
                     <td className="p-3.5 text-spiritual-ivory/70">{a.author}</td>
                     <td className="p-3.5 text-right">
-                      <button
-                        onClick={() => setDeleteCandidate({ type: "article", item: a })}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleEditArticle(a)}
+                          className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                          title={isEn ? "Edit" : "संपादित करें"}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteCandidate({ type: "article", item: a })}
+                          className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                          title={isEn ? "Delete" : "हटाएं"}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -533,12 +593,24 @@ export default function AdminMeditationPage() {
                     <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? b.titleEn || b.titleHi : b.titleHi}</td>
                     <td className="p-3.5 text-spiritual-ivory/70">{b.author}</td>
                     <td className="p-3.5 text-right">
-                      <button
-                        onClick={() => setDeleteCandidate({ type: "book", item: b })}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleEditBook(b)}
+                          className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                          title={isEn ? "Edit" : "संपादित करें"}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteCandidate({ type: "book", item: b })}
+                          className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                          title={isEn ? "Delete" : "हटाएं"}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -549,12 +621,24 @@ export default function AdminMeditationPage() {
                     <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? v.titleEn || v.titleHi : v.titleHi}</td>
                     <td className="p-3.5 text-spiritual-ivory/70">{v.speaker}</td>
                     <td className="p-3.5 text-right">
-                      <button
-                        onClick={() => setDeleteCandidate({ type: "video", item: v })}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleEditVideo(v)}
+                          className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                          title={isEn ? "Edit" : "संपादित करें"}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteCandidate({ type: "video", item: v })}
+                          className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                          title={isEn ? "Delete" : "हटाएं"}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

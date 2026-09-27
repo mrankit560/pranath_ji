@@ -33,6 +33,7 @@ export default function AdminDhamsPage() {
   const [deleteCandidate, setDeleteCandidate] = useState<HolyDham | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
 
   const [form, setForm] = useState({
     nameHi: "",
@@ -77,27 +78,52 @@ export default function AdminDhamsPage() {
     setNewImageUrl("");
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        if (result) {
-          setForm((prev) => {
-            const updated = [...prev.images, result];
-            return {
-              ...prev,
-              images: updated,
-              imageUrl: prev.imageUrl || result,
-            };
-          });
+    setIsUploadingImages(true);
+    const newUploadedUrls: string[] = [];
+
+    try {
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith("image/")) continue;
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.url) {
+            newUploadedUrls.push(json.url);
+          }
         }
-      };
-      reader.readAsDataURL(file);
-    });
+      }
+
+      if (newUploadedUrls.length > 0) {
+        setForm((prev) => {
+          const updated = [...prev.images, ...newUploadedUrls];
+          return {
+            ...prev,
+            images: updated,
+            imageUrl: prev.imageUrl || newUploadedUrls[0],
+          };
+        });
+        showToast(
+          isEn
+            ? `✓ ${newUploadedUrls.length} image(s) uploaded successfully!`
+            : `✓ ${newUploadedUrls.length} तस्वीर(ें) सफलतापूर्वक अपलोड हो गई!`
+        );
+      }
+    } catch (err) {
+      console.error("Dham image upload failed:", err);
+      showToast(isEn ? "Failed to upload images" : "तस्वीरें अपलोड करने में त्रुटि");
+    } finally {
+      setIsUploadingImages(false);
+      e.target.value = "";
+    }
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
@@ -451,13 +477,14 @@ export default function AdminDhamsPage() {
                 </p>
               </div>
 
-              <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform self-start sm:self-auto">
-                <Upload className="w-3.5 h-3.5" />
-                <span>{isEn ? "Upload Photos" : "तस्वीरें अपलोड करें"}</span>
+              <label className={`cursor-pointer px-3 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform self-start sm:self-auto ${isUploadingImages ? "opacity-60 pointer-events-none" : ""}`}>
+                <Upload className={`w-3.5 h-3.5 ${isUploadingImages ? "animate-spin" : ""}`} />
+                <span>{isUploadingImages ? (isEn ? "Uploading..." : "अपलोड हो रहा है...") : (isEn ? "Upload Photos" : "तस्वीरें अपलोड करें")}</span>
                 <input
                   type="file"
                   multiple
                   accept="image/*"
+                  disabled={isUploadingImages}
                   onChange={handleFileUpload}
                   className="hidden"
                 />

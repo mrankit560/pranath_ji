@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { store } from "@/lib/data/store";
 import { Article } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, FileText, Sparkles, CheckCircle, X } from "lucide-react";
+import { Plus, Trash2, Edit3, FileText, Sparkles, CheckCircle, X } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export default function AdminArticlesPage() {
@@ -13,6 +13,7 @@ export default function AdminArticlesPage() {
 
   const [articles, setArticles] = useState<Article[]>(() => store.getArticles());
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<Article | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -56,20 +57,33 @@ export default function AdminArticlesPage() {
         .replace(/(^-|-$)+/g, "") ||
       `article-${Date.now()}`;
 
-    store.addArticle({
-      ...form,
-      slug: generatedSlug,
-    });
-    await store.saveToStorage("prannath_articles_v2", store.getArticles());
+    if (editingId) {
+      store.updateArticle(editingId, {
+        ...form,
+        slug: generatedSlug,
+      });
+      await store.saveToStorage("prannath_articles_v2", store.getArticles());
+      showToast(
+        isEn
+          ? `✓ Article "${form.titleEn || form.titleHi}" updated and saved to database!`
+          : `✓ लेख "${form.titleHi}" डेटाबेस में सुरक्षित हो गया!`
+      );
+      setEditingId(null);
+    } else {
+      store.addArticle({
+        ...form,
+        slug: generatedSlug,
+      });
+      await store.saveToStorage("prannath_articles_v2", store.getArticles());
+      showToast(
+        isEn
+          ? `✓ Article "${form.titleEn || form.titleHi}" published and saved to database!`
+          : `✓ लेख "${form.titleHi}" डेटाबेस में सुरक्षित हो गया!`
+      );
+    }
 
     setArticles(store.getArticles());
     setIsSaving(false);
-    showToast(
-      isEn
-        ? `✓ Article "${form.titleEn || form.titleHi}" published and saved to database!`
-        : `✓ लेख "${form.titleHi}" डेटाबेस में सुरक्षित हो गया!`
-    );
-
     setShowAddForm(false);
     setForm({
       titleHi: "",
@@ -83,6 +97,24 @@ export default function AdminArticlesPage() {
       tags: isEn ? ["Tartam Vani", "Brahm Gyan"] : ["तारतम वाणी", "ब्रह्मज्ञान"],
       status: "published",
     });
+  };
+
+  const handleEdit = (art: Article) => {
+    setEditingId(art.id);
+    setForm({
+      titleHi: art.titleHi || "",
+      titleEn: art.titleEn || "",
+      contentHi: art.contentHi || "",
+      contentEn: art.contentEn || "",
+      slug: art.slug || "",
+      featuredImage: art.featuredImage || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800",
+      author: art.author || (isEn ? "Sadhauli Dham Research Cell" : "साढौली धाम शोध पीठ"),
+      category: art.category || (isEn ? "Spiritual Wisdom" : "आध्यात्मिक ज्ञान"),
+      tags: art.tags || (isEn ? ["Tartam Vani", "Brahm Gyan"] : ["तारतम वाणी", "ब्रह्मज्ञान"]),
+      status: art.status || "published",
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const confirmDelete = async () => {
@@ -354,13 +386,24 @@ export default function AdminArticlesPage() {
                   <td className="p-3.5 text-spiritual-ivory/70">{art.author}</td>
                   <td className="p-3.5 font-mono text-gold-300">{art.publishedAt}</td>
                   <td className="p-3.5 text-right">
-                    <button
-                      onClick={() => setDeleteCandidate(art)}
-                      className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
-                      title={isEn ? "Delete" : "हटाएं"}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(art)}
+                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Edit" : "संपादित करें"}
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteCandidate(art)}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Delete" : "हटाएं"}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

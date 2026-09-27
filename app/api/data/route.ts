@@ -258,6 +258,47 @@ export async function GET() {
         }
       : initialDailyThought;
 
+    // Query admin credentials safely
+    let adminCredentials = {
+      username: "admin",
+      email: "admin@sadhaulidham.com",
+      password: "admin123",
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      const { data: adminData } = await supabase
+        .from("admin_credentials")
+        .select("*")
+        .eq("id", "primary")
+        .maybeSingle();
+      if (adminData && adminData.username) {
+        adminCredentials = {
+          username: adminData.username,
+          email: adminData.email || "admin@sadhaulidham.com",
+          password: adminData.password || "admin123",
+          updatedAt: adminData.updated_at || new Date().toISOString(),
+        };
+      } else {
+        const diskDbPath = path.join(process.cwd(), "data", "db.json");
+        if (fs.existsSync(diskDbPath)) {
+          const fileContent = JSON.parse(fs.readFileSync(diskDbPath, "utf-8"));
+          if (fileContent.adminCredentials) {
+            adminCredentials = fileContent.adminCredentials;
+          }
+        }
+      }
+    } catch {
+      try {
+        const diskDbPath = path.join(process.cwd(), "data", "db.json");
+        if (fs.existsSync(diskDbPath)) {
+          const fileContent = JSON.parse(fs.readFileSync(diskDbPath, "utf-8"));
+          if (fileContent.adminCredentials) {
+            adminCredentials = fileContent.adminCredentials;
+          }
+        }
+      } catch {}
+    }
+
     const data = {
       books,
       scriptures: initialScriptures,
@@ -273,12 +314,7 @@ export async function GET() {
       aboutContent,
       chitwaniBooks,
       chitwaniVideos,
-      adminCredentials: {
-        username: "admin",
-        email: "admin@sadhaulidham.com",
-        password: "admin123",
-        updatedAt: new Date().toISOString(),
-      },
+      adminCredentials,
       updatedAt: new Date().toISOString(),
     };
 
@@ -305,6 +341,12 @@ export async function GET() {
         settings: initialSettings,
         aboutContent: initialAboutContent,
         dailyThought: initialDailyThought,
+        adminCredentials: {
+          username: "admin",
+          email: "admin@sadhaulidham.com",
+          password: "admin123",
+          updatedAt: new Date().toISOString(),
+        },
         updatedAt: new Date().toISOString(),
       },
       {
@@ -565,6 +607,18 @@ export async function POST(req: NextRequest) {
         updated_at: new Date().toISOString(),
       });
       if (error) throw error;
+    } else if (key === "adminCredentials" && data) {
+      try {
+        await supabase.from("admin_credentials").upsert({
+          id: "primary",
+          username: data.username || "admin",
+          email: data.email || "admin@sadhaulidham.com",
+          password: data.password || "admin123",
+          updated_at: new Date().toISOString(),
+        });
+      } catch (adminErr) {
+        console.warn("[API Supabase POST Warning] admin_credentials table update skipped:", adminErr);
+      }
     }
 
     return NextResponse.json(

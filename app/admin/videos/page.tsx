@@ -5,7 +5,7 @@ import Image from "next/image";
 import { store } from "@/lib/data/store";
 import { Video } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Video as VideoIcon, Play, Radio, Sparkles, CheckCircle, X } from "lucide-react";
+import { Plus, Trash2, Edit3, Video as VideoIcon, Play, Radio, Sparkles, CheckCircle, X } from "lucide-react";
 
 export default function AdminVideosPage() {
   const { language } = useI18n();
@@ -13,6 +13,7 @@ export default function AdminVideosPage() {
 
   const [videos, setVideos] = useState<Video[]>(() => store.getVideos());
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<Video | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -58,30 +59,53 @@ export default function AdminVideosPage() {
     const ytId = extractYouTubeId(form.urlInput);
     const thumbnail = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
 
-    store.addVideo({
-      youtubeId: ytId,
-      titleHi: form.titleHi,
-      titleEn: form.titleEn,
-      descriptionHi: form.descriptionHi,
-      descriptionEn: form.descriptionEn,
-      category: form.category,
-      speaker: form.speaker,
-      duration: form.duration,
-      thumbnail: thumbnail,
-      featured: form.featured,
-      published: form.published,
-      isLive: form.isLive,
-    });
-    await store.saveToStorage("prannath_videos_v2", store.getVideos());
+    if (editingId) {
+      store.updateVideo(editingId, {
+        youtubeId: ytId,
+        titleHi: form.titleHi,
+        titleEn: form.titleEn,
+        descriptionHi: form.descriptionHi,
+        descriptionEn: form.descriptionEn,
+        category: form.category,
+        speaker: form.speaker,
+        duration: form.duration,
+        thumbnail: thumbnail,
+        featured: form.featured,
+        published: form.published,
+        isLive: form.isLive,
+      });
+      await store.saveToStorage("prannath_videos_v2", store.getVideos());
+      showToast(
+        isEn
+          ? `✓ Video "${form.titleEn || form.titleHi}" updated and saved to database!`
+          : `✓ सत्संग वीडियो "${form.titleHi}" डेटाबेस में अपडेट हो गया!`
+      );
+      setEditingId(null);
+    } else {
+      store.addVideo({
+        youtubeId: ytId,
+        titleHi: form.titleHi,
+        titleEn: form.titleEn,
+        descriptionHi: form.descriptionHi,
+        descriptionEn: form.descriptionEn,
+        category: form.category,
+        speaker: form.speaker,
+        duration: form.duration,
+        thumbnail: thumbnail,
+        featured: form.featured,
+        published: form.published,
+        isLive: form.isLive,
+      });
+      await store.saveToStorage("prannath_videos_v2", store.getVideos());
+      showToast(
+        isEn
+          ? `✓ Video "${form.titleEn || form.titleHi}" added and saved to database!`
+          : `✓ सत्संग वीडियो "${form.titleHi}" डेटाबेस में सुरक्षित हो गया!`
+      );
+    }
 
     setVideos(store.getVideos());
     setIsSaving(false);
-    showToast(
-      isEn
-        ? `✓ Video "${form.titleEn || form.titleHi}" added and saved to database!`
-        : `✓ सत्संग वीडियो "${form.titleHi}" डेटाबेस में सुरक्षित हो गया!`
-    );
-
     setShowAddForm(false);
     setForm({
       urlInput: "",
@@ -96,6 +120,25 @@ export default function AdminVideosPage() {
       featured: true,
       published: true,
     });
+  };
+
+  const handleEdit = (v: Video) => {
+    setEditingId(v.id);
+    setForm({
+      urlInput: `https://www.youtube.com/watch?v=${v.youtubeId}`,
+      titleHi: v.titleHi || "",
+      titleEn: v.titleEn || "",
+      descriptionHi: v.descriptionHi || "",
+      descriptionEn: v.descriptionEn || "",
+      category: v.category || "satsang",
+      speaker: v.speaker || "पूज्य संत वृंद, साढौली धाम",
+      duration: v.duration || "45:00",
+      isLive: v.isLive || false,
+      featured: v.featured || false,
+      published: v.published ?? true,
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const confirmDelete = async () => {
@@ -370,14 +413,24 @@ export default function AdminVideosPage() {
                   </td>
                   <td className="p-3.5 font-mono">{v.duration}</td>
                   <td className="p-3.5 text-right">
-                    <button
-                      type="button"
-                      onClick={() => setDeleteCandidate(v)}
-                      className="p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/30 hover:scale-105 transition-all shadow-sm"
-                      title={isEn ? "Delete" : "हटाएं"}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(v)}
+                        className="p-2 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-300 hover:bg-gold-500/30 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Edit" : "संपादित करें"}
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteCandidate(v)}
+                        className="p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/30 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Delete" : "हटाएं"}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

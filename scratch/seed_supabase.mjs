@@ -166,8 +166,45 @@ async function seedSupabase() {
   if (audioErr) console.error("   ❌ Audio Error:", audioErr.message);
   else console.log("   ✅ Audio seeded successfully.");
 
-  // 7. Seed Settings & About & Thought
-  console.log("7. Seeding Settings, About Content & Daily Thought...");
+  // 7. Seed Chitwani Books
+  console.log(`7. Seeding ${rawData.chitwaniBooks?.length || 0} Chitwani Books...`);
+  if (rawData.chitwaniBooks && rawData.chitwaniBooks.length > 0) {
+    const chitwaniBookRows = rawData.chitwaniBooks.map((cb) => ({
+      id: cb.id,
+      title_hi: cb.titleHi,
+      title_en: cb.titleEn || "",
+      description_hi: cb.descriptionHi || "",
+      description_en: cb.descriptionEn || "",
+      author: cb.author || "",
+      cover_url: cb.coverUrl || "",
+      pdf_url: cb.pdfUrl || "",
+      pages: cb.pages || 1,
+    }));
+    const { error: cbErr } = await supabase.from("chitwani_books").upsert(chitwaniBookRows);
+    if (cbErr) console.error("   ❌ Chitwani Books Error:", cbErr.message);
+    else console.log("   ✅ Chitwani Books seeded successfully.");
+  }
+
+  // 8. Seed Chitwani Videos
+  console.log(`8. Seeding ${rawData.chitwaniVideos?.length || 0} Chitwani Videos...`);
+  if (rawData.chitwaniVideos && rawData.chitwaniVideos.length > 0) {
+    const chitwaniVideoRows = rawData.chitwaniVideos.map((cv) => ({
+      id: cv.id,
+      title_hi: cv.titleHi,
+      title_en: cv.titleEn || "",
+      youtube_id: cv.youtubeId,
+      speaker: cv.speaker || "",
+      duration: cv.duration || "",
+      description_hi: cv.descriptionHi || "",
+      description_en: cv.descriptionEn || "",
+    }));
+    const { error: cvErr } = await supabase.from("chitwani_videos").upsert(chitwaniVideoRows);
+    if (cvErr) console.error("   ❌ Chitwani Videos Error:", cvErr.message);
+    else console.log("   ✅ Chitwani Videos seeded successfully.");
+  }
+
+  // 9. Seed Settings & About & Thought
+  console.log("9. Seeding Settings, About Content & Daily Thought...");
   const { error: setErr } = await supabase.from("site_settings").upsert({
     id: "primary",
     phone: rawData.settings.phone || "",

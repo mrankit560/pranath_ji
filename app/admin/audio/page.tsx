@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { store } from "@/lib/data/store";
 import { AudioTrack } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Music, Play, CheckCircle, X } from "lucide-react";
+import { Plus, Trash2, Edit3, Upload, Music, Play, CheckCircle, X } from "lucide-react";
 import { useAudio } from "@/lib/audio/AudioContext";
 
 export default function AdminAudioPage() {
@@ -14,9 +14,11 @@ export default function AdminAudioPage() {
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>(() => store.getAudioTracks());
   const { playTrack } = useAudio();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<AudioTrack | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingAudio, setIsUploadingAudio] = useState(false);
 
   const [form, setForm] = useState({
     titleHi: "",
@@ -48,17 +50,28 @@ export default function AdminAudioPage() {
   const handleAddAudio = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    store.addAudioTrack(form);
-    await store.saveToStorage("prannath_audio_v2", store.getAudioTracks());
+
+    if (editingId) {
+      store.updateAudioTrack(editingId, form);
+      await store.saveToStorage("prannath_audio_v2", store.getAudioTracks());
+      showToast(
+        isEn
+          ? `✓ Audio Track "${form.titleEn || form.titleHi}" updated and saved to database!`
+          : `✓ ऑडियो ट्रैक "${form.titleHi}" डेटाबेस में अपडेट हो गया!`
+      );
+      setEditingId(null);
+    } else {
+      store.addAudioTrack(form);
+      await store.saveToStorage("prannath_audio_v2", store.getAudioTracks());
+      showToast(
+        isEn
+          ? `✓ Audio Track "${form.titleEn || form.titleHi}" added and saved to database!`
+          : `✓ भजन/आरती "${form.titleHi}" डेटाबेस में सुरक्षित हो गई!`
+      );
+    }
 
     setAudioTracks(store.getAudioTracks());
     setIsSaving(false);
-    showToast(
-      isEn
-        ? `✓ Audio Track "${form.titleEn || form.titleHi}" added and saved to database!`
-        : `✓ भजन/आरती "${form.titleHi}" डेटाबेस में सुरक्षित हो गई!`
-    );
-
     setShowAddForm(false);
     setForm({
       titleHi: "",
@@ -71,6 +84,53 @@ export default function AdminAudioPage() {
       order: audioTracks.length + 1,
       published: true,
     });
+  };
+
+  const handleEdit = (track: AudioTrack) => {
+    setEditingId(track.id);
+    setForm({
+      titleHi: track.titleHi || "",
+      titleEn: track.titleEn || "",
+      audioUrl: track.audioUrl || "",
+      coverUrl: track.coverUrl || "/assets/logo-emblem.png",
+      category: track.category || "aarti",
+      speaker: track.speaker || "साढौली धाम आश्रम वृंद",
+      duration: track.duration || "08:00",
+      order: track.order || 1,
+      published: track.published ?? true,
+    });
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAudio(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.url) {
+          setForm((prev) => ({ ...prev, audioUrl: json.url }));
+          showToast(isEn ? "✓ Audio file uploaded successfully!" : "✓ ऑडियो फ़ाइल सफलतापूर्वक अपलोड हो गई!");
+        }
+      } else {
+        showToast(isEn ? "Upload failed" : "ऑडियो अपलोड असफल रहा");
+      }
+    } catch (err) {
+      console.error("Audio upload error:", err);
+      showToast(isEn ? "Upload error" : "अपलोड में त्रुटि हुई");
+    } finally {
+      setIsUploadingAudio(false);
+      e.target.value = "";
+    }
   };
 
   const confirmDelete = async () => {
@@ -262,15 +322,29 @@ export default function AdminAudioPage() {
 
           <div>
             <label className="block text-xs font-semibold text-gold-300 mb-1">
-              {isEn ? "Audio Stream URL (.mp3 / .ogg / stream link) *" : "ऑडियो लिंक (MP3/OGG URL) *"}
+              {isEn ? "Audio Stream URL or Upload Audio File *" : "ऑडियो लिंक या फ़ाइल अपलोड करें (MP3/OGG) *"}
             </label>
-            <input
-              type="text"
-              required
-              value={form.audioUrl}
-              onChange={(e) => setForm({ ...form, audioUrl: e.target.value })}
-              className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                required
+                value={form.audioUrl}
+                onChange={(e) => setForm({ ...form, audioUrl: e.target.value })}
+                placeholder="https://.../aarti.mp3"
+                className="flex-1 p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+              />
+              <label className={`cursor-pointer px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform flex-shrink-0 ${isUploadingAudio ? "opacity-60 pointer-events-none" : ""}`}>
+                <Upload className={`w-3.5 h-3.5 ${isUploadingAudio ? "animate-spin" : ""}`} />
+                <span>{isUploadingAudio ? (isEn ? "Uploading..." : "अपलोड हो रहा है...") : (isEn ? "Upload Audio" : "ऑडियो अपलोड")}</span>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  disabled={isUploadingAudio}
+                  onChange={handleAudioUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 pt-2">
@@ -339,14 +413,24 @@ export default function AdminAudioPage() {
                   </td>
                   <td className="p-3.5 font-mono text-gold-300">{t.duration}</td>
                   <td className="p-3.5 text-right">
-                    <button
-                      type="button"
-                      onClick={() => setDeleteCandidate(t)}
-                      className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
-                      title={isEn ? "Delete" : "हटाएं"}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(t)}
+                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Edit" : "संपादित करें"}
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteCandidate(t)}
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        title={isEn ? "Delete" : "हटाएं"}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

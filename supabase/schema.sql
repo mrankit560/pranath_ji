@@ -224,7 +224,20 @@ CREATE POLICY "Anon Full Access Settings" ON public.site_settings FOR ALL USING 
 CREATE POLICY "Anon Full Access About" ON public.about_content FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Anon Full Access Thought" ON public.daily_thought FOR ALL USING (true) WITH CHECK (true);
 
--- 12. STORAGE BUCKET & POLICIES FOR UPLOADS (PDF Books, Covers, Images)
+-- 12. ADMIN CREDENTIALS
+CREATE TABLE IF NOT EXISTS public.admin_credentials (
+  id TEXT PRIMARY KEY DEFAULT 'primary',
+  username TEXT NOT NULL DEFAULT 'admin',
+  email TEXT NOT NULL DEFAULT 'admin@sadhaulidham.com',
+  password TEXT NOT NULL DEFAULT 'admin123',
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.admin_credentials ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public Read Admin Credentials" ON public.admin_credentials FOR SELECT USING (true);
+CREATE POLICY "Anon Full Access Admin Credentials" ON public.admin_credentials FOR ALL USING (true) WITH CHECK (true);
+
+-- 13. STORAGE BUCKET & POLICIES FOR UPLOADS (PDF Books, Covers, Images)
 INSERT INTO storage.buckets (id, name, public, file_size_limit)
 VALUES ('uploads', 'uploads', true, 52428800)
 ON CONFLICT (id) DO UPDATE SET public = true, file_size_limit = 52428800;
@@ -238,4 +251,5 @@ BEGIN
     CREATE POLICY "Anon Full Access Storage Uploads" ON storage.objects FOR ALL USING (bucket_id = 'uploads') WITH CHECK (bucket_id = 'uploads');
   END IF;
 END $$;
+
 

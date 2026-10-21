@@ -55,10 +55,10 @@ export const Paramdham3DMandala: React.FC = () => {
 
         {/* Layer 2 (-20px Z): Outer Clockwise 3D Rotating Golden Orbit Ring */}
         <div
-          className="absolute inset-2 sm:inset-0 rounded-full border border-gold-400/30 animate-orbit-3d-cw pointer-events-none"
+          className="absolute inset-2 sm:inset-0 rounded-full border border-gold-400/45 animate-orbit-3d-cw pointer-events-none"
           style={{
             transform: "translateZ(-20px)",
-            boxShadow: "0 0 30px rgba(244, 208, 111, 0.25), inset 0 0 30px rgba(244, 208, 111, 0.15)",
+            boxShadow: "0 0 30px rgba(168,128,26,0.12), inset 0 0 30px rgba(168,128,26,0.07)",
           }}
         />
 
@@ -70,7 +70,7 @@ export const Paramdham3DMandala: React.FC = () => {
 
         {/* Layer 4 (0px Z): The Sacred Paramdham 24-Aspect Mandala Sphere */}
         <div
-          className="relative w-[280px] h-[280px] sm:w-[390px] sm:h-[390px] md:w-[440px] md:h-[440px] rounded-full p-2 bg-gradient-to-b from-[#1c140d]/90 to-[#0a0705]/95 border-2 border-gold-400/60 shadow-2xl shadow-black animate-pulse-3d"
+          className="relative w-[280px] h-[280px] sm:w-[390px] sm:h-[390px] md:w-[440px] md:h-[440px] rounded-full p-2 bg-gradient-to-b from-surface-sunk/90 to-surface-2/95 border-2 border-gold-400/60 shadow-2xl shadow-gold-900/20 animate-pulse-3d"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Subtle Golden Sheen Reflection Overlay */}
@@ -87,7 +87,7 @@ export const Paramdham3DMandala: React.FC = () => {
             width={440}
             height={440}
             priority
-            className="w-full h-full object-contain drop-shadow-[0_0_35px_rgba(244,208,111,0.55)]"
+            className="w-full h-full object-contain drop-shadow-[0_0_35px_rgba(168,128,26,0.28)]"
           />
         </div>
 
@@ -95,7 +95,7 @@ export const Paramdham3DMandala: React.FC = () => {
         {/* Badge 1: Top Left */}
         <Link
           href="/meditation"
-          className="absolute -top-3 left-0 sm:left-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
+          className="absolute -top-3 left-0 sm:left-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-700 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
           style={{ transform: "translateZ(45px)" }}
         >
           <span className="text-base">🏛️</span>
@@ -105,7 +105,7 @@ export const Paramdham3DMandala: React.FC = () => {
         {/* Badge 2: Top Right */}
         <Link
           href="/philosophy"
-          className="absolute top-4 -right-2 sm:right-2 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
+          className="absolute top-4 -right-2 sm:right-2 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-700 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
           style={{ transform: "translateZ(55px)" }}
         >
           <span className="text-base">🌌</span>
@@ -115,7 +115,7 @@ export const Paramdham3DMandala: React.FC = () => {
         {/* Badge 3: Bottom Left */}
         <Link
           href="/philosophy"
-          className="absolute bottom-6 -left-2 sm:left-2 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
+          className="absolute bottom-6 -left-2 sm:left-2 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-700 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
           style={{ transform: "translateZ(50px)" }}
         >
           <span className="text-base">📿</span>
@@ -125,7 +125,7 @@ export const Paramdham3DMandala: React.FC = () => {
         {/* Badge 4: Bottom Right */}
         <Link
           href="/meditation"
-          className="absolute -bottom-3 right-0 sm:right-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-300 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
+          className="absolute -bottom-3 right-0 sm:right-4 floating-badge px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-gold-700 hover:scale-110 transition-transform shadow-xl backdrop-blur-xl border border-gold-400/60"
           style={{ transform: "translateZ(65px)" }}
         >
           <span className="text-base">🪷</span>

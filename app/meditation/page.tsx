@@ -82,7 +82,7 @@ export default function MeditationPage() {
   }, [isMeditating]);
 
   return (
-    <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+    <main className="min-h-screen bg-surface text-ink">
       <Suspense fallback={null}>
         <MeditationTabSync onTabChange={setActiveTab} />
       </Suspense>
@@ -91,9 +91,9 @@ export default function MeditationPage() {
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Header Banner */}
-      <section className="pt-32 pb-12 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-navy/50 to-transparent border-b border-gold-500/20 text-center">
+      <section className="pt-32 pb-12 bg-gradient-to-b from-surface-2/90 via-surface-2/50 to-transparent border-b border-line text-center">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-300 text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-700 text-xs font-bold uppercase tracking-wider mb-4">
             <Flower2 className="w-3.5 h-3.5" />
             {isEn ? "Chitwani & Dhyan Sanctuary" : "चितवनी एवं ध्यान साधना"}
           </div>
@@ -109,13 +109,13 @@ export default function MeditationPage() {
           </p>
 
           {/* 3 Sub-Category Tabs */}
-          <div className="flex flex-wrap items-center justify-center p-1.5 rounded-2xl bg-black/70 border border-gold-500/40 shadow-2xl backdrop-blur-xl gap-2 max-w-xl mx-auto">
+          <div className="flex flex-wrap items-center justify-center p-1.5 rounded-2xl bg-surface-sunk border border-line shadow-2xl backdrop-blur-xl gap-2 max-w-xl mx-auto">
             <button
               onClick={() => setActiveTab("articles")}
               className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${
                 activeTab === "articles"
-                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-                  : "text-spiritual-ivory/75 hover:text-gold-300"
+                  ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+                  : "text-ink/75 hover:text-gold-700"
               }`}
             >
               <FileText className="w-4 h-4" />
@@ -126,8 +126,8 @@ export default function MeditationPage() {
               onClick={() => setActiveTab("books")}
               className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${
                 activeTab === "books"
-                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-                  : "text-spiritual-ivory/75 hover:text-gold-300"
+                  ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+                  : "text-ink/75 hover:text-gold-700"
               }`}
             >
               <BookOpen className="w-4 h-4" />
@@ -138,8 +138,8 @@ export default function MeditationPage() {
               onClick={() => setActiveTab("videos")}
               className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${
                 activeTab === "videos"
-                  ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-                  : "text-spiritual-ivory/75 hover:text-gold-300"
+                  ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+                  : "text-ink/75 hover:text-gold-700"
               }`}
             >
               <Play className="w-4 h-4 fill-current" />
@@ -151,7 +151,7 @@ export default function MeditationPage() {
 
       {/* Interactive 3D Meditation Breathing Guide */}
       <section className="py-8 max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 text-center relative overflow-hidden shadow-2xl">
+        <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-line text-center relative overflow-hidden shadow-2xl">
           <ChitwaniMeditation3D />
         </div>
       </section>
@@ -175,29 +175,29 @@ export default function MeditationPage() {
               <div
                 key={art.id}
                 onClick={() => setSelectedArticle(art)}
-                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all duration-300"
+                className="spiritual-glass-card rounded-3xl overflow-hidden border border-line flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all duration-300"
               >
                 <div className="relative h-48 w-full bg-black">
                   <Image
-                    src={art.featuredImage || "/assets/hero-reference-1.jpg"}
+                    src={art.featuredImage || "/assets/sadhauli-mandir.jpg"}
                     alt={art.titleHi}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-95"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface-2 via-transparent to-transparent" />
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <h3 className="text-base font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug mb-2">
+                    <h3 className="text-base font-bold text-ink group-hover:text-gold-700 transition-colors font-spiritual-heading leading-snug mb-2">
                       {isEn ? art.titleEn || art.titleHi : art.titleHi}
                     </h3>
-                    <p className="text-xs text-spiritual-ivory/70 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-ink/70 line-clamp-3 leading-relaxed">
                       {isEn ? art.summaryEn || art.summaryHi : art.summaryHi}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between text-xs font-bold text-gold-300">
+                  <div className="pt-3 border-t border-line flex items-center justify-between text-xs font-bold text-gold-700">
                     <span>{isEn ? "Read Full Guide" : "विस्तार से पढ़ें"}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </div>
@@ -229,10 +229,10 @@ export default function MeditationPage() {
               return (
                 <div
                   key={book.id}
-                  className="spiritual-glass-card rounded-3xl p-6 border border-gold-500/30 flex flex-col justify-between group shadow-xl hover:border-gold-400 transition-all"
+                  className="spiritual-glass-card rounded-3xl p-6 border border-line flex flex-col justify-between group shadow-xl hover:border-gold-400 transition-all"
                 >
                   <div className="flex gap-5">
-                    <div className="relative w-28 h-36 rounded-xl overflow-hidden flex-shrink-0 bg-black border border-gold-500/30">
+                    <div className="relative w-28 h-36 rounded-xl overflow-hidden flex-shrink-0 bg-black border border-line">
                       <Image
                         src={book.coverUrl || "/assets/paramdham-mandala.png"}
                         alt={book.titleHi}
@@ -242,27 +242,27 @@ export default function MeditationPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] font-bold uppercase">
+                      <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-700 text-[10px] font-bold uppercase">
                         {book.pages} {isEn ? "Pages" : "पृष्ठ"}
                       </span>
-                      <h3 className="text-base sm:text-lg font-bold text-spiritual-ivory font-spiritual-heading">
+                      <h3 className="text-base sm:text-lg font-bold text-ink font-spiritual-heading">
                         {isEn ? book.titleEn || book.titleHi : book.titleHi}
                       </h3>
                       <p className="text-xs text-gold-muted/80">{book.author}</p>
-                      <p className="text-xs text-spiritual-ivory/70 line-clamp-2">
+                      <p className="text-xs text-ink/70 line-clamp-2">
                         {isEn ? book.descriptionEn : book.descriptionHi}
                       </p>
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-gold-500/20 flex items-center justify-between">
+                  <div className="pt-4 mt-4 border-t border-line flex items-center justify-between">
                     {hasLivePdf ? (
                       <>
                         <a
                           href={book.pdfUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm"
+                          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm"
                         >
                           <BookOpen className="w-3.5 h-3.5" />
                           <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
@@ -273,19 +273,19 @@ export default function MeditationPage() {
                           download
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3.5 py-2 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold inline-flex items-center gap-1"
+                          className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold inline-flex items-center gap-1"
                         >
                           <Download className="w-3.5 h-3.5" />
                           <span>PDF</span>
                         </a>
                       </>
                     ) : (
-                      <div className="w-full py-2 px-3 rounded-xl bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold flex items-center justify-between">
+                      <div className="w-full py-2 px-3 rounded-xl bg-gold-500/10 border border-gold-400/45 text-gold-700 text-xs font-semibold flex items-center justify-between">
                         <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-amber-400" />
+                          <Clock className="w-3.5 h-3.5 text-amber-700" />
                           <span>{isEn ? "PDF Coming Soon" : "PDF शीघ्र उपलब्ध होगा"}</span>
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-bold uppercase">
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-700 font-bold uppercase">
                           {isEn ? "Coming Soon" : "जल्द उपलब्ध"}
                         </span>
                       </div>
@@ -317,7 +317,7 @@ export default function MeditationPage() {
               <div
                 key={vid.id}
                 onClick={() => setPlayingVideo(vid)}
-                className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all"
+                className="spiritual-glass-card rounded-3xl overflow-hidden border border-line flex flex-col justify-between group cursor-pointer shadow-xl hover:border-gold-400 transition-all"
               >
                 <div className="relative h-48 w-full bg-black flex items-center justify-center">
                   <Image
@@ -326,13 +326,13 @@ export default function MeditationPage() {
                     fill
                     className="object-cover opacity-75"
                   />
-                  <div className="w-12 h-12 rounded-full bg-gold-gradient text-spiritual-dark flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform relative z-10">
+                  <div className="w-12 h-12 rounded-full bg-gold-gradient text-on-gold flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform relative z-10">
                     <Play className="w-5 h-5 fill-current ml-0.5" />
                   </div>
                 </div>
 
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-2">
-                  <h3 className="text-base font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug">
+                  <h3 className="text-base font-bold text-ink group-hover:text-gold-700 transition-colors font-spiritual-heading leading-snug">
                     {isEn ? vid.titleEn || vid.titleHi : vid.titleHi}
                   </h3>
                   <p className="text-xs text-gold-muted/80">{vid.speaker} • {vid.duration}</p>
@@ -346,16 +346,16 @@ export default function MeditationPage() {
       {/* Article Detail Modal */}
       {selectedArticle && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim/55 backdrop-blur-xl animate-fade-in"
           onClick={() => setSelectedArticle(null)}
         >
           <div
-            className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-10 shadow-2xl relative space-y-6"
+            className="bg-surface-2 border-2 border-gold-400/50 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-10 shadow-2xl relative space-y-6"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setSelectedArticle(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-gold-500/15 text-gold-300 hover:bg-gold-500 hover:text-spiritual-dark transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-full bg-gold-500/15 text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -369,7 +369,7 @@ export default function MeditationPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-black/50 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed space-y-3 font-devanagari">
+            <div className="p-4 rounded-2xl bg-surface-sunk/80 border border-line text-xs sm:text-sm text-ink/90 leading-relaxed space-y-3 font-devanagari">
               <p className="whitespace-pre-line">
                 {isEn ? selectedArticle.contentEn || selectedArticle.contentHi : selectedArticle.contentHi}
               </p>
@@ -380,15 +380,15 @@ export default function MeditationPage() {
 
       {/* Video Player Modal */}
       {playingVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in">
-          <div className="bg-spiritual-navy border-2 border-gold-400/50 rounded-3xl max-w-3xl w-full p-6 shadow-2xl relative space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-gold-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim/55 backdrop-blur-xl animate-fade-in">
+          <div className="bg-surface-2 border-2 border-gold-400/50 rounded-3xl max-w-3xl w-full p-6 shadow-2xl relative space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-line">
               <h3 className="text-base font-bold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible truncate pr-4">
                 {isEn ? playingVideo.titleEn || playingVideo.titleHi : playingVideo.titleHi}
               </h3>
               <button
                 onClick={() => setPlayingVideo(null)}
-                className="p-1 rounded-full bg-gold-500/15 text-gold-300 hover:bg-gold-500 hover:text-spiritual-dark transition-colors"
+                className="p-1 rounded-full bg-gold-500/15 text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>

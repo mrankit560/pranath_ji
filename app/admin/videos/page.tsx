@@ -161,21 +161,21 @@ export default function AdminVideosPage() {
     <div className="space-y-6 max-w-6xl">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-100 to-surface-2 border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <div className="text-xs font-bold text-emerald-300">
+            <div className="text-xs font-bold text-emerald-700">
               {isEn ? "Success" : "सफलतापूर्वक पूर्ण"}
             </div>
-            <div className="text-xs text-spiritual-ivory font-medium">
+            <div className="text-xs text-ink font-medium">
               {toastMessage}
             </div>
           </div>
           <button
             onClick={() => setToastMessage(null)}
-            className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2"
+            className="p-1 rounded-lg hover:bg-white/10 text-emerald-700 ml-2"
           >
             <X className="w-4 h-4" />
           </button>
@@ -184,16 +184,16 @@ export default function AdminVideosPage() {
 
       {/* In-App Delete Confirmation Modal */}
       {deleteCandidate && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+        <div className="fixed inset-0 z-50 bg-scrim/55 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-surface-2 text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-700 flex items-center justify-center mx-auto border border-red-500/40">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">
+              <h3 className="text-lg font-bold text-ink mb-1">
                 {isEn ? "Delete Satsang Video?" : "सत्संग वीडियो हटाएं?"}
               </h3>
-              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+              <p className="text-xs text-ink/70 leading-relaxed">
                 {isEn
                   ? `Are you sure you want to delete "${deleteCandidate.titleEn || deleteCandidate.titleHi}"?`
                   : `क्या आप वाकई "${deleteCandidate.titleHi}" को हटाना चाहते हैं?`}
@@ -210,7 +210,7 @@ export default function AdminVideosPage() {
               <button
                 type="button"
                 onClick={() => setDeleteCandidate(null)}
-                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+                className="px-5 py-2.5 rounded-xl bg-card border border-line text-ink/80 text-xs font-semibold hover:bg-white/5"
               >
                 {isEn ? "Cancel" : "रद्द करें"}
               </button>
@@ -219,12 +219,12 @@ export default function AdminVideosPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
+      <div className="flex items-center justify-between pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
             {isEn ? "Satsang & Video Discourses CMS" : "सत्संग वीडियो एवं लाइव स्ट्रीम प्रबंधन"}
           </h1>
-          <p className="text-xs text-spiritual-ivory/60 mt-1">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
               ? "Add YouTube discourses, categorize Vani recitations, and configure live stream links"
               : "यूट्यूब सत्संग लिंक जोड़ें, वाणी गायन व प्रवचन श्रेणीबद्ध करें तथा लाइव प्रसारण प्रबंधित करें"}
@@ -233,7 +233,7 @@ export default function AdminVideosPage() {
 
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -251,15 +251,15 @@ export default function AdminVideosPage() {
       {showAddForm && (
         <form
           onSubmit={handleAddVideo}
-          className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80"
+          className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-surface-2/80"
         >
-          <h3 className="text-sm font-bold text-gold-300 uppercase tracking-wider flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-gold-400" />
+          <h3 className="text-sm font-bold text-gold-700 uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-gold-700" />
             <span>{isEn ? "Add New Satsang Video" : "नया सत्संग वीडियो जोड़ें"}</span>
           </h3>
 
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">
+            <label className="block text-xs font-semibold text-gold-700 mb-1">
               {isEn ? "YouTube Video URL or ID *" : "यूट्यूब वीडियो लिंक या Video ID *"}
             </label>
             <input
@@ -268,13 +268,13 @@ export default function AdminVideosPage() {
               value={form.urlInput}
               onChange={(e) => setForm({ ...form, urlInput: e.target.value })}
               placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ or Video ID"
-              className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+              className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Video Title (Hindi) *" : "वीडियो शीर्षक (हिन्दी) *"}
               </label>
               <input
@@ -283,12 +283,12 @@ export default function AdminVideosPage() {
                 value={form.titleHi}
                 onChange={(e) => setForm({ ...form, titleHi: e.target.value })}
                 placeholder="श्री तारतम वाणी रहस्य एवं परमधाम महिमा"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Video Title (English)" : "वीडियो शीर्षक (अंग्रेज़ी)"}
               </label>
               <input
@@ -296,20 +296,20 @@ export default function AdminVideosPage() {
                 value={form.titleEn}
                 onChange={(e) => setForm({ ...form, titleEn: e.target.value })}
                 placeholder="Secrets of Tartam Vani & Glory of Paramdham"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Category *" : "श्रेणी *"}
               </label>
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value as Video["category"] })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               >
                 <option value="satsang">{isEn ? "Satsang & Pravachan" : "सत्संग एवं प्रवचन"}</option>
                 <option value="vani_gayan">{isEn ? "Vani Gayan & Bhajans" : "वाणी गायन व भजन"}</option>
@@ -319,26 +319,26 @@ export default function AdminVideosPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Speaker / Sant" : "वक्ता / संत"}
               </label>
               <input
                 type="text"
                 value={form.speaker}
                 onChange={(e) => setForm({ ...form, speaker: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Duration (e.g. 45:00)" : "अवधि (उदा. 45:00)"}
               </label>
               <input
                 type="text"
                 value={form.duration}
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
           </div>
@@ -347,7 +347,7 @@ export default function AdminVideosPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none flex items-center gap-1.5"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none flex items-center gap-1.5"
             >
               <VideoIcon className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>
@@ -364,7 +364,7 @@ export default function AdminVideosPage() {
               type="button"
               disabled={isSaving}
               onClick={() => setShowAddForm(false)}
-              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70 hover:bg-white/5 disabled:opacity-50"
+              className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70 hover:bg-white/5 disabled:opacity-50"
             >
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
@@ -373,10 +373,10 @@ export default function AdminVideosPage() {
       )}
 
       {/* Videos List Table */}
-      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
+      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-line shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+          <table className="w-full text-left text-xs text-ink">
+            <thead className="bg-surface-sunk border-b border-line text-gold-700 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Thumbnail" : "थंबनेल"}</th>
                 <th className="p-3.5">{isEn ? "Title" : "शीर्षक"}</th>
@@ -390,24 +390,24 @@ export default function AdminVideosPage() {
               {videos.map((v) => (
                 <tr key={v.id} className="hover:bg-gold-500/5 transition-colors">
                   <td className="p-3.5">
-                    <div className="relative w-16 h-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-gold-500/30">
+                    <div className="relative w-16 h-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-line">
                       <Image
                         src={v.thumbnail || `https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`}
                         alt={v.titleHi}
                         fill
                         className="object-cover"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                        <Play className="w-3.5 h-3.5 text-gold-300 fill-current" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-scrim/40">
+                        <Play className="w-3.5 h-3.5 text-gold-700 fill-current" />
                       </div>
                     </div>
                   </td>
-                  <td className="p-3.5 font-bold text-spiritual-ivory max-w-xs">
+                  <td className="p-3.5 font-bold text-ink max-w-xs">
                     {isEn ? v.titleEn || v.titleHi : v.titleHi}
                   </td>
-                  <td className="p-3.5 text-spiritual-ivory/70">{v.speaker}</td>
+                  <td className="p-3.5 text-ink/70">{v.speaker}</td>
                   <td className="p-3.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] uppercase font-bold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-700 text-[10px] uppercase font-bold">
                       {v.category}
                     </span>
                   </td>
@@ -417,7 +417,7 @@ export default function AdminVideosPage() {
                       <button
                         type="button"
                         onClick={() => handleEdit(v)}
-                        className="p-2 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-300 hover:bg-gold-500/30 hover:scale-105 transition-all shadow-sm"
+                        className="p-2 rounded-xl bg-gold-500/10 border border-line text-gold-700 hover:bg-gold-500/30 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Edit" : "संपादित करें"}
                       >
                         <Edit3 className="w-4 h-4" />
@@ -425,7 +425,7 @@ export default function AdminVideosPage() {
                       <button
                         type="button"
                         onClick={() => setDeleteCandidate(v)}
-                        className="p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/30 hover:scale-105 transition-all shadow-sm"
+                        className="p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 hover:bg-red-500/30 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Delete" : "हटाएं"}
                       >
                         <Trash2 className="w-4 h-4" />

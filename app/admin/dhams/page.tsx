@@ -270,16 +270,16 @@ export default function AdminDhamsPage() {
     <div className="space-y-6 max-w-6xl">
       {/* In-App Delete Confirmation Modal */}
       {deleteCandidate && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+        <div className="fixed inset-0 z-50 bg-scrim/55 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-surface-2 text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-700 flex items-center justify-center mx-auto border border-red-500/40">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">
+              <h3 className="text-lg font-bold text-ink mb-1">
                 {isEn ? "Delete Holy Dham?" : "पावन धाम हटाएं?"}
               </h3>
-              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+              <p className="text-xs text-ink/70 leading-relaxed">
                 {isEn
                   ? `Are you sure you want to delete "${deleteCandidate.nameEn || deleteCandidate.nameHi}"?`
                   : `क्या आप वाकई "${deleteCandidate.nameHi}" को हटाना चाहते हैं?`}
@@ -296,7 +296,7 @@ export default function AdminDhamsPage() {
               <button
                 type="button"
                 onClick={() => setDeleteCandidate(null)}
-                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+                className="px-5 py-2.5 rounded-xl bg-card border border-line text-ink/80 text-xs font-semibold hover:bg-white/5"
               >
                 {isEn ? "Cancel" : "रद्द करें"}
               </button>
@@ -307,21 +307,21 @@ export default function AdminDhamsPage() {
 
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-100 to-surface-2 border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <div className="text-xs font-bold text-emerald-300">
+            <div className="text-xs font-bold text-emerald-700">
               {isEn ? "Database Updated" : "डेटाबेस अपडेट"}
             </div>
-            <div className="text-xs text-spiritual-ivory font-medium">
+            <div className="text-xs text-ink font-medium">
               {toastMessage}
             </div>
           </div>
           <button
             onClick={() => setToastMessage(null)}
-            className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2"
+            className="p-1 rounded-lg hover:bg-white/10 text-emerald-700 ml-2"
           >
             <X className="w-4 h-4" />
           </button>
@@ -329,12 +329,12 @@ export default function AdminDhamsPage() {
       )}
 
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
+      <div className="flex items-center justify-between pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
             {isEn ? "Holy Dhams & Ashrams CMS" : "पावन धाम व आश्रम प्रबंधन"}
           </h1>
-          <p className="text-xs text-spiritual-ivory/60">
+          <p className="text-xs text-ink/60">
             {isEn
               ? "Manage sacred Prannathi ashrams (Sadhauli Dham, Gondar Dham, Surat, Panna etc.) with Multiple Photos & Sliders"
               : "साढौली धाम, गोंदर धाम, सूरत, पन्ना आदि पावन तीर्थों की तस्वीरें, गैलरी, गूगल मैप्स व संपर्क प्रबंधित करें"}
@@ -346,7 +346,7 @@ export default function AdminDhamsPage() {
             setEditingId(null);
             setShowAddForm(!showAddForm);
           }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -365,10 +365,10 @@ export default function AdminDhamsPage() {
       {showAddForm && (
         <form
           onSubmit={handleSave}
-          className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 space-y-6 animate-fade-in shadow-2xl bg-spiritual-navy/80"
+          className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-line space-y-6 animate-fade-in shadow-2xl bg-surface-2/80"
         >
-          <div className="flex items-center justify-between border-b border-gold-500/20 pb-3">
-            <h2 className="text-base font-bold text-gold-300 font-spiritual-heading">
+          <div className="flex items-center justify-between border-b border-line pb-3">
+            <h2 className="text-base font-bold text-gold-700 font-spiritual-heading">
               {editingId
                 ? isEn
                   ? "Edit Holy Dham Details"
@@ -383,7 +383,7 @@ export default function AdminDhamsPage() {
                 setEditingId(null);
                 setShowAddForm(false);
               }}
-              className="p-1 rounded-lg hover:bg-white/10 text-spiritual-ivory/70"
+              className="p-1 rounded-lg hover:bg-white/10 text-ink/70"
             >
               <X className="w-4 h-4" />
             </button>
@@ -391,7 +391,7 @@ export default function AdminDhamsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Dham Name (Hindi) *" : "धाम का नाम (हिन्दी) *"}
               </label>
               <input
@@ -400,12 +400,12 @@ export default function AdminDhamsPage() {
                 value={form.nameHi}
                 onChange={(e) => setForm({ ...form, nameHi: e.target.value })}
                 placeholder="उदा. श्री निजानंद आश्रम साढौली धाम"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Dham Name (English) *" : "धाम का नाम (अंग्रेज़ी) *"}
               </label>
               <input
@@ -414,14 +414,14 @@ export default function AdminDhamsPage() {
                 value={form.nameEn}
                 onChange={(e) => setForm({ ...form, nameEn: e.target.value })}
                 placeholder="e.g. Shri Nijanand Ashram Sadhauli Dham"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Location / City *" : "स्थान / शहर *"}
               </label>
               <input
@@ -430,12 +430,12 @@ export default function AdminDhamsPage() {
                 value={form.location}
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
                 placeholder="उदा. हरिद्वार, उत्तराखण्ड"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Google Maps URL *" : "गूगल मैप्स लिंक (Google Maps URL) *"}
               </label>
               <input
@@ -444,12 +444,12 @@ export default function AdminDhamsPage() {
                 value={form.mapUrl}
                 onChange={(e) => setForm({ ...form, mapUrl: e.target.value })}
                 placeholder="https://maps.app.goo.gl/..."
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Contact Phone" : "संपर्क फोन नंबर"}
               </label>
               <input
@@ -457,27 +457,27 @@ export default function AdminDhamsPage() {
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="+91 99271 97390"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
           </div>
 
           {/* Multiple Photo Gallery & Cover Selector */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-black/40 border border-gold-500/30 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gold-500/20 pb-3">
+          <div className="p-4 sm:p-5 rounded-2xl bg-surface-sunk/70 border border-line space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-line pb-3">
               <div>
-                <h3 className="text-xs font-bold text-gold-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Camera className="w-4 h-4 text-gold-400" />
+                <h3 className="text-xs font-bold text-gold-700 uppercase tracking-wider flex items-center gap-1.5">
+                  <Camera className="w-4 h-4 text-gold-700" />
                   <span>{isEn ? "Dham Photo Gallery & Slider Images" : "धाम फोटो गैलरी एवं स्लाइडर तस्वीरें"}</span>
                 </h3>
-                <p className="text-[11px] text-spiritual-ivory/60">
+                <p className="text-[11px] text-ink/60">
                   {isEn
                     ? "Upload multiple high-resolution photos of the temple, mandir complex, and events"
                     : "मंदिर, आश्रम परिसर एवं आयोजनों की एक से अधिक तस्वीरें अपलोड करें"}
                 </p>
               </div>
 
-              <label className={`cursor-pointer px-3 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform self-start sm:self-auto ${isUploadingImages ? "opacity-60 pointer-events-none" : ""}`}>
+              <label className={`cursor-pointer px-3 py-1.5 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform self-start sm:self-auto ${isUploadingImages ? "opacity-60 pointer-events-none" : ""}`}>
                 <Upload className={`w-3.5 h-3.5 ${isUploadingImages ? "animate-spin" : ""}`} />
                 <span>{isUploadingImages ? (isEn ? "Uploading..." : "अपलोड हो रहा है...") : (isEn ? "Upload Photos" : "तस्वीरें अपलोड करें")}</span>
                 <input
@@ -498,12 +498,12 @@ export default function AdminDhamsPage() {
                 value={newImageUrl}
                 onChange={(e) => setNewImageUrl(e.target.value)}
                 placeholder={isEn ? "Or paste image web URL (https://...)" : "या वेब फोटो लिंक (URL) पेस्ट करें"}
-                className="flex-1 p-2 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="flex-1 p-2 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={handleAddImageUrl}
-                className="px-4 py-2 rounded-xl bg-gold-500/20 border border-gold-500/40 text-gold-300 text-xs font-bold hover:bg-gold-500/30"
+                className="px-4 py-2 rounded-xl bg-gold-500/20 border border-line text-gold-700 text-xs font-bold hover:bg-gold-500/30"
               >
                 {isEn ? "Add URL" : "जोड़ें"}
               </button>
@@ -516,25 +516,25 @@ export default function AdminDhamsPage() {
                 return (
                   <div
                     key={idx}
-                    className={`group relative rounded-xl overflow-hidden aspect-[4/3] bg-black/60 border-2 transition-all ${
-                      isCover ? "border-gold-400 ring-2 ring-gold-400/40 shadow-lg" : "border-gold-500/20 hover:border-gold-500/50"
+                    className={`group relative rounded-xl overflow-hidden aspect-[4/3] bg-scrim/60 border-2 transition-all ${
+                      isCover ? "border-gold-400 ring-2 ring-gold-400/40 shadow-lg" : "border-line hover:border-gold-500/50"
                     }`}
                   >
                     <Image src={img} alt={`Dham Photo ${idx + 1}`} fill className="object-cover" />
 
                     {isCover && (
-                      <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-gold-500 text-spiritual-dark text-[9px] font-extrabold flex items-center gap-0.5 shadow">
+                      <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-gold-500 text-on-gold text-[9px] font-extrabold flex items-center gap-0.5 shadow">
                         <Star className="w-2.5 h-2.5 fill-current" />
                         <span>COVER</span>
                       </div>
                     )}
 
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
+                    <div className="absolute inset-0 bg-scrim/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
                       {!isCover && (
                         <button
                           type="button"
                           onClick={() => handleSetCover(img)}
-                          className="px-2 py-1 rounded bg-gold-gradient text-spiritual-dark text-[10px] font-bold shadow hover:scale-105"
+                          className="px-2 py-1 rounded bg-gold-gradient text-on-gold text-[10px] font-bold shadow hover:scale-105"
                         >
                           {isEn ? "Make Cover" : "कवर बनाएं"}
                         </button>
@@ -555,7 +555,7 @@ export default function AdminDhamsPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">
+            <label className="block text-xs font-semibold text-gold-700 mb-1">
               {isEn ? "Description & Spiritual Importance (Hindi) *" : "धाम परिचय एवं आध्यात्मिक महत्व (हिन्दी) *"}
             </label>
             <textarea
@@ -564,16 +564,16 @@ export default function AdminDhamsPage() {
               value={form.descriptionHi}
               onChange={(e) => setForm({ ...form, descriptionHi: e.target.value })}
               placeholder="इस पावन धाम का परिचय एवं साधना महत्व..."
-              className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari resize-none"
+              className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari resize-none"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 pt-2 border-t border-gold-500/20">
+          <div className="flex items-center gap-3 pt-2 border-t border-line">
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 disabled:opacity-50 disabled:pointer-events-none hover:scale-105 transition-transform"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm flex items-center gap-1.5 disabled:opacity-50 disabled:pointer-events-none hover:scale-105 transition-transform"
             >
               <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>
@@ -594,7 +594,7 @@ export default function AdminDhamsPage() {
               type="button"
               disabled={isSaving}
               onClick={() => setShowAddForm(false)}
-              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70 disabled:opacity-50"
+              className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70 disabled:opacity-50"
             >
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
@@ -603,10 +603,10 @@ export default function AdminDhamsPage() {
       )}
 
       {/* Dhams List Table */}
-      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
+      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-line shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+          <table className="w-full text-left text-xs text-ink">
+            <thead className="bg-surface-sunk border-b border-line text-gold-700 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Cover & Name" : "कवर फोटो व नाम"}</th>
                 <th className="p-3.5">{isEn ? "Gallery" : "गैलरी तस्वीरें"}</th>
@@ -631,11 +631,11 @@ export default function AdminDhamsPage() {
                     }`}
                   >
                     <td className="p-3.5 flex items-center gap-3">
-                      <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-gold-500/30">
+                      <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-black flex-shrink-0 border border-line">
                         <Image src={coverPhoto} alt={dham.nameHi} fill className="object-cover" />
                       </div>
                       <div className="min-w-0">
-                        <span className="font-bold text-spiritual-ivory block truncate">
+                        <span className="font-bold text-ink block truncate">
                           {isEn ? dham.nameEn : dham.nameHi}
                         </span>
                         <span className="text-[10px] text-gold-muted block truncate">{dham.location}</span>
@@ -643,22 +643,22 @@ export default function AdminDhamsPage() {
                     </td>
 
                     <td className="p-3.5">
-                      <span className="px-2.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-[11px] font-bold text-gold-300 inline-flex items-center gap-1">
-                        <Camera className="w-3 h-3 text-gold-400" />
+                      <span className="px-2.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-[11px] font-bold text-gold-700 inline-flex items-center gap-1">
+                        <Camera className="w-3 h-3 text-gold-700" />
                         <span>
                           {photosCount} {isEn ? "Photos" : "तस्वीरें"}
                         </span>
                       </span>
                     </td>
 
-                    <td className="p-3.5 text-spiritual-ivory/80">{dham.location}</td>
+                    <td className="p-3.5 text-ink/80">{dham.location}</td>
 
                     <td className="p-3.5">
                       <a
                         href={dham.mapUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-amber-400 hover:underline flex items-center gap-1 font-semibold"
+                        className="text-amber-700 hover:underline flex items-center gap-1 font-semibold"
                       >
                         <span>{isEn ? "View Map" : "मैप लिंक"}</span>
                         <ExternalLink className="w-3 h-3" />
@@ -668,14 +668,14 @@ export default function AdminDhamsPage() {
                     <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
                       <button
                         onClick={() => handleEdit(dham)}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        className="p-1.5 rounded-lg border border-line text-gold-700 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Edit Dham" : "संपादित करें"}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => setDeleteCandidate(dham)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-700 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Delete Dham" : "हटाएं"}
                       >
                         <Trash2 className="w-3.5 h-3.5" />

@@ -73,9 +73,10 @@ export const HeroSection: React.FC = () => {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(244, 208, 111, ${p.opacity})`;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = "#F4D06F";
+        // Deep gold motes: pale embers were invisible against the ivory ground
+        ctx.fillStyle = `rgba(168, 128, 26, ${p.opacity * 0.5})`;
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = "rgba(168, 128, 26, 0.35)";
         ctx.fill();
       });
 
@@ -91,16 +92,27 @@ export const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[92vh] sm:min-h-screen pt-24 pb-12 overflow-hidden flex flex-col justify-between">
+    <section className="relative isolate min-h-[92vh] sm:min-h-screen pt-24 pb-12 overflow-hidden flex flex-col justify-between">
+      {/* `isolate` matters: without a stacking context here the -z-20 photo and
+          -z-10 washes below paint *behind* the body background and never show. */}
       {/* Background Layer with Reference Atmosphere */}
-      <div
-        className="absolute inset-0 -z-20 bg-cover bg-center bg-no-repeat opacity-35 filter blur-[2px] scale-105"
-        style={{ backgroundImage: "url('/assets/hero-reference-2.jpg')" }}
-      />
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        {/* Served through next/image so the 1MB source is optimised and resized;
+            as a CSS background it would ship at full weight on every visit. */}
+        <Image
+          src="/assets/sadhauli-mandir.jpg"
+          alt=""
+          aria-hidden="true"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center opacity-45 blur-[1.5px] scale-105"
+        />
+      </div>
 
       {/* Cinematic Golden Radial Lighting & Vignette */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-spiritual-dark via-spiritual-dark/80 to-transparent" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-spiritual-dark/95 via-spiritual-dark/70 to-transparent" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-surface via-surface/65 via-55% to-surface/25" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-surface/95 via-surface/55 via-45% to-surface/15" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 -z-10 rounded-full bg-gold-500/10 blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] -z-10 rounded-full bg-gold-400/15 blur-[120px] pointer-events-none" />
 
@@ -121,34 +133,34 @@ export const HeroSection: React.FC = () => {
                   width={128}
                   height={128}
                   priority
-                  className="w-full h-full object-contain drop-shadow-[0_0_25px_rgba(244,208,111,0.6)] transform group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain drop-shadow-[0_0_25px_rgba(168,128,26,0.30)] transform group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
 
             {/* Main Showstopper Title: SADHAULI DHAM / साढौली धाम (Optimized Size & Spacing) */}
-            <h1 className="text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-gold-gradient font-spiritual-heading tracking-wide leading-tight mt-1 mb-3 py-1 overflow-visible drop-shadow-[0_4px_25px_rgba(244,208,111,0.35)]">
+            <h1 className="text-3xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-gold-gradient font-spiritual-heading tracking-wide leading-tight mt-1 mb-3 py-1 overflow-visible drop-shadow-[0_4px_25px_rgba(168,128,26,0.17)]">
               {language === "hi" ? "साढौली धाम" : "Sadhauli Dham"}
             </h1>
 
             {/* Subtitle with Ornamental Flourish: श्री प्राणनाथ जी वाणी */}
-            <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-gold-300 mb-4">
-              <span className="text-gold-500/80 text-xs sm:text-sm">❖ ────</span>
+            <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-gold-700 mb-4">
+              <span className="text-gold-700/80 text-xs sm:text-sm">❖ ────</span>
               <h2 className="text-base sm:text-xl md:text-2xl font-extrabold tracking-widest text-gold-gradient font-spiritual-heading uppercase leading-normal py-0.5 overflow-visible">
                 {language === "hi" ? "श्री प्राणनाथ जी वाणी" : "Shri Prannath Ji Vani"}
               </h2>
-              <span className="text-gold-500/80 text-xs sm:text-sm">──── ❖</span>
+              <span className="text-gold-700/80 text-xs sm:text-sm">──── ❖</span>
             </div>
 
             {/* Tagline */}
-            <div className="inline-block text-xs sm:text-sm font-semibold tracking-widest text-gold-400/90 uppercase px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/20 mb-4">
+            <div className="inline-block text-xs sm:text-sm font-semibold tracking-widest text-gold-700/90 uppercase px-3 py-1 rounded-full bg-gold-500/10 border border-line mb-4">
               {language === "hi"
                 ? "तारतम वाणी • आध्यात्मिक ज्ञान • निजानंद सम्प्रदाय"
                 : "Tartam Vani • Aadhyatmik Gyan • Nijanand Sampradaya"}
             </div>
 
             {/* Supporting Description */}
-            <p className="text-sm sm:text-base text-spiritual-ivory/85 max-w-xl font-normal leading-relaxed mb-8 drop-shadow-md">
+            <p className="text-sm sm:text-base text-ink/85 max-w-xl font-normal leading-relaxed mb-8 drop-shadow-md">
               {language === "hi"
                 ? "श्री निजानंद आश्रम साढौली धाम, हरिद्वार (उत्तराखण्ड) - श्री प्राणनाथ जी की दिव्य ब्रह्मवाणी, सत्संग, प्रवचन, ध्यान और साधना का पावन आध्यात्मिक तीर्थ।"
                 : "Shri Nijanand Ashram Sadhauli Dham, Haridwar (Uttarakhand) — The sacred spiritual sanctuary of Mahamati Shri Prannath Ji's divine Brahm Vani, satsang, discourses, meditation, and sadhana."}
@@ -159,15 +171,15 @@ export const HeroSection: React.FC = () => {
               {/* Card 1: Divya Brahm Vani (Maroon Glass) */}
               <Link
                 href="/library/tartam-vani"
-                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-red-500/40 bg-gradient-to-b from-spiritual-maroon/60 to-spiritual-navy/80 backdrop-blur-md hover:border-gold-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-red-950/40"
+                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-red-500/40 bg-gradient-to-b from-spiritual-maroon/75 to-surface-2 backdrop-blur-md hover:border-gold-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-red-900/15"
               >
-                <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-400/40 flex items-center justify-center text-gold-300 mb-2 group-hover:bg-gold-500 group-hover:text-spiritual-dark transition-all">
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-400/40 flex items-center justify-center text-gold-700 mb-2 group-hover:bg-gold-500 group-hover:text-on-gold transition-all">
                   <BookOpen className="w-5 h-5" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors">
+                <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-gold-700 transition-colors">
                   {language === "hi" ? "दिव्य ब्रह्मवाणी" : "Divya Brahm Vani"}
                 </span>
-                <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
+                <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "तारतम वाणी" : "Tartam Vani"}
                 </span>
               </Link>
@@ -175,15 +187,15 @@ export const HeroSection: React.FC = () => {
               {/* Card 2: Explore PDFs (Amber/Gold Glass) */}
               <Link
                 href="/library"
-                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-amber-500/40 bg-gradient-to-b from-amber-950/50 to-spiritual-navy/80 backdrop-blur-md hover:border-gold-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-amber-950/40"
+                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-amber-500/40 bg-gradient-to-b from-gold-200/85 to-surface-2 backdrop-blur-md hover:border-gold-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-amber-900/15"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 mb-2 group-hover:bg-gold-500 group-hover:text-spiritual-dark transition-all">
+                <div className="w-10 h-10 rounded-xl bg-gold-500/25 border border-line flex items-center justify-center text-gold-800 mb-2 group-hover:bg-gold-500 group-hover:text-on-gold transition-all">
                   <FileText className="w-5 h-5" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors">
+                <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-gold-700 transition-colors">
                   {language === "hi" ? "PDF लाइब्रेरी" : "PDF Library"}
                 </span>
-                <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
+                <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "ई-बुक्स" : "E-Books"}
                 </span>
               </Link>
@@ -191,15 +203,15 @@ export const HeroSection: React.FC = () => {
               {/* Card 3: Watch Videos (Emerald Glass) */}
               <Link
                 href="/media"
-                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-emerald-500/40 bg-gradient-to-b from-spiritual-emerald/50 to-spiritual-navy/80 backdrop-blur-md hover:border-emerald-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-emerald-950/40"
+                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-emerald-500/40 bg-gradient-to-b from-spiritual-emerald/75 to-surface-2 backdrop-blur-md hover:border-emerald-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-emerald-900/15"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 mb-2 group-hover:bg-emerald-500 group-hover:text-spiritual-dark transition-all">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-700 mb-2 group-hover:bg-emerald-500 group-hover:text-on-gold transition-all">
                   <Play className="w-5 h-5 fill-current" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-emerald-300 transition-colors">
+                <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-emerald-700 transition-colors">
                   {language === "hi" ? "वीडियो देखें" : "Watch Videos"}
                 </span>
-                <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
+                <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "सत्संग" : "Satsang"}
                 </span>
               </Link>
@@ -207,15 +219,15 @@ export const HeroSection: React.FC = () => {
               {/* Card 4: Aadhyatmik Gyan (Royal Purple / Amber Glass) */}
               <Link
                 href="/adhyatmik-gyan"
-                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-purple-500/40 bg-gradient-to-b from-spiritual-purple/50 to-spiritual-navy/80 backdrop-blur-md hover:border-purple-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-950/40"
+                className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-purple-500/40 bg-gradient-to-b from-spiritual-purple/75 to-surface-2 backdrop-blur-md hover:border-purple-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-900/15"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300 mb-2 group-hover:bg-purple-500 group-hover:text-spiritual-dark transition-all">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-700 mb-2 group-hover:bg-purple-500 group-hover:text-on-gold transition-all">
                   <Compass className="w-5 h-5" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-spiritual-ivory group-hover:text-purple-300 transition-colors">
+                <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-purple-700 transition-colors">
                   {language === "hi" ? "आध्यात्मिक ज्ञान" : "Aadhyatmik Gyan"}
                 </span>
-                <span className="text-[10px] text-spiritual-ivory/60 mt-0.5">
+                <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "सत्संग व विचार" : "Wisdom & Blogs"}
                 </span>
               </Link>

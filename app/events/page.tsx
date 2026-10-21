@@ -86,14 +86,14 @@ export default function EventsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+    <main className="min-h-screen bg-surface text-ink">
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Banner */}
-      <section className="pt-32 pb-12 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-navy/50 to-transparent border-b border-gold-500/20 text-center">
+      <section className="pt-32 pb-12 bg-gradient-to-b from-surface-2/90 via-surface-2/50 to-transparent border-b border-line text-center">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-700 text-xs font-semibold uppercase tracking-wider mb-4">
             <CalendarIcon className="w-3.5 h-3.5" />
             {isEn ? "Ashram Holy Events & Festivals" : "आश्रम कार्यक्रम एवं पावन महोत्सव"}
           </div>
@@ -113,11 +113,11 @@ export default function EventsPage() {
       {/* Dynamic Next Satsang Card with Clean Date Range & Venue (Countdown Removed) */}
       {nextEvent && (
         <section className="max-w-5xl mx-auto px-4 -mt-6 mb-12">
-          <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border-2 border-gold-400/50 bg-gradient-to-b from-spiritual-navy via-[#1c140e] to-spiritual-navy shadow-2xl text-center relative overflow-hidden">
+          <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border-2 border-gold-400/50 bg-gradient-to-b from-surface-2 via-surface-sunk to-surface-2 shadow-2xl text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gold-radial pointer-events-none opacity-40" />
 
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-300 text-xs font-bold uppercase tracking-widest mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-700 text-xs font-bold uppercase tracking-widest mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-gold-700 animate-pulse" />
               {isEn ? "Next Upcoming Holy Event" : "अगला पावन सत्संग / महोत्सव"}
             </div>
 
@@ -128,30 +128,30 @@ export default function EventsPage() {
             {/* Clean Date Range & Location Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6 text-left">
               {/* Event Date Range */}
-              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-start sm:items-center gap-3.5 shadow-lg">
-                <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-300 flex items-center justify-center flex-shrink-0 border border-gold-400/40 mt-0.5 sm:mt-0">
-                  <CalendarIcon className="w-5 h-5 text-gold-400" />
+              <div className="p-4 rounded-2xl bg-field border border-line flex items-start sm:items-center gap-3.5 shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-700 flex items-center justify-center flex-shrink-0 border border-gold-400/40 mt-0.5 sm:mt-0">
+                  <CalendarIcon className="w-5 h-5 text-gold-700" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider mb-0.5">
                     {isEn ? "Ashram Event Date Range" : "पावन महोत्सव तिथि"}
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words">
+                  <div className="text-xs sm:text-sm font-bold text-ink leading-snug break-words">
                     {formatEventDateRange(nextEvent.startAt, nextEvent.endAt)}
                   </div>
                 </div>
               </div>
 
               {/* Exact Location */}
-              <div className="p-4 rounded-2xl bg-black/60 border border-gold-500/30 flex items-start sm:items-center gap-3.5 shadow-lg">
-                <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center flex-shrink-0 border border-red-500/40 mt-0.5 sm:mt-0">
-                  <MapPin className="w-5 h-5 text-red-400" />
+              <div className="p-4 rounded-2xl bg-field border border-line flex items-start sm:items-center gap-3.5 shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-700 flex items-center justify-center flex-shrink-0 border border-red-500/40 mt-0.5 sm:mt-0">
+                  <MapPin className="w-5 h-5 text-red-700" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[10px] text-gold-muted uppercase font-bold tracking-wider mb-0.5">
                     {isEn ? "Location / Venue" : "स्थान / आश्रम"}
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words" title={nextEvent.location}>
+                  <div className="text-xs sm:text-sm font-bold text-ink leading-snug break-words" title={nextEvent.location}>
                     {nextEvent.location}
                   </div>
                 </div>
@@ -160,13 +160,13 @@ export default function EventsPage() {
 
             {/* Status if Live or Concluded */}
             {timing.status === "live" && (
-              <div className="py-3 px-6 rounded-2xl bg-red-600/20 border border-red-500/50 text-red-400 font-bold text-sm sm:text-base flex items-center justify-center gap-2 mb-4 animate-pulse max-w-md mx-auto">
+              <div className="py-3 px-6 rounded-2xl bg-red-600/20 border border-red-500/50 text-red-700 font-bold text-sm sm:text-base flex items-center justify-center gap-2 mb-4 animate-pulse max-w-md mx-auto">
                 <Radio className="w-5 h-5" />
                 <span>{isEn ? "🔴 Event is Live Now!" : "🔴 कार्यक्रम अभी जारी है (Live Now)"}</span>
               </div>
             )}
             {timing.status === "ended" && (
-              <div className="py-3 px-6 rounded-2xl bg-gray-800/80 border border-gray-600/50 text-gray-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 mb-4 max-w-md mx-auto">
+              <div className="py-3 px-6 rounded-2xl bg-gray-200 border border-gray-300 text-gray-600 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 mb-4 max-w-md mx-auto">
                 <CheckCircle2 className="w-4 h-4 text-gray-400" />
                 <span>{isEn ? "✓ Event Concluded" : "✓ कार्यक्रम सम्पन्न (Ended)"}</span>
               </div>
@@ -177,7 +177,7 @@ export default function EventsPage() {
                 href={nextEvent.livestreamUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs sm:text-sm shadow-gold-md hover:scale-105 transition-transform"
+                className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gold-gradient text-on-gold font-bold text-xs sm:text-sm shadow-gold-md hover:scale-105 transition-transform"
               >
                 <Radio className="w-4 h-4" />
                 <span>{isEn ? "Watch Live Stream Online" : "ऑनलाइन सत्संग से जुड़ें"}</span>
@@ -190,7 +190,7 @@ export default function EventsPage() {
 
       {/* Events Filter & List */}
       <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 pb-4 mb-8 border-b border-gold-500/20">
+        <div className="flex items-center justify-between gap-4 pb-4 mb-8 border-b border-line">
           <div className="flex items-center gap-2 overflow-x-auto text-xs">
             {[
               { id: "all", label: isEn ? "All Events" : "सभी कार्यक्रम" },
@@ -203,8 +203,8 @@ export default function EventsPage() {
                 onClick={() => setSelectedFilter(f.id)}
                 className={`px-4 py-2 rounded-2xl font-semibold transition-all whitespace-nowrap ${
                   selectedFilter === f.id
-                    ? "bg-gold-gradient text-spiritual-dark font-bold shadow-gold-sm"
-                    : "bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/70 hover:text-gold-300"
+                    ? "bg-gold-gradient text-on-gold font-bold shadow-gold-sm"
+                    : "bg-card border border-line text-ink/70 hover:text-gold-700"
                 }`}
               >
                 {f.label}
@@ -230,21 +230,21 @@ export default function EventsPage() {
             return (
               <div
                 key={event.id}
-                className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group hover:border-gold-400 transition-all duration-300 shadow-xl"
+                className="spiritual-glass-card rounded-2xl overflow-hidden border border-line flex flex-col justify-between group hover:border-gold-400 transition-all duration-300 shadow-xl"
               >
                 {/* Thumbnail Area with Illustrative Badge */}
                 <div className="relative h-48 w-full overflow-hidden bg-black">
                   <Image
-                    src={event.image || "/assets/hero-reference-1.jpg"}
+                    src={event.image || "/assets/sadhauli-mandir.jpg"}
                     alt={event.titleHi}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-spiritual-navy via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface-2 via-transparent to-transparent" />
 
                   {/* Status / Category Badge */}
                   <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-gold-gradient text-spiritual-dark text-[10px] font-bold uppercase tracking-wider shadow">
+                    <span className="px-2.5 py-0.5 rounded-full bg-gold-gradient text-on-gold text-[10px] font-bold uppercase tracking-wider shadow">
                       {event.eventType}
                     </span>
                     {isLive ? (
@@ -253,14 +253,14 @@ export default function EventsPage() {
                         LIVE
                       </span>
                     ) : isEnded ? (
-                      <span className="px-2 py-0.5 rounded-full bg-gray-800/90 text-gray-300 text-[10px] font-semibold">
+                      <span className="px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 text-[10px] font-semibold">
                         {isEn ? "Ended" : "सम्पन्न"}
                       </span>
                     ) : null}
                   </div>
 
                   {/* Illustrative Photo Indicator */}
-                  <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/75 border border-gold-500/20 text-[9px] text-spiritual-ivory/60 flex items-center gap-1">
+                  <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-surface-2/95 border border-line text-[9px] text-ink/60 flex items-center gap-1">
                     <Camera className="w-2.5 h-2.5" />
                     <span>{isEn ? "Illustrative" : "सांकेतिक चित्र"}</span>
                   </div>
@@ -269,31 +269,31 @@ export default function EventsPage() {
                 {/* Event Information */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading leading-snug">
+                    <h3 className="text-lg font-bold text-ink group-hover:text-gold-700 transition-colors font-spiritual-heading leading-snug">
                       {isEn ? event.titleEn || event.titleHi : event.titleHi}
                     </h3>
 
-                    <div className="space-y-1.5 text-xs text-spiritual-ivory/80 pt-1">
+                    <div className="space-y-1.5 text-xs text-ink/80 pt-1">
                       {/* Date Range */}
-                      <div className="flex items-start gap-2 text-gold-300 font-semibold text-xs leading-snug break-words">
-                        <CalendarIcon className="w-3.5 h-3.5 text-gold-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex items-start gap-2 text-gold-700 font-semibold text-xs leading-snug break-words">
+                        <CalendarIcon className="w-3.5 h-3.5 text-gold-700 flex-shrink-0 mt-0.5" />
                         <span>{formatEventDateRange(event.startAt, event.endAt)}</span>
                       </div>
 
                       {/* Location */}
-                      <div className="flex items-center gap-2 text-spiritual-ivory/70 truncate">
-                        <MapPin className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+                      <div className="flex items-center gap-2 text-ink/70 truncate">
+                        <MapPin className="w-3.5 h-3.5 text-red-700 flex-shrink-0" />
                         <span className="truncate" title={event.location}>{event.location}</span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-spiritual-ivory/70 line-clamp-2 pt-2 leading-relaxed">
+                    <p className="text-xs text-ink/70 line-clamp-2 pt-2 leading-relaxed">
                       {isEn ? event.descriptionEn || event.descriptionHi : event.descriptionHi}
                     </p>
                   </div>
 
                   {/* Footer Action */}
-                  <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between">
+                  <div className="pt-3 border-t border-line flex items-center justify-between">
                     <span className="text-[11px] text-gold-muted/80">{event.speaker}</span>
 
                     {event.livestreamUrl && isLive && (
@@ -301,7 +301,7 @@ export default function EventsPage() {
                         href={event.livestreamUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs font-bold text-red-400 hover:text-red-300 inline-flex items-center gap-1 animate-pulse"
+                        className="text-xs font-bold text-red-700 hover:text-red-700 inline-flex items-center gap-1 animate-pulse"
                       >
                         <Radio className="w-3.5 h-3.5" />
                         <span>{isEn ? "Live Stream" : "लाइव प्रसारण"}</span>

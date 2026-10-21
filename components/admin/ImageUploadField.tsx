@@ -117,8 +117,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     <div className="space-y-2">
       {/* Label and Mode Switcher */}
       <div className="flex items-center justify-between">
-        <label className="block text-xs font-semibold text-gold-300">
-          {label} {required && <span className="text-red-400">*</span>}
+        <label className="block text-xs font-semibold text-gold-700">
+          {label} {required && <span className="text-red-700">*</span>}
         </label>
         <button
           type="button"
@@ -126,7 +126,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
             setError(null);
             setUseUrlInput(!useUrlInput);
           }}
-          className="text-[11px] text-gold-400/80 hover:text-gold-200 underline inline-flex items-center gap-1 transition-colors"
+          className="text-[11px] text-gold-700/80 hover:text-gold-800 underline inline-flex items-center gap-1 transition-colors"
         >
           {useUrlInput ? (
             <>
@@ -143,10 +143,10 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       </div>
 
       {/* Recommended Size Badge */}
-      <div className="flex flex-wrap items-center gap-2 text-[11px] bg-black/40 border border-gold-500/20 px-3 py-1.5 rounded-xl text-spiritual-ivory/70">
-        <Info className="w-3.5 h-3.5 text-gold-400 flex-shrink-0" />
+      <div className="flex flex-wrap items-center gap-2 text-[11px] bg-surface-sunk/70 border border-line px-3 py-1.5 rounded-xl text-ink/70">
+        <Info className="w-3.5 h-3.5 text-gold-700 flex-shrink-0" />
         <span>
-          <strong className="text-gold-300">{isEn ? "Recommended Size:" : "अनुशंसित आकार:"}</strong>{" "}
+          <strong className="text-gold-700">{isEn ? "Recommended Size:" : "अनुशंसित आकार:"}</strong>{" "}
           {recommendedSize} ({aspectRatio}) • {isEn ? `Max ${maxSizeMB}MB` : `अधिकतम ${maxSizeMB}MB`}
         </span>
       </div>
@@ -162,7 +162,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               onChange(e.target.value);
             }}
             placeholder="https://example.com/photo.jpg या /assets/..."
-            className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory placeholder-spiritual-ivory/40 focus:border-gold-400 focus:outline-none"
+            className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-xs text-ink placeholder-ink/55 focus:border-gold-400 focus:outline-none"
           />
         </div>
       ) : (
@@ -181,8 +181,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
           {value ? (
             /* Image Preview Card */
-            <div className="relative rounded-2xl overflow-hidden border border-gold-500/40 bg-black/70 p-3 flex items-center gap-4 shadow-inner">
-              <div className="relative w-20 h-24 rounded-xl overflow-hidden bg-black/90 border border-gold-500/30 flex-shrink-0">
+            <div className="relative rounded-2xl overflow-hidden border border-line bg-surface-sunk p-3 flex items-center gap-4 shadow-inner">
+              <div className="relative w-20 h-24 rounded-xl overflow-hidden bg-surface-sunk border border-line flex-shrink-0">
                 <Image
                   src={value}
                   alt="Preview"
@@ -193,11 +193,11 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-spiritual-ivory truncate flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <div className="text-xs font-bold text-ink truncate flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" />
                   <span>{isEn ? "Photo Selected & Ready" : "फोटो सफलतापूर्वक चुनी गई"}</span>
                 </div>
-                <p className="text-[11px] text-spiritual-ivory/60 truncate mt-0.5" title={value}>
+                <p className="text-[11px] text-ink/60 truncate mt-0.5" title={value}>
                   {value}
                 </p>
 
@@ -206,7 +206,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="px-3 py-1 rounded-lg bg-gold-500/20 border border-gold-400/30 text-[11px] font-semibold text-gold-300 hover:bg-gold-500 hover:text-spiritual-dark transition-colors disabled:opacity-50"
+                    className="px-3 py-1 rounded-lg bg-gold-500/20 border border-gold-400/45 text-[11px] font-semibold text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors disabled:opacity-50"
                   >
                     {isEn ? "Change Photo" : "फोटो बदलें"}
                   </button>
@@ -214,7 +214,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                   <button
                     type="button"
                     onClick={() => onChange("")}
-                    className="px-3 py-1 rounded-lg bg-red-500/20 border border-red-500/30 text-[11px] font-semibold text-red-300 hover:bg-red-600 hover:text-white transition-colors"
+                    className="px-3 py-1 rounded-lg bg-red-500/20 border border-red-500/30 text-[11px] font-semibold text-red-700 hover:bg-red-600 hover:text-gold-900 transition-colors"
                   >
                     {isEn ? "Remove" : "हटाएं"}
                   </button>
@@ -233,28 +233,28 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               className={`rounded-2xl border-2 border-dashed p-6 text-center cursor-pointer transition-all ${
                 isDragging
                   ? "border-gold-400 bg-gold-500/15 scale-[0.99]"
-                  : "border-gold-500/30 hover:border-gold-400/70 bg-black/40 hover:bg-gold-500/5"
+                  : "border-line hover:border-gold-400/70 bg-surface-sunk/70 hover:bg-gold-500/5"
               }`}
             >
               {isUploading ? (
                 <div className="py-4 flex flex-col items-center justify-center space-y-2">
-                  <Loader2 className="w-8 h-8 text-gold-400 animate-spin" />
-                  <span className="text-xs font-semibold text-gold-300 animate-pulse">
+                  <Loader2 className="w-8 h-8 text-gold-700 animate-spin" />
+                  <span className="text-xs font-semibold text-gold-700 animate-pulse">
                     {isEn ? "Uploading image to cloud..." : "फोटो अपलोड हो रही है..."}
                   </span>
                 </div>
               ) : (
                 <div className="py-2 flex flex-col items-center justify-center space-y-2">
-                  <div className="w-12 h-12 rounded-full bg-gold-500/15 border border-gold-400/30 flex items-center justify-center text-gold-300 shadow-inner">
+                  <div className="w-12 h-12 rounded-full bg-gold-500/15 border border-gold-400/45 flex items-center justify-center text-gold-700 shadow-inner">
                     <Upload className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-gold-300 hover:underline">
+                    <span className="text-xs font-bold text-gold-700 hover:underline">
                       {isEn ? "Click to upload from device" : "डिवाइस (मोबाइल/कंप्यूटर) से फोटो चुनें"}
                     </span>
-                    <span className="text-xs text-spiritual-ivory/60"> {isEn ? "or drag and drop" : "या यहाँ खींचकर लाएं"}</span>
+                    <span className="text-xs text-ink/60"> {isEn ? "or drag and drop" : "या यहाँ खींचकर लाएं"}</span>
                   </div>
-                  <p className="text-[11px] text-spiritual-ivory/50">
+                  <p className="text-[11px] text-ink/60">
                     PNG, JPG, WebP, GIF, SVG (Max {maxSizeMB}MB)
                   </p>
                 </div>
@@ -266,7 +266,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
       {/* Error Message */}
       {error && (
-        <div className="flex items-center gap-1.5 text-xs text-red-400 font-semibold mt-1">
+        <div className="flex items-center gap-1.5 text-xs text-red-700 font-semibold mt-1">
           <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -274,7 +274,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
       {/* Helper Text */}
       {helperText && (
-        <p className="text-[11px] text-spiritual-ivory/50">{helperText}</p>
+        <p className="text-[11px] text-ink/60">{helperText}</p>
       )}
     </div>
   );

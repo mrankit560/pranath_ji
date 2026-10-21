@@ -77,15 +77,15 @@ export default function PDFReaderPage() {
 
   if (!book) {
     return (
-      <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory flex items-center justify-center p-4">
-        <div className="text-center spiritual-glass-card rounded-3xl p-8 max-w-md border border-gold-500/30">
-          <BookOpen className="w-12 h-12 text-gold-400 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-spiritual-ivory font-spiritual-heading mb-2">
+      <main className="min-h-screen bg-surface text-ink flex items-center justify-center p-4">
+        <div className="text-center spiritual-glass-card rounded-3xl p-8 max-w-md border border-line">
+          <BookOpen className="w-12 h-12 text-gold-700 mx-auto mb-3" />
+          <h2 className="text-xl font-bold text-ink font-spiritual-heading mb-2">
             {isEn ? "Loading Scripture..." : "पुस्तक लोड हो रही है..."}
           </h2>
           <Link
             href="/library"
-            className="inline-block mt-4 px-6 py-2 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold"
+            className="inline-block mt-4 px-6 py-2 rounded-full bg-gold-gradient text-on-gold text-xs font-bold"
           >
             {isEn ? "Back to Library" : "लाइब्रेरी पर लौटें"}
           </Link>
@@ -132,26 +132,26 @@ export default function PDFReaderPage() {
   return (
     <div
       ref={readerContainerRef}
-      className={`min-h-screen bg-[#050403] text-spiritual-ivory flex flex-col justify-between ${
+      className={`min-h-screen bg-surface text-ink flex flex-col justify-between ${
         isFullscreen ? "fixed inset-0 z-50 overflow-hidden bg-black" : ""
       }`}
     >
       {/* Toast notification */}
       {toastMessage && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold shadow-2xl animate-fade-in flex items-center gap-2">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full bg-gold-gradient text-on-gold text-xs font-bold shadow-2xl animate-fade-in flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Reader Navigation Header */}
-      <header className="bg-spiritual-navy/95 border-b border-gold-500/30 px-3 sm:px-6 py-2.5 backdrop-blur-xl sticky top-0 z-40">
+      <header className="bg-surface-2/95 border-b border-line px-3 sm:px-6 py-2.5 backdrop-blur-xl sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           {/* Left: Back button & Book Title */}
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => router.push("/library")}
-              className="p-2 rounded-xl border border-gold-500/20 text-gold-300 hover:bg-gold-500/10 flex-shrink-0 flex items-center gap-1.5 text-xs font-semibold"
+              className="p-2 rounded-xl border border-line text-gold-700 hover:bg-gold-500/10 flex-shrink-0 flex items-center gap-1.5 text-xs font-semibold"
               title="Back to Library"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -159,10 +159,10 @@ export default function PDFReaderPage() {
             </button>
 
             <div className="truncate">
-              <h1 className="text-xs sm:text-sm font-bold text-gold-200 truncate font-spiritual-heading">
+              <h1 className="text-xs sm:text-sm font-bold text-gold-800 truncate font-spiritual-heading">
                 {isEn ? book.titleEn || book.titleHi : book.titleHi}
               </h1>
-              <span className="text-[10px] text-spiritual-ivory/60 truncate block">
+              <span className="text-[10px] text-ink/60 truncate block">
                 {isEn ? book.authorEn : book.authorHi} • {book.pages} {isEn ? "Pages" : "पृष्ठ"}
               </span>
             </div>
@@ -171,14 +171,14 @@ export default function PDFReaderPage() {
           {/* Center/Right: PDF View vs Details Tab, Download, Fullscreen */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {/* View Mode Tabs */}
-            <div className="flex items-center bg-black/60 border border-gold-500/30 rounded-xl p-0.5 text-xs">
+            <div className="flex items-center bg-field border border-line rounded-xl p-0.5 text-xs">
               {hasPdf && (
                 <button
                   onClick={() => setActiveTab("pdf")}
                   className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
                     activeTab === "pdf"
-                      ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold"
-                      : "text-spiritual-ivory/70 hover:text-gold-300"
+                      ? "bg-gold-gradient text-on-gold shadow-gold-sm font-bold"
+                      : "text-ink/70 hover:text-gold-700"
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
@@ -190,8 +190,8 @@ export default function PDFReaderPage() {
                 onClick={() => setActiveTab("details")}
                 className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
                   activeTab === "details"
-                    ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm font-bold"
-                    : "text-spiritual-ivory/70 hover:text-gold-300"
+                    ? "bg-gold-gradient text-on-gold shadow-gold-sm font-bold"
+                    : "text-ink/70 hover:text-gold-700"
                 }`}
               >
                 <Info className="w-3.5 h-3.5" />
@@ -204,8 +204,8 @@ export default function PDFReaderPage() {
               onClick={handleBookmark}
               className={`p-2 rounded-xl border transition-colors ${
                 isBookmarked
-                  ? "bg-gold-500 text-spiritual-dark border-gold-400"
-                  : "text-spiritual-ivory/70 border-gold-500/20 hover:text-gold-300"
+                  ? "bg-gold-500 text-on-gold border-gold-400"
+                  : "text-ink/70 border-line hover:text-gold-700"
               }`}
               title="Bookmark this scripture"
             >
@@ -219,7 +219,7 @@ export default function PDFReaderPage() {
                 download
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-2 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+                className="px-3 py-2 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
                 title={isEn ? "Download PDF file" : "PDF फाइल डाउनलोड करें"}
               >
                 <Download className="w-4 h-4" />
@@ -230,7 +230,7 @@ export default function PDFReaderPage() {
             {/* Maximize / Minimize Fullscreen button */}
             <button
               onClick={toggleFullscreen}
-              className="p-2 rounded-xl border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 transition-colors"
+              className="p-2 rounded-xl border border-line text-gold-700 hover:bg-gold-500/20 transition-colors"
               title={isFullscreen ? "Exit Fullscreen" : "Fullscreen Reader"}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -240,15 +240,15 @@ export default function PDFReaderPage() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center justify-start p-2 sm:p-4 bg-[#0a0705]">
+      <main className="flex-1 flex flex-col items-center justify-start p-2 sm:p-4 bg-surface-2">
         {activeTab === "pdf" && hasPdf ? (
           /* ========================================================================= */
           /* 1. ACTUAL PDF DOCUMENT VIEWER (Directly rendering the real uploaded PDF) */
           /* ========================================================================= */
-          <div className="w-full max-w-6xl h-[82vh] sm:h-[86vh] rounded-2xl overflow-hidden border border-gold-500/40 shadow-2xl bg-[#1e1e1e] flex flex-col relative">
+          <div className="w-full max-w-6xl h-[82vh] sm:h-[86vh] rounded-2xl overflow-hidden border border-line shadow-2xl bg-[#1e1e1e] flex flex-col relative">
             {/* Mobile Helper Bar */}
-            <div className="sm:hidden bg-spiritual-navy border-b border-gold-500/30 px-3 py-2 flex items-center justify-between gap-2 text-xs">
-              <span className="text-[11px] text-gold-300 font-semibold flex items-center gap-1">
+            <div className="sm:hidden bg-surface-2 border-b border-line px-3 py-2 flex items-center justify-between gap-2 text-xs">
+              <span className="text-[11px] text-gold-700 font-semibold flex items-center gap-1">
                 <span>📱</span>
                 <span>{isEn ? "Mobile PDF Reader" : "मोबाइल PDF व्यूअर"}</span>
               </span>
@@ -257,7 +257,7 @@ export default function PDFReaderPage() {
                   href={cleanPdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-2.5 py-1 rounded-lg bg-gold-gradient text-spiritual-dark text-[11px] font-bold flex items-center gap-1 shadow-gold-sm"
+                  className="px-2.5 py-1 rounded-lg bg-gold-gradient text-on-gold text-[11px] font-bold flex items-center gap-1 shadow-gold-sm"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span>{isEn ? "Full Tab" : "पूरा खोलें"}</span>
@@ -265,7 +265,7 @@ export default function PDFReaderPage() {
                 <a
                   href={cleanPdfUrl}
                   download
-                  className="px-2.5 py-1 rounded-lg bg-gold-500/20 border border-gold-400/40 text-gold-300 text-[11px] font-bold flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-lg bg-gold-500/20 border border-gold-400/40 text-gold-700 text-[11px] font-bold flex items-center gap-1"
                 >
                   <Download className="w-3 h-3" />
                   <span>{isEn ? "Save" : "डाउनलोड"}</span>
@@ -287,9 +287,9 @@ export default function PDFReaderPage() {
             </object>
 
             {/* PDF Viewer Bottom Control Strip */}
-            <div className="px-4 py-2.5 bg-[#120e0a] border-t border-gold-500/20 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-2 text-spiritual-ivory/80">
-                <FileText className="w-4 h-4 text-gold-400" />
+            <div className="px-4 py-2.5 bg-surface-2 border-t border-line flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 text-ink/80">
+                <FileText className="w-4 h-4 text-gold-700" />
                 <span>
                   {isEn ? "Rendering official PDF document" : "मूल PDF दस्तावेज़ से पृष्ठ प्रदर्शित हो रहे हैं"}
                 </span>
@@ -300,7 +300,7 @@ export default function PDFReaderPage() {
                   href={cleanPdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-lg bg-gold-500/20 border border-gold-400/30 text-gold-300 text-xs font-semibold hover:bg-gold-500 hover:text-spiritual-dark flex items-center gap-1.5 transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-gold-500/20 border border-gold-400/45 text-gold-700 text-xs font-semibold hover:bg-gold-500 hover:text-on-gold flex items-center gap-1.5 transition-colors"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>{isEn ? "Open in Full Tab" : "नई विंडो में खोलें"}</span>
@@ -309,7 +309,7 @@ export default function PDFReaderPage() {
                 <a
                   href={cleanPdfUrl}
                   download
-                  className="px-3 py-1.5 rounded-lg bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+                  className="px-3 py-1.5 rounded-lg bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>{isEn ? "Save PDF" : "डाउनलोड करें"}</span>
@@ -321,10 +321,10 @@ export default function PDFReaderPage() {
           /* ========================================================================= */
           /* 2. BOOK OVERVIEW, RESEARCH REVIEW & SPECIFIC SCRIPTURE METADATA           */
           /* ========================================================================= */
-          <div className="w-full max-w-4xl spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-gold-500/30 space-y-8 my-4 shadow-2xl">
+          <div className="w-full max-w-4xl spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-line space-y-8 my-4 shadow-2xl">
             {/* Book Header Card */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 pb-6 border-b border-gold-500/20">
-              <div className="relative w-36 h-52 rounded-2xl overflow-hidden border-2 border-gold-500/40 shadow-2xl bg-black flex-shrink-0">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 pb-6 border-b border-line">
+              <div className="relative w-36 h-52 rounded-2xl overflow-hidden border-2 border-line shadow-2xl bg-black flex-shrink-0">
                 <Image
                   src={book.coverUrl || "/assets/paramdham-mandala.png"}
                   alt={isEn ? book.titleEn || book.titleHi : book.titleHi}
@@ -334,8 +334,8 @@ export default function PDFReaderPage() {
               </div>
 
               <div className="flex-1 text-center sm:text-left space-y-3">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-bold uppercase tracking-wider">
-                  <BookOpen className="w-3.5 h-3.5 text-gold-400" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-bold uppercase tracking-wider">
+                  <BookOpen className="w-3.5 h-3.5 text-gold-700" />
                   <span>{book.category === "bitak_saheb" ? "श्री बीतक साहेब" : book.category === "tartam_vani" ? "तारतम वाणी" : "आध्यात्मिक साहित्य"}</span>
                 </div>
 
@@ -345,19 +345,19 @@ export default function PDFReaderPage() {
 
                 <div className="text-xs sm:text-sm text-gold-muted/90 font-semibold">
                   {isEn ? "Author / Commentator: " : "लेखक / टीकाकार: "}
-                  <span className="text-spiritual-ivory">{isEn ? book.authorEn : book.authorHi}</span>
+                  <span className="text-ink">{isEn ? book.authorEn : book.authorHi}</span>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-spiritual-ivory/70 pt-1">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-ink/70 pt-1">
                   <span>📖 {book.pages} {isEn ? "Pages" : "पृष्ठ"}</span>
                   <span>🌐 {book.language === "hi" ? "हिन्दी संस्करण" : "English Edition"}</span>
                   {hasPdf ? (
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                    <span className="text-emerald-700 font-semibold flex items-center gap-1">
                       <CheckCircle className="w-3.5 h-3.5" />
                       {isEn ? "Original PDF Attached" : "मूल PDF संलग्न है"}
                     </span>
                   ) : (
-                    <span className="text-amber-400 font-semibold flex items-center gap-1">
+                    <span className="text-amber-700 font-semibold flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
                       {isEn ? "PDF In Digitization" : "PDF संकलन प्रक्रियाधीन"}
                     </span>
@@ -370,7 +370,7 @@ export default function PDFReaderPage() {
                     <>
                       <button
                         onClick={() => setActiveTab("pdf")}
-                        className="px-5 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+                        className="px-5 py-2.5 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
                       >
                         <FileText className="w-4 h-4" />
                         <span>{isEn ? "View Real PDF" : "मूल PDF दस्तावेज़ पढ़ें"}</span>
@@ -381,14 +381,14 @@ export default function PDFReaderPage() {
                         download
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold hover:bg-gold-500/20 flex items-center gap-1.5 transition-colors"
+                        className="px-5 py-2.5 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/20 flex items-center gap-1.5 transition-colors"
                       >
                         <Download className="w-4 h-4" />
                         <span>{isEn ? "Download PDF" : "PDF डाउनलोड करें"}</span>
                       </a>
                     </>
                   ) : (
-                    <div className="text-xs text-amber-300 bg-amber-500/15 border border-amber-400/30 px-4 py-2 rounded-xl">
+                    <div className="text-xs text-amber-700 bg-amber-500/15 border border-amber-400/30 px-4 py-2 rounded-xl">
                       {isEn
                         ? "This scripture's PDF is being prepared by Sadhauli Dham research council."
                         : "इस पावन ग्रन्थ का मूल PDF साढौली धाम शोध पीठ द्वारा संकलित किया जा रहा है।"}
@@ -400,11 +400,11 @@ export default function PDFReaderPage() {
 
             {/* Book Description */}
             <div className="space-y-3">
-              <h2 className="text-base font-bold text-gold-300 uppercase tracking-wider flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-gold-400" />
+              <h2 className="text-base font-bold text-gold-700 uppercase tracking-wider flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-gold-700" />
                 <span>{isEn ? "Book Description & Summary" : "पुस्तक विवरण एवं सारांश"}</span>
               </h2>
-              <p className="text-xs sm:text-sm text-spiritual-ivory/85 leading-relaxed bg-black/40 p-5 rounded-2xl border border-gold-500/20 font-devanagari">
+              <p className="text-xs sm:text-sm text-ink/85 leading-relaxed bg-surface-sunk/70 p-5 rounded-2xl border border-line font-devanagari">
                 {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi || "श्री निजानंद आश्रम साढौली धाम द्वारा प्रकाशित पावन आध्यात्मिक ग्रन्थ।"}
               </p>
             </div>
@@ -412,11 +412,11 @@ export default function PDFReaderPage() {
             {/* Admin Book Review / Blog */}
             {(book.bookBlogHi || book.bookBlogEn) && (
               <div className="space-y-3">
-                <h2 className="text-base font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+                <h2 className="text-base font-bold text-amber-700 uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-700" />
                   <span>{isEn ? "Research Review & Commentary" : "शोध पीठ समीक्षा व विशेष आलेख"}</span>
                 </h2>
-                <div className="text-xs sm:text-sm text-spiritual-ivory/90 leading-relaxed bg-gold-500/10 p-5 rounded-2xl border border-gold-500/30 font-devanagari whitespace-pre-line">
+                <div className="text-xs sm:text-sm text-ink/90 leading-relaxed bg-gold-500/10 p-5 rounded-2xl border border-line font-devanagari whitespace-pre-line">
                   {isEn ? book.bookBlogEn || book.bookBlogHi : book.bookBlogHi}
                 </div>
               </div>

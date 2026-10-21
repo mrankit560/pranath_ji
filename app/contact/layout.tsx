@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "साढौली धाम हरिद्वार संपर्क विवरण, पता, फोन नंबर व गूगल मैप्स लोकेशन।",
     url: "https://sadhaulidham.com/contact",
-    images: [{ url: "https://sadhaulidham.com/assets/hero-reference-1.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://sadhaulidham.com/assets/sadhauli-banner.jpg", width: 1200, height: 630 }],
   },
 };
 

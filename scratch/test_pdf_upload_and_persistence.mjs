@@ -4,7 +4,7 @@ import path from "path";
 
 function loadEnv() {
   const envPath = path.join(process.cwd(), ".env.local");
-  const env: Record<string, string> = {};
+  const env = {};
   if (fs.existsSync(envPath)) {
     const lines = fs.readFileSync(envPath, "utf-8").split("\n");
     for (const line of lines) {

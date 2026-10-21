@@ -111,8 +111,8 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="block text-xs font-semibold text-gold-300">
-          {label} {required && <span className="text-red-400">*</span>}
+        <label className="block text-xs font-semibold text-gold-700">
+          {label} {required && <span className="text-red-700">*</span>}
         </label>
         <button
           type="button"
@@ -120,7 +120,7 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
             setError(null);
             setUseUrlInput(!useUrlInput);
           }}
-          className="text-[11px] text-gold-400/80 hover:text-gold-200 underline inline-flex items-center gap-1 transition-colors"
+          className="text-[11px] text-gold-700/80 hover:text-gold-800 underline inline-flex items-center gap-1 transition-colors"
         >
           {useUrlInput ? (
             <>
@@ -146,9 +146,9 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
               onChange(e.target.value);
             }}
             placeholder="https://example.com/books/sample.pdf या /assets/..."
-            className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory placeholder-spiritual-ivory/40 focus:border-gold-400 focus:outline-none"
+            className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-xs text-ink placeholder-ink/55 focus:border-gold-400 focus:outline-none"
           />
-          <p className="text-[10px] text-spiritual-ivory/50">
+          <p className="text-[10px] text-ink/60">
             {isEn
               ? "Paste any direct link to a PDF document or hosted storage asset."
               : "किसी भी ऑनलाइन PDF ग्रन्थ का सीधा लिंक अथवा होस्टेड फ़ाइल का URL डालें।"}
@@ -169,18 +169,18 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
           />
 
           {value ? (
-            <div className="rounded-2xl border border-gold-500/40 bg-black/70 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+            <div className="rounded-2xl border border-line bg-surface-sunk p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-400 flex-shrink-0 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-700 flex-shrink-0 shadow-sm">
                   <FileText className="w-5 h-5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs font-bold text-spiritual-ivory flex items-center gap-1.5 truncate">
-                    <Check className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                  <div className="text-xs font-bold text-ink flex items-center gap-1.5 truncate">
+                    <Check className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" />
                     <span>{isEn ? "PDF Attached & Ready" : "PDF फ़ाइल संलग्न है"}</span>
                   </div>
                   <p
-                    className="text-[11px] text-spiritual-ivory/60 truncate font-mono mt-0.5"
+                    className="text-[11px] text-ink/60 truncate font-mono mt-0.5"
                     title={value}
                   >
                     {getCleanDisplayName(value)}
@@ -194,7 +194,7 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
                     href={value}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-2.5 py-1 rounded-lg bg-white/10 border border-white/20 text-[11px] font-semibold text-spiritual-ivory hover:bg-white/20 flex items-center gap-1 transition-colors"
+                    className="px-2.5 py-1 rounded-lg bg-white/10 border border-white/20 text-[11px] font-semibold text-ink hover:bg-white/20 flex items-center gap-1 transition-colors"
                   >
                     <ExternalLink className="w-3 h-3" />
                     <span>{isEn ? "View" : "देखें"}</span>
@@ -204,14 +204,14 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="px-3 py-1 rounded-lg bg-gold-500/20 border border-gold-400/30 text-[11px] font-semibold text-gold-300 hover:bg-gold-500 hover:text-spiritual-dark transition-colors disabled:opacity-50"
+                  className="px-3 py-1 rounded-lg bg-gold-500/20 border border-gold-400/45 text-[11px] font-semibold text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors disabled:opacity-50"
                 >
                   {isEn ? "Replace PDF" : "PDF बदलें"}
                 </button>
                 <button
                   type="button"
                   onClick={() => onChange("")}
-                  className="px-3 py-1 rounded-lg bg-red-500/20 border border-red-500/30 text-[11px] font-semibold text-red-300 hover:bg-red-600 hover:text-white transition-colors"
+                  className="px-3 py-1 rounded-lg bg-red-500/20 border border-red-500/30 text-[11px] font-semibold text-red-700 hover:bg-red-600 hover:text-gold-900 transition-colors"
                 >
                   {isEn ? "Remove" : "हटाएं"}
                 </button>
@@ -222,28 +222,28 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
               onClick={() => {
                 if (!isUploading) fileInputRef.current?.click();
               }}
-              className="rounded-2xl border-2 border-dashed border-gold-500/30 hover:border-gold-400/70 p-5 text-center cursor-pointer bg-black/40 hover:bg-gold-500/5 transition-all shadow-sm group"
+              className="rounded-2xl border-2 border-dashed border-line hover:border-gold-400/70 p-5 text-center cursor-pointer bg-surface-sunk/70 hover:bg-gold-500/5 transition-all shadow-sm group"
             >
               {isUploading ? (
                 <div className="py-2 flex flex-col items-center justify-center space-y-2">
-                  <Loader2 className="w-7 h-7 text-gold-400 animate-spin" />
-                  <span className="text-xs font-semibold text-gold-300 animate-pulse">
+                  <Loader2 className="w-7 h-7 text-gold-700 animate-spin" />
+                  <span className="text-xs font-semibold text-gold-700 animate-pulse">
                     {uploadProgress || (isEn ? "Uploading PDF document to cloud..." : "PDF दस्तावेज़ क्लाउड पर अपलोड हो रहा है...")}
                   </span>
-                  <span className="text-[10px] text-spiritual-ivory/50">
+                  <span className="text-[10px] text-ink/60">
                     {isEn ? "Please wait a moment..." : "कृपया प्रतीक्षा करें..."}
                   </span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gold-500/15 border border-gold-400/30 flex items-center justify-center text-gold-300 group-hover:scale-105 transition-transform shadow-inner">
+                  <div className="w-10 h-10 rounded-xl bg-gold-500/15 border border-gold-400/45 flex items-center justify-center text-gold-700 group-hover:scale-105 transition-transform shadow-inner">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div className="text-left">
-                    <div className="text-xs font-bold text-gold-300 group-hover:underline">
+                    <div className="text-xs font-bold text-gold-700 group-hover:underline">
                       {isEn ? "Upload PDF file from device" : "डिवाइस से PDF फ़ाइल चुनें"}
                     </div>
-                    <div className="text-[10px] text-spiritual-ivory/50">
+                    <div className="text-[10px] text-ink/60">
                       {isEn
                         ? `Max ${maxSizeMB}MB • Formatted .pdf document`
                         : `अधिकतम ${maxSizeMB}MB • .pdf दस्तावेज़`}
@@ -257,7 +257,7 @@ export const PdfUploadField: React.FC<PdfUploadFieldProps> = ({
       )}
 
       {error && (
-        <div className="flex items-center gap-1.5 text-xs text-red-400 font-semibold mt-1">
+        <div className="flex items-center gap-1.5 text-xs text-red-700 font-semibold mt-1">
           <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
           <span>{error}</span>
         </div>

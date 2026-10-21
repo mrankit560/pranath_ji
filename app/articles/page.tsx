@@ -35,14 +35,14 @@ export default function ArticlesPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+    <main className="min-h-screen bg-surface text-ink">
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Banner */}
-      <section className="pt-32 pb-12 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-navy/50 to-transparent border-b border-gold-500/20 text-center">
+      <section className="pt-32 pb-12 bg-gradient-to-b from-surface-2/90 via-surface-2/50 to-transparent border-b border-line text-center">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-semibold uppercase tracking-wider mb-4">
             <FileText className="w-3.5 h-3.5" />
             {language === "hi" ? "आश्रम शोध आलेख" : "Ashram Research Articles"}
           </div>
@@ -65,50 +65,50 @@ export default function ArticlesPage() {
           {articles.map((art) => (
             <article
               key={art.id}
-              className="spiritual-glass-card rounded-3xl overflow-hidden border border-gold-500/30 flex flex-col justify-between group hover:border-gold-400 transition-all"
+              className="spiritual-glass-card rounded-3xl overflow-hidden border border-line flex flex-col justify-between group hover:border-gold-400 transition-all"
             >
               <div className="relative h-48 w-full bg-black overflow-hidden">
                 <Image
-                  src={art.featuredImage || "/assets/hero-reference-1.jpg"}
+                  src={art.featuredImage || "/assets/sadhauli-mandir.jpg"}
                   alt={art.titleHi}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-85 group-hover:opacity-100"
                 />
-                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/80 border border-gold-500/30 text-[10px] font-bold text-gold-300">
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-surface-2/95 border border-line text-[10px] font-bold text-gold-700">
                   {art.category}
                 </span>
               </div>
 
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div>
-                  <div className="flex items-center gap-3 text-xs text-spiritual-ivory/60 mb-2">
+                  <div className="flex items-center gap-3 text-xs text-ink/60 mb-2">
                     <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-gold-400" />
+                      <Calendar className="w-3.5 h-3.5 text-gold-700" />
                       {formatSpiritualDate(art.publishedAt, language)}
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
-                      <User className="w-3.5 h-3.5 text-gold-400" />
+                      <User className="w-3.5 h-3.5 text-gold-700" />
                       {art.author}
                     </span>
                   </div>
 
-                  <h2 className="text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading line-clamp-2 mb-2">
+                  <h2 className="text-lg font-bold text-ink group-hover:text-gold-700 transition-colors font-spiritual-heading line-clamp-2 mb-2">
                     {language === "hi" ? art.titleHi : art.titleEn}
                   </h2>
 
-                  <p className="text-xs sm:text-sm text-spiritual-ivory/75 line-clamp-3 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-ink/75 line-clamp-3 leading-relaxed">
                     {language === "hi" ? art.contentHi : art.contentEn}
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between">
+                <div className="pt-3 border-t border-line flex items-center justify-between">
                   <Link
                     href={`/articles/${art.slug}`}
-                    className="text-xs font-bold text-gold-300 hover:text-gold-100 flex items-center gap-1.5 group-hover:gap-2 transition-all"
+                    className="text-xs font-bold text-gold-700 hover:text-gold-800 flex items-center gap-1.5 group-hover:gap-2 transition-all"
                   >
                     <span>{language === "hi" ? "पूरा लेख पढ़ें" : "Read Full Article"}</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-gold-400" />
+                    <ChevronRight className="w-3.5 h-3.5 text-gold-700" />
                   </Link>
                 </div>
               </div>

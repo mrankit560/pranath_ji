@@ -36,11 +36,26 @@ import {
 const defaultAdminCredentials: AdminCredentials = {
   username: "admin",
   email: "admin@sadhaulidham.com",
-  password: "admin123",
+  password: "", // never held client-side; the server verifies
   updatedAt: new Date().toISOString(),
 };
 
 type Listener = () => void;
+
+/** id of the <script> tag carrying the SSR snapshot into the client. */
+export const SSR_STATE_ID = "__sadhauli_state__";
+
+/**
+ * JSON for the root layout to embed so the client can hydrate from exactly what
+ * the server rendered. Credentials are stripped - this payload is public.
+ */
+export function serializeSsrState(): string {
+  const snap = getServerDatabaseSnapshot();
+  if (!snap) return "null";
+  const { adminCredentials, ...safe } = snap;
+  // escape "<" so a value containing "</script>" cannot break out of the tag
+  return JSON.stringify(safe).replace(/</g, "\\u003c");
+}
 
 function getServerDatabaseSnapshot(): any {
   if (typeof window === "undefined") {
@@ -59,6 +74,17 @@ function getServerDatabaseSnapshot(): any {
     }
   }
   return null;
+}
+
+/** Reads the snapshot the server embedded in the document (client-side only). */
+function readEmbeddedSnapshot(): any {
+  if (typeof document === "undefined") return null;
+  try {
+    const el = document.getElementById(SSR_STATE_ID);
+    return el?.textContent ? JSON.parse(el.textContent) : null;
+  } catch {
+    return null;
+  }
 }
 
 class DataStore {
@@ -82,6 +108,8 @@ class DataStore {
   private readingHistory: { bookId: string; title: string; page: number; updatedAt: string }[] = [];
   private listeners: Listener[] = [];
   private initialized = false;
+  private clientHydrated = false;
+  private ssrSeeded = false;
   private isSyncing = false;
 
   constructor() {
@@ -92,33 +120,45 @@ class DataStore {
     return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
   }
 
+  /** Apply a raw database snapshot (disk on the server, embedded JSON on the client). */
+  private applySnapshot(snapshot: any) {
+    if (!snapshot) return;
+    if (Array.isArray(snapshot.books)) this.books = snapshot.books;
+    if (Array.isArray(snapshot.events)) this.events = snapshot.events;
+    if (Array.isArray(snapshot.dhams)) this.dhams = snapshot.dhams;
+    if (Array.isArray(snapshot.articles)) this.articles = snapshot.articles;
+    if (Array.isArray(snapshot.videos)) this.videos = snapshot.videos;
+    if (Array.isArray(snapshot.audioTracks)) this.audioTracks = snapshot.audioTracks;
+    if (Array.isArray(snapshot.chitwaniBooks)) this.chitwaniBooks = snapshot.chitwaniBooks;
+    if (Array.isArray(snapshot.chitwaniVideos)) this.chitwaniVideos = snapshot.chitwaniVideos;
+    if (Array.isArray(snapshot.scriptures)) this.scriptures = snapshot.scriptures;
+    if (Array.isArray(snapshot.topics)) this.topics = snapshot.topics;
+    if (snapshot.dailyThought) this.dailyThought = snapshot.dailyThought;
+    if (snapshot.settings) this.settings = snapshot.settings;
+    if (snapshot.aboutContent) this.aboutContent = snapshot.aboutContent;
+    // adminCredentials deliberately omitted here - it is never embedded in the
+    // page. The server sets it separately below.
+  }
+
   private init() {
     if (typeof window === "undefined") {
       // Server-side (Node.js runtime): load latest disk database for SSR
       const snapshot = getServerDatabaseSnapshot();
       if (snapshot) {
-        if (Array.isArray(snapshot.books)) this.books = snapshot.books;
-        if (Array.isArray(snapshot.events)) this.events = snapshot.events;
-        if (Array.isArray(snapshot.dhams)) this.dhams = snapshot.dhams;
-        if (Array.isArray(snapshot.articles)) this.articles = snapshot.articles;
-        if (Array.isArray(snapshot.videos)) this.videos = snapshot.videos;
-        if (Array.isArray(snapshot.audioTracks)) this.audioTracks = snapshot.audioTracks;
-        if (Array.isArray(snapshot.chitwaniBooks)) this.chitwaniBooks = snapshot.chitwaniBooks;
-        if (Array.isArray(snapshot.chitwaniVideos)) this.chitwaniVideos = snapshot.chitwaniVideos;
-        if (Array.isArray(snapshot.scriptures)) this.scriptures = snapshot.scriptures;
-        if (Array.isArray(snapshot.topics)) this.topics = snapshot.topics;
-        if (snapshot.dailyThought) this.dailyThought = snapshot.dailyThought;
-        if (snapshot.settings) this.settings = snapshot.settings;
-        if (snapshot.aboutContent) this.aboutContent = snapshot.aboutContent;
+        this.applySnapshot(snapshot);
         if (snapshot.adminCredentials) this.adminCredentials = snapshot.adminCredentials;
       }
       return;
     }
 
-    // Client-side: load from localStorage and sync with server API
+    // Client-side. Deliberately do NOT read localStorage here: this constructor
+    // runs at module-import time, i.e. before React hydrates. Seeding the store
+    // from localStorage at this point makes the first client render disagree with
+    // the server-rendered HTML, which is what produced the hydration failures
+    // (React #418/#423/#425) and forced the whole tree to re-render on the client.
+    // `hydrateFromClient()` is called from a mount effect instead - see
+    // components/common/StoreHydrator.tsx.
     this.initialized = true;
-    this.loadFromStorage();
-    this.syncWithServer();
 
     try {
       window.addEventListener("storage", () => {
@@ -134,11 +174,37 @@ class DataStore {
     }
   }
 
+  /**
+   * Load persisted client state and refresh from the server.
+   * Must run *after* React has hydrated so the first client render matches SSR.
+   */
+  public hydrateFromClient(): void {
+    if (!this.isClient() || this.clientHydrated) return;
+    this.clientHydrated = true;
+    this.ensureLoaded();
+    this.loadFromStorage();
+    this.notify();
+    this.syncWithServer();
+  }
+
+  /**
+   * Seed from the snapshot the server embedded in the page, so the first client
+   * render is identical to the server HTML. Done lazily on first read rather
+   * than in the constructor: the client bundle can execute before that <script>
+   * tag has been parsed. Every public getter calls this.
+   *
+   * Without it the client starts from seedData.ts while the server rendered
+   * from data/db.json, and any field that differs (a dham's photo count, say)
+   * tears hydration down.
+   */
   private ensureLoaded() {
-    if (!this.initialized && this.isClient()) {
-      this.loadFromStorage();
-      this.initialized = true;
-    }
+    if (this.ssrSeeded || !this.isClient()) return;
+    const snapshot = readEmbeddedSnapshot();
+    // The tag may not be parsed yet on a very early read; stay unseeded and
+    // retry on the next one rather than locking in the seed defaults.
+    if (!snapshot) return;
+    this.ssrSeeded = true;
+    this.applySnapshot(snapshot);
   }
 
   // Asynchronously sync with the persistent Supabase cloud database (/api/data)
@@ -208,9 +274,17 @@ class DataStore {
             this.aboutContent = serverData.aboutContent;
             safeSetLocal("prannath_about_v2", this.aboutContent);
           }
-          if (serverData.adminCredentials) {
-            this.adminCredentials = serverData.adminCredentials;
-            safeSetLocal("prannath_admin_credentials_v2", this.adminCredentials);
+          if (serverData.adminProfile) {
+            // Profile only - the password is no longer sent to the browser.
+            this.adminCredentials = {
+              ...serverData.adminProfile,
+              password: "",
+            };
+            safeSetLocal("prannath_admin_credentials_v2", {
+              username: this.adminCredentials.username,
+              email: this.adminCredentials.email,
+              updatedAt: this.adminCredentials.updatedAt,
+            });
           }
 
           this.notify();
@@ -305,7 +379,11 @@ class DataStore {
       if (storedHistory) this.readingHistory = JSON.parse(storedHistory);
 
       const storedAdminAuth = localStorage.getItem("prannath_admin_credentials_v2");
-      if (storedAdminAuth) this.adminCredentials = JSON.parse(storedAdminAuth);
+      if (storedAdminAuth) {
+        // Older builds cached a plaintext password here; drop it on read.
+        const { password: _legacy, ...profile } = JSON.parse(storedAdminAuth) || {};
+        this.adminCredentials = { ...this.adminCredentials, ...profile, password: "" };
+      }
     } catch (e) {
       console.warn("Could not load from localStorage:", e);
     }
@@ -889,12 +967,27 @@ class DataStore {
     this.notify();
   }
 
-  public verifyAdminCredentials(user: string, pass: string): boolean {
-    this.ensureLoaded();
-    return (
-      (user === this.adminCredentials.username || user === this.adminCredentials.email) &&
-      pass === this.adminCredentials.password
-    );
+  /**
+   * Ask the server whether these credentials are valid.
+   *
+   * This used to compare against a password the client had been handed by
+   * /api/data - which meant anyone could read it. The browser now only ever
+   * learns a yes/no.
+   */
+  public async verifyAdminCredentials(user: string, pass: string): Promise<boolean> {
+    try {
+      const res = await fetch("/api/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "verifyAdmin", data: { user, pass } }),
+        cache: "no-store",
+      });
+      if (!res.ok) return false;
+      const json = await res.json();
+      return json?.ok === true;
+    } catch {
+      return false;
+    }
   }
 
   public isAdminAuthenticated(): boolean {

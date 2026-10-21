@@ -232,16 +232,16 @@ export default function AdminEventsPage() {
     <div className="space-y-6 max-w-6xl">
       {/* In-App Delete Confirmation Modal */}
       {deleteCandidate && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+        <div className="fixed inset-0 z-50 bg-scrim/55 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-surface-2 text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-700 flex items-center justify-center mx-auto border border-red-500/40">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">
+              <h3 className="text-lg font-bold text-ink mb-1">
                 {isEn ? "Delete Event?" : "कार्यक्रम हटाएं?"}
               </h3>
-              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+              <p className="text-xs text-ink/70 leading-relaxed">
                 {isEn
                   ? `Are you sure you want to permanently delete "${deleteCandidate.titleEn || deleteCandidate.titleHi}"?`
                   : `क्या आप वाकई "${deleteCandidate.titleHi}" को डेटाबेस से स्थायी रूप से हटाना चाहते हैं?`}
@@ -258,7 +258,7 @@ export default function AdminEventsPage() {
               <button
                 type="button"
                 onClick={() => setDeleteCandidate(null)}
-                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+                className="px-5 py-2.5 rounded-xl bg-card border border-line text-ink/80 text-xs font-semibold hover:bg-white/5"
               >
                 {isEn ? "Cancel" : "रद्द करें"}
               </button>
@@ -269,21 +269,21 @@ export default function AdminEventsPage() {
 
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-100 to-surface-2 border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <div className="text-xs font-bold text-emerald-300">
+            <div className="text-xs font-bold text-emerald-700">
               {isEn ? "Database Updated" : "डेटाबेस अपडेट"}
             </div>
-            <div className="text-xs text-spiritual-ivory font-medium">
+            <div className="text-xs text-ink font-medium">
               {toastMessage}
             </div>
           </div>
           <button
             onClick={() => setToastMessage(null)}
-            className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2"
+            className="p-1 rounded-lg hover:bg-white/10 text-emerald-700 ml-2"
           >
             <X className="w-4 h-4" />
           </button>
@@ -291,12 +291,12 @@ export default function AdminEventsPage() {
       )}
 
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gold-500/20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
             {isEn ? "Events & Utsav Management" : "महोत्सव व कार्यक्रम प्रबंधन (Events CMS)"}
           </h1>
-          <p className="text-xs text-spiritual-ivory/60 mt-1">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
               ? "Schedule upcoming festivals, live streams, discourses, and adjust start/end dates"
               : "आगामी महोत्सवों, पावन तिथियों, लाइव प्रसारण व सत्संग कार्यक्रमों की तिथियां व विवरण प्रबंधित करें"}
@@ -309,7 +309,7 @@ export default function AdminEventsPage() {
               setEditingId(null);
               setShowAddForm(!showAddForm);
             }}
-            className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+            className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
           >
             <Plus className="w-4 h-4" />
             <span>{isEn ? "Schedule New Event" : "नया कार्यक्रम जोड़ें"}</span>
@@ -319,31 +319,31 @@ export default function AdminEventsPage() {
 
       {/* Featured Earliest Upcoming Event Live Banner */}
       {earliestEvent && (
-        <div className="spiritual-glass-card rounded-2xl p-4 border border-gold-400/40 bg-gradient-to-r from-amber-500/10 via-gold-500/5 to-spiritual-dark flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg">
+        <div className="spiritual-glass-card rounded-2xl p-4 border border-gold-400/40 bg-gradient-to-r from-amber-500/10 via-gold-500/5 to-surface flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center border border-gold-500/30">
+            <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-700 flex items-center justify-center border border-line">
               <Star className="w-5 h-5 fill-gold-400" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold text-gold-300 uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-gold-700 uppercase tracking-wider">
                   {isEn ? "Current Active Homepage Banner Event:" : "होमपेज पर सक्रिय मुख्य आगामी उत्सव:"}
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 text-[10px] font-bold">
                   {earliestEvent.status === "live" ? "🔴 LIVE" : "UPCOMING"}
                 </span>
               </div>
-              <h2 className="text-sm font-bold text-spiritual-ivory mt-0.5">
+              <h2 className="text-sm font-bold text-ink mt-0.5">
                 {isEn ? earliestEvent.titleEn || earliestEvent.titleHi : earliestEvent.titleHi}
               </h2>
-              <p className="text-xs text-gold-400/90 font-medium">
+              <p className="text-xs text-gold-700/90 font-medium">
                 📅 {formatEventDateRangeSafe(earliestEvent.startAt, earliestEvent.endAt, isEn)} {earliestEvent.timeStr && `• ⏰ ${earliestEvent.timeStr}`}
               </p>
             </div>
           </div>
           <button
             onClick={() => handleEdit(earliestEvent)}
-            className="px-3.5 py-1.5 rounded-lg bg-gold-500/20 border border-gold-500/40 text-gold-300 text-xs font-bold hover:bg-gold-500/30 flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-1.5 rounded-lg bg-gold-500/20 border border-line text-gold-700 text-xs font-bold hover:bg-gold-500/30 flex items-center gap-1.5 transition-colors"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>{isEn ? "Edit Dates & Details" : "इसकी तिथि बदलें / संपादित करें"}</span>
@@ -355,11 +355,11 @@ export default function AdminEventsPage() {
       {showAddForm && (
         <form
           onSubmit={handleSave}
-          className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80"
+          className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-surface-2/80"
         >
-          <div className="flex items-center justify-between border-b border-gold-500/20 pb-3">
-            <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-gold-400" />
+          <div className="flex items-center justify-between border-b border-line pb-3">
+            <h2 className="text-sm font-bold text-gold-700 uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-gold-700" />
               <span>
                 {editingId
                   ? isEn
@@ -376,7 +376,7 @@ export default function AdminEventsPage() {
                 setShowAddForm(false);
                 setEditingId(null);
               }}
-              className="p-1 rounded-lg hover:bg-white/10 text-spiritual-ivory/70"
+              className="p-1 rounded-lg hover:bg-white/10 text-ink/70"
             >
               <X className="w-4 h-4" />
             </button>
@@ -384,7 +384,7 @@ export default function AdminEventsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Event Title (Hindi) *" : "कार्यक्रम शीर्षक (हिन्दी) *"}
               </label>
               <input
@@ -393,12 +393,12 @@ export default function AdminEventsPage() {
                 value={form.titleHi}
                 onChange={(e) => setForm({ ...form, titleHi: e.target.value })}
                 placeholder="उदा. भव्य श्री कृष्ण जन्माष्टमी एवं तारतम ज्ञान महोत्सव"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Event Title (English)" : "कार्यक्रम शीर्षक (अंग्रेज़ी)"}
               </label>
               <input
@@ -406,14 +406,14 @@ export default function AdminEventsPage() {
                 value={form.titleEn}
                 onChange={(e) => setForm({ ...form, titleEn: e.target.value })}
                 placeholder="e.g. Grand Shri Krishna Janmashtami Festival"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gold-500/5 p-4 rounded-xl border border-gold-500/20">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gold-500/5 p-4 rounded-xl border border-line">
             <div>
-              <label className="block text-xs font-bold text-amber-300 mb-1 flex items-center gap-1">
+              <label className="block text-xs font-bold text-amber-700 mb-1 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>{isEn ? "Start Date (YYYY-MM-DD) *" : "आरंभ तिथि (Start Date) *"}</span>
               </label>
@@ -422,12 +422,12 @@ export default function AdminEventsPage() {
                 required
                 value={form.startDate}
                 onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/80 border-2 border-gold-400/60 text-xs text-spiritual-ivory font-bold focus:border-gold-300 focus:outline-none cursor-pointer"
+                className="w-full p-2.5 rounded-xl bg-field border-2 border-gold-400/60 text-xs text-ink font-bold focus:border-gold-300 focus:outline-none cursor-pointer"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-amber-300 mb-1 flex items-center gap-1">
+              <label className="block text-xs font-bold text-amber-700 mb-1 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>{isEn ? "End Date (Optional)" : "समापन तिथि (End Date - यदि बहुदिवसीय हो)"}</span>
               </label>
@@ -435,12 +435,12 @@ export default function AdminEventsPage() {
                 type="date"
                 value={form.endDate}
                 onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/80 border-2 border-gold-400/60 text-xs text-spiritual-ivory font-bold focus:border-gold-300 focus:outline-none cursor-pointer"
+                className="w-full p-2.5 rounded-xl bg-field border-2 border-gold-400/60 text-xs text-ink font-bold focus:border-gold-300 focus:outline-none cursor-pointer"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Timing Description" : "समय विवरण"}
               </label>
               <input
@@ -448,20 +448,20 @@ export default function AdminEventsPage() {
                 value={form.timeStr}
                 onChange={(e) => setForm({ ...form, timeStr: e.target.value })}
                 placeholder="09:00 AM – 06:00 PM IST"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Event Category" : "कार्यक्रम श्रेणी"}
               </label>
               <select
                 value={form.eventType}
                 onChange={(e) => setForm({ ...form, eventType: e.target.value as EventItem["eventType"] })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               >
                 <option value="festival">{isEn ? "Festival / Mahotsav" : "पावन महोत्सव"}</option>
                 <option value="discourse">{isEn ? "Katha / Discourse" : "बीतक कथा / प्रवचन"}</option>
@@ -471,13 +471,13 @@ export default function AdminEventsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Current Status" : "स्थिति"}
               </label>
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value as EventItem["status"] })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               >
                 <option value="upcoming">{isEn ? "Upcoming (आगामी)" : "आगामी (Upcoming)"}</option>
                 <option value="live">{isEn ? "🔴 Currently Live" : "🔴 अभी लाइव चल रहा है"}</option>
@@ -486,21 +486,21 @@ export default function AdminEventsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Speaker / Sant" : "वक्ता / संत"}
               </label>
               <input
                 type="text"
                 value={form.speaker}
                 onChange={(e) => setForm({ ...form, speaker: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Location / Dham *" : "स्थान / आश्रम *"}
               </label>
               <input
@@ -508,12 +508,12 @@ export default function AdminEventsPage() {
                 required
                 value={form.location}
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Livestream YouTube Link (Optional)" : "लाइव सत्संग यूट्यूब लिंक (वैकल्पिक)"}
               </label>
               <input
@@ -521,13 +521,13 @@ export default function AdminEventsPage() {
                 value={form.livestreamUrl}
                 onChange={(e) => setForm({ ...form, livestreamUrl: e.target.value })}
                 placeholder="https://youtube.com/..."
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
           </div>
 
           {/* Event Banner Image Upload */}
-          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20">
+          <div className="p-4 rounded-2xl bg-surface-sunk/70 border border-line">
             <ImageUploadField
               label={isEn ? "Event Banner / Poster Photo *" : "कार्यक्रम बैनर / पोस्टर फोटो *"}
               value={form.image}
@@ -540,14 +540,14 @@ export default function AdminEventsPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">
+            <label className="block text-xs font-semibold text-gold-700 mb-1">
               {isEn ? "Description (Hindi)" : "विवरण (हिन्दी)"}
             </label>
             <textarea
               rows={2}
               value={form.descriptionHi}
               onChange={(e) => setForm({ ...form, descriptionHi: e.target.value })}
-              className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari resize-none"
+              className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari resize-none"
             />
           </div>
 
@@ -555,7 +555,7 @@ export default function AdminEventsPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none"
             >
               <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>
@@ -579,7 +579,7 @@ export default function AdminEventsPage() {
                 setEditingId(null);
                 setShowAddForm(false);
               }}
-              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70 hover:bg-white/5 disabled:opacity-50"
+              className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70 hover:bg-white/5 disabled:opacity-50"
             >
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
@@ -588,16 +588,16 @@ export default function AdminEventsPage() {
       )}
 
       {/* Events Table */}
-      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
-        <div className="p-4 bg-spiritual-navy/80 border-b border-gold-500/20 flex flex-wrap items-center justify-between gap-3">
-          <div className="text-xs text-gold-300 font-bold flex items-center gap-2">
+      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-line shadow-xl">
+        <div className="p-4 bg-surface-2/80 border-b border-line flex flex-wrap items-center justify-between gap-3">
+          <div className="text-xs text-gold-700 font-bold flex items-center gap-2">
             <span>📅 {isEn ? "Total Scheduled Events:" : "कुल सूचीबद्ध कार्यक्रम:"} {events.length}</span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+          <table className="w-full text-left text-xs text-ink">
+            <thead className="bg-surface-sunk border-b border-line text-gold-700 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Event Title" : "कार्यक्रम शीर्षक"}</th>
                 <th className="p-3.5">{isEn ? "Date & Time" : "दिनांक व समय (Date & Time)"}</th>
@@ -619,45 +619,45 @@ export default function AdminEventsPage() {
                         : "hover:bg-gold-500/5"
                     }`}
                   >
-                    <td className="p-3.5 font-bold text-spiritual-ivory max-w-xs">
+                    <td className="p-3.5 font-bold text-ink max-w-xs">
                       <div className="flex items-center gap-2">
                         {earliestEvent?.id === e.id && (
-                          <span className="text-amber-400" title="Earliest upcoming event">
+                          <span className="text-amber-700" title="Earliest upcoming event">
                             ⭐
                           </span>
                         )}
                         <span>{isEn ? e.titleEn || e.titleHi : e.titleHi}</span>
                       </div>
                       {e.speaker && (
-                        <div className="text-[11px] text-spiritual-ivory/60 font-normal mt-0.5">
+                        <div className="text-[11px] text-ink/60 font-normal mt-0.5">
                           {e.speaker}
                         </div>
                       )}
                     </td>
-                    <td className="p-3.5 text-gold-300">
+                    <td className="p-3.5 text-gold-700">
                       <div className="font-bold flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <Calendar className="w-3.5 h-3.5 text-amber-700 shrink-0" />
                         <span>{formatEventDateRangeSafe(e.startAt, e.endAt, isEn)}</span>
                       </div>
                       {e.timeStr && (
-                        <div className="text-[10px] text-spiritual-ivory/70 font-mono mt-0.5 ml-5">
+                        <div className="text-[10px] text-ink/70 font-mono mt-0.5 ml-5">
                           {e.timeStr}
                         </div>
                       )}
                     </td>
-                    <td className="p-3.5 text-spiritual-ivory/70 max-w-[150px] truncate">
+                    <td className="p-3.5 text-ink/70 max-w-[150px] truncate">
                       <div className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-gold-400/80 shrink-0" />
+                        <MapPin className="w-3 h-3 text-gold-700/80 shrink-0" />
                         <span className="truncate">{e.location}</span>
                       </div>
                     </td>
                     <td className="p-3.5">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-semibold uppercase">
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 text-[10px] font-semibold uppercase">
                           {e.eventType}
                         </span>
                         {e.status === "live" && (
-                          <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold animate-pulse">
+                          <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-700 text-[10px] font-bold animate-pulse">
                             LIVE
                           </span>
                         )}
@@ -666,14 +666,14 @@ export default function AdminEventsPage() {
                     <td className="p-3.5 text-right space-x-2 whitespace-nowrap">
                       <button
                         onClick={() => handleEdit(e)}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        className="p-1.5 rounded-lg border border-line text-gold-700 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Edit Event" : "कार्यक्रम व तिथि संपादित करें"}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => setDeleteCandidate(e)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-700 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Delete Event" : "कार्यक्रम हटाएं"}
                       >
                         <Trash2 className="w-3.5 h-3.5" />

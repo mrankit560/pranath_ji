@@ -38,25 +38,25 @@ export const ChitwaniMeditation3D: React.FC = () => {
     inhale: {
       hi: "श्वास लें (परमधाम दिव्य प्रकाश)",
       en: "Inhale (Divine Light)",
-      color: "text-amber-300",
+      color: "text-amber-700",
       scale: "scale-110",
     },
     hold: {
       hi: "ध्यान धारण करें (अक्षरातीत युगल स्वरूप)",
       en: "Contemplate (Divine Paramdham)",
-      color: "text-gold-300",
+      color: "text-gold-700",
       scale: "scale-110",
     },
     exhale: {
       hi: "श्वास छोड़ें (अहंकार व माया विसर्जन)",
       en: "Exhale (Release Illusion)",
-      color: "text-emerald-300",
+      color: "text-emerald-700",
       scale: "scale-90",
     },
     rest: {
       hi: "शांत स्वरूप (परम आनंद व विश्राम)",
       en: "Rest (Aksharatit Bliss)",
-      color: "text-purple-300",
+      color: "text-purple-700",
       scale: "scale-100",
     },
   };
@@ -87,18 +87,18 @@ export const ChitwaniMeditation3D: React.FC = () => {
 
         {/* Layer 4: Breathing Center Sphere */}
         <div
-          className={`relative w-44 h-44 sm:w-56 sm:h-56 rounded-full p-4 bg-gradient-to-b from-[#241a12]/95 to-[#0e0a08]/95 border-2 border-gold-400/60 shadow-2xl flex flex-col items-center justify-center text-center transition-transform duration-1000 ${
+          className={`relative w-44 h-44 sm:w-56 sm:h-56 rounded-full p-4 bg-gradient-to-b from-surface-sunk/95 to-surface-2/95 border-2 border-gold-400/60 shadow-2xl flex flex-col items-center justify-center text-center transition-transform duration-1000 ${
             phaseLabels[phase].scale
           }`}
           style={{ transform: "translateZ(20px)" }}
         >
-          <Flower2 className="w-8 h-8 text-gold-400 mb-1 animate-pulse" />
+          <Flower2 className="w-8 h-8 text-gold-700 mb-1 animate-pulse" />
           
           <div className="text-2xl sm:text-3xl font-black text-gold-gradient font-mono leading-none">
             {seconds}s
           </div>
 
-          <span className="text-[10px] sm:text-xs font-bold text-gold-300 uppercase tracking-widest mt-1">
+          <span className="text-[10px] sm:text-xs font-bold text-gold-700 uppercase tracking-widest mt-1">
             {phase.toUpperCase()}
           </span>
         </div>
@@ -109,7 +109,7 @@ export const ChitwaniMeditation3D: React.FC = () => {
         <div className={`text-base sm:text-lg font-bold font-spiritual-heading transition-colors duration-500 ${phaseLabels[phase].color}`}>
           {isEn ? phaseLabels[phase].en : phaseLabels[phase].hi}
         </div>
-        <p className="text-xs text-spiritual-ivory/70 max-w-sm mx-auto">
+        <p className="text-xs text-ink/70 max-w-sm mx-auto">
           {isEn
             ? "“Contemplate the eternal divine realm of Paramdham. With every breath, remember the bliss of Shri Raj Shyamaji.”"
             : "“राज श्यामा जी के पावन स्वरूप का अंतर में ध्यान करें। श्वास-प्रश्वास में श्री जी का स्मरण बना रहे।”"}

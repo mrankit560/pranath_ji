@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase/client";
+import { hashPassword, verifyPassword, isHashed } from "@/lib/auth/adminAuth";
 import {
   initialBooks,
   initialScriptures,
@@ -40,6 +41,27 @@ function syncDiskDatabase(key: string, data: any) {
       // Ignore if filesystem is not available
     }
   }
+}
+
+function getDiskAdminCredentials() {
+  if (typeof window === "undefined") {
+    try {
+      const nodeRequire = eval("require");
+      const fs = nodeRequire("fs");
+      const path = nodeRequire("path");
+      const dbPath = path.join(process.cwd(), "data", "db.json");
+      if (fs.existsSync(dbPath)) {
+        const raw = fs.readFileSync(dbPath, "utf-8");
+        const fileContent = JSON.parse(raw);
+        if (fileContent.adminCredentials) {
+          return fileContent.adminCredentials;
+        }
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }
+  return null;
 }
 
 // Helper to convert snake_case DB row to camelCase EventItem
@@ -279,24 +301,12 @@ export async function GET() {
           updatedAt: adminData.updated_at || new Date().toISOString(),
         };
       } else {
-        const diskDbPath = path.join(process.cwd(), "data", "db.json");
-        if (fs.existsSync(diskDbPath)) {
-          const fileContent = JSON.parse(fs.readFileSync(diskDbPath, "utf-8"));
-          if (fileContent.adminCredentials) {
-            adminCredentials = fileContent.adminCredentials;
-          }
-        }
+        const diskCreds = getDiskAdminCredentials();
+        if (diskCreds) adminCredentials = diskCreds;
       }
     } catch {
-      try {
-        const diskDbPath = path.join(process.cwd(), "data", "db.json");
-        if (fs.existsSync(diskDbPath)) {
-          const fileContent = JSON.parse(fs.readFileSync(diskDbPath, "utf-8"));
-          if (fileContent.adminCredentials) {
-            adminCredentials = fileContent.adminCredentials;
-          }
-        }
-      } catch {}
+      const diskCreds = getDiskAdminCredentials();
+      if (diskCreds) adminCredentials = diskCreds;
     }
 
     const data = {
@@ -314,7 +324,13 @@ export async function GET() {
       aboutContent,
       chitwaniBooks,
       chitwaniVideos,
-      adminCredentials,
+      // Only the non-secret profile goes over the wire. The password used to be
+      // served here in plaintext to every anonymous visitor.
+      adminProfile: {
+        username: adminCredentials.username,
+        email: adminCredentials.email,
+        updatedAt: adminCredentials.updatedAt,
+      },
       updatedAt: new Date().toISOString(),
     };
 
@@ -341,10 +357,9 @@ export async function GET() {
         settings: initialSettings,
         aboutContent: initialAboutContent,
         dailyThought: initialDailyThought,
-        adminCredentials: {
+        adminProfile: {
           username: "admin",
           email: "admin@sadhaulidham.com",
-          password: "admin123",
           updatedAt: new Date().toISOString(),
         },
         updatedAt: new Date().toISOString(),
@@ -357,10 +372,82 @@ export async function GET() {
 }
 
 // POST: Write updates directly to Supabase PostgreSQL database & sync disk
+/** Read the stored admin row (server-side only; never leaves this module). */
+async function loadStoredAdmin(): Promise<{ username: string; email: string; password: string } | null> {
+  // Preferred source in production: a hash supplied as an environment variable.
+  // The Workers runtime has no writable disk and the anon Supabase key cannot
+  // read admin_credentials, so this is the only place a real secret can live.
+  // Generate one with:  node scripts/hash-admin-password.mjs '<new password>'
+  const envHash = process.env.ADMIN_PASSWORD_HASH;
+  if (envHash) {
+    return {
+      username: process.env.ADMIN_USERNAME || "admin",
+      email: process.env.ADMIN_EMAIL || "admin@sadhaulidham.com",
+      password: envHash,
+    };
+  }
+
+  try {
+    const { data } = await supabase
+      .from("admin_credentials")
+      .select("*")
+      .eq("id", "primary")
+      .maybeSingle();
+    if (data && data.username) {
+      return {
+        username: data.username,
+        email: data.email || "admin@sadhaulidham.com",
+        password: data.password || "",
+      };
+    }
+  } catch {
+    // fall through to disk
+  }
+  const disk = getDiskAdminCredentials();
+  return disk ? { username: disk.username, email: disk.email, password: disk.password } : null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { key, data } = body;
+
+    // Admin login. The browser sends a candidate and gets back only a boolean -
+    // the stored password never travels to the client.
+    if (key === "verifyAdmin" && data) {
+      const stored = await loadStoredAdmin();
+      if (!stored) {
+        return NextResponse.json({ ok: false }, { status: 200 });
+      }
+      const identifier = String(data.user || "").trim();
+      const identifierOk =
+        identifier.toLowerCase() === String(stored.username).toLowerCase() ||
+        identifier.toLowerCase() === String(stored.email).toLowerCase();
+
+      const { ok, needsUpgrade } = await verifyPassword(String(data.pass || ""), stored.password);
+      const success = identifierOk && ok;
+
+      // Transparently migrate a legacy plaintext row the first time its owner
+      // signs in successfully.
+      if (success && needsUpgrade) {
+        try {
+          await supabase.from("admin_credentials").upsert({
+            id: "primary",
+            username: stored.username,
+            email: stored.email,
+            password: await hashPassword(String(data.pass)),
+            updated_at: new Date().toISOString(),
+          });
+        } catch {
+          // non-fatal: login still succeeds, upgrade retries next time
+        }
+      }
+
+      return NextResponse.json(
+        { ok: success },
+        { headers: { "Cache-Control": "no-store" } }
+      );
+    }
 
     console.log(`[API Supabase POST] Writing key="${key}" to database...`);
 
@@ -609,13 +696,16 @@ export async function POST(req: NextRequest) {
       if (error) throw error;
     } else if (key === "adminCredentials" && data) {
       try {
-        await supabase.from("admin_credentials").upsert({
+        const row: Record<string, any> = {
           id: "primary",
           username: data.username || "admin",
           email: data.email || "admin@sadhaulidham.com",
-          password: data.password || "admin123",
           updated_at: new Date().toISOString(),
-        });
+        };
+        // Only touch the password when a new one was actually supplied, and
+        // never store it in the clear.
+        if (data.password) row.password = await hashPassword(String(data.password));
+        await supabase.from("admin_credentials").upsert(row);
       } catch (adminErr) {
         console.warn("[API Supabase POST Warning] admin_credentials table update skipped:", adminErr);
       }

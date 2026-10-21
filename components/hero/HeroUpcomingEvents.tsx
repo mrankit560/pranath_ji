@@ -37,28 +37,28 @@ export const HeroUpcomingEvents: React.FC = () => {
   const formattedDateRangeStr = formatEventDateRangeSafe(nextEvent.startAt, nextEvent.endAt, isEn);
 
   return (
-    <div className="w-full rounded-3xl border-2 border-gold-400/40 bg-gradient-to-r from-spiritual-navy/95 via-[#1A120C]/95 to-spiritual-navy/95 backdrop-blur-2xl p-5 sm:p-7 shadow-2xl shadow-black/90 relative overflow-hidden">
+    <div className="w-full rounded-3xl border-2 border-gold-400/40 bg-gradient-to-r from-surface-2/95 via-surface-sunk/95 to-surface-2/95 backdrop-blur-2xl p-5 sm:p-7 shadow-2xl shadow-gold-900/15 relative overflow-hidden">
       {/* Background Soft Golden Radial Glow */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Decorative Traditional Corner Motifs */}
-      <div className="absolute top-3 left-3 text-xs text-gold-400/60 font-serif select-none">❖</div>
-      <div className="absolute top-3 right-3 text-xs text-gold-400/60 font-serif select-none">❖</div>
-      <div className="absolute bottom-3 left-3 text-xs text-gold-400/60 font-serif select-none">❖</div>
-      <div className="absolute bottom-3 right-3 text-xs text-gold-400/60 font-serif select-none">❖</div>
+      <div className="absolute top-3 left-3 text-xs text-gold-700/60 font-serif select-none">❖</div>
+      <div className="absolute top-3 right-3 text-xs text-gold-700/60 font-serif select-none">❖</div>
+      <div className="absolute bottom-3 left-3 text-xs text-gold-700/60 font-serif select-none">❖</div>
+      <div className="absolute bottom-3 right-3 text-xs text-gold-700/60 font-serif select-none">❖</div>
 
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
         {/* Left Section: Event Badge, Title, Date Range & Venue */}
         <div className="flex-1 space-y-3.5">
           {/* Top Badge */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/50 text-gold-300 text-xs font-bold uppercase tracking-wider shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/50 text-gold-700 text-xs font-bold uppercase tracking-wider shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-gold-700 animate-pulse" />
               {isEn ? "Latest Upcoming Ashram Event" : "आगामी पावन आश्रम महोत्सव व सत्संग"}
             </span>
 
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-[11px] font-semibold uppercase">
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-700 text-[11px] font-semibold uppercase">
               {isEn
                 ? nextEvent.eventType.toUpperCase()
                 : nextEvent.eventType.toLowerCase() === "meditation"
@@ -79,30 +79,30 @@ export const HeroUpcomingEvents: React.FC = () => {
           {/* Date Range and Location Detail Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             {/* 1. Date Range */}
-            <div className="flex items-start sm:items-center gap-3 p-3.5 rounded-2xl bg-black/60 border border-gold-500/30 shadow-md">
-              <div className="w-9 h-9 rounded-xl bg-gold-500/20 text-gold-300 flex items-center justify-center flex-shrink-0 border border-gold-400/40 mt-0.5 sm:mt-0">
-                <Calendar className="w-4 h-4 text-gold-400" />
+            <div className="flex items-start sm:items-center gap-3 p-3.5 rounded-2xl bg-field border border-line shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-gold-500/20 text-gold-700 flex items-center justify-center flex-shrink-0 border border-gold-400/40 mt-0.5 sm:mt-0">
+                <Calendar className="w-4 h-4 text-gold-700" />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] text-gold-muted font-bold uppercase tracking-wider mb-0.5">
                   {isEn ? "Event Date Range" : "कार्यक्रम पावन तिथि"}
                 </div>
-                <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words">
+                <div className="text-xs sm:text-sm font-bold text-ink leading-snug break-words">
                   {formattedDateRangeStr}
                 </div>
               </div>
             </div>
 
             {/* 2. Location */}
-            <div className="flex items-start sm:items-center gap-3 p-3.5 rounded-2xl bg-black/60 border border-gold-500/30 shadow-md">
-              <div className="w-9 h-9 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center flex-shrink-0 border border-red-500/40 mt-0.5 sm:mt-0">
-                <MapPin className="w-4 h-4 text-red-400" />
+            <div className="flex items-start sm:items-center gap-3 p-3.5 rounded-2xl bg-field border border-line shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-red-500/20 text-red-700 flex items-center justify-center flex-shrink-0 border border-red-500/40 mt-0.5 sm:mt-0">
+                <MapPin className="w-4 h-4 text-red-700" />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] text-gold-muted font-bold uppercase tracking-wider mb-0.5">
                   {isEn ? "Location / Venue" : "स्थान / पावन धाम"}
                 </div>
-                <div className="text-xs sm:text-sm font-bold text-spiritual-ivory leading-snug break-words" title={nextEvent.location}>
+                <div className="text-xs sm:text-sm font-bold text-ink leading-snug break-words" title={nextEvent.location}>
                   {nextEvent.location}
                 </div>
               </div>
@@ -111,7 +111,7 @@ export const HeroUpcomingEvents: React.FC = () => {
         </div>
 
         {/* Right Section: Actions */}
-        <div className="flex flex-col sm:flex-row items-center lg:items-end justify-center gap-3 lg:border-l lg:border-gold-500/20 lg:pl-6 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row items-center lg:items-end justify-center gap-3 lg:border-l lg:border-line lg:pl-6 flex-shrink-0">
           {nextEvent.livestreamUrl && (
             <a
               href={nextEvent.livestreamUrl}
@@ -127,7 +127,7 @@ export const HeroUpcomingEvents: React.FC = () => {
 
           <Link
             href="/events"
-            className="px-5 py-3 rounded-2xl bg-gold-gradient text-spiritual-dark text-xs sm:text-sm font-extrabold flex items-center gap-2 shadow-gold-sm hover:scale-105 transition-transform"
+            className="px-5 py-3 rounded-2xl bg-gold-gradient text-on-gold text-xs sm:text-sm font-extrabold flex items-center gap-2 shadow-gold-sm hover:scale-105 transition-transform"
           >
             <span>{isEn ? "All Ashram Events" : "सभी कार्यक्रम देखें"}</span>
             <ArrowRight className="w-4 h-4" />

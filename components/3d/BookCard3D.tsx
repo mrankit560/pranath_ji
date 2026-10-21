@@ -42,7 +42,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="book-3d-container spiritual-glass-card rounded-3xl p-5 sm:p-6 border border-gold-500/30 flex flex-col justify-between group transition-all duration-300 relative overflow-hidden"
+      className="book-3d-container spiritual-glass-card rounded-3xl p-5 sm:p-6 border border-line flex flex-col justify-between group transition-all duration-300 relative overflow-hidden"
       style={{ perspective: "1000px" }}
     >
       {/* 3D Holographic Corner Shimmer */}
@@ -50,8 +50,8 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
 
       <div>
         {/* Top Badges */}
-        <div className="flex items-center justify-between text-xs text-gold-300 font-semibold mb-4">
-          <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 uppercase text-[10px] tracking-wider font-bold">
+        <div className="flex items-center justify-between text-xs text-gold-700 font-semibold mb-4">
+          <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-line uppercase text-[10px] tracking-wider font-bold">
             {isEn
               ? book.category.replace("_", " ")
               : book.category === "tartam_vani"
@@ -64,7 +64,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
               ? "ब्रह्मज्ञान तत्व"
               : "आध्यात्मिक ग्रन्थ"}
           </span>
-          <span className="text-[11px] text-spiritual-ivory/70 font-mono">
+          <span className="text-[11px] text-ink/70 font-mono">
             {book.pages} {isEn ? "Pages" : "पृष्ठ"}
           </span>
         </div>
@@ -86,7 +86,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
             <div className="book-3d-pages" />
 
             {/* Book Cover Surface */}
-            <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-gold-400/50 shadow-2xl bg-black">
+            <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-gold-400/50 shadow-2xl bg-surface-sunk">
               <Image
                 src={book.coverUrl || "/assets/paramdham-mandala.png"}
                 alt={isEn ? book.titleEn || book.titleHi : book.titleHi}
@@ -106,7 +106,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
         </div>
 
         {/* Book Title & Description */}
-        <h3 className="text-base sm:text-lg font-bold text-spiritual-ivory group-hover:text-gold-300 transition-colors font-spiritual-heading mb-1.5 mt-3 text-center sm:text-left leading-snug">
+        <h3 className="text-base sm:text-lg font-bold text-ink group-hover:text-gold-700 transition-colors font-spiritual-heading mb-1.5 mt-3 text-center sm:text-left leading-snug">
           {isEn ? book.titleEn || book.titleHi : book.titleHi}
         </h3>
 
@@ -114,16 +114,16 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
           {isEn ? book.authorEn : book.authorHi}
         </div>
 
-        <p className="text-xs text-spiritual-ivory/70 line-clamp-2 leading-relaxed mb-4 text-center sm:text-left">
+        <p className="text-xs text-ink/70 line-clamp-2 leading-relaxed mb-4 text-center sm:text-left">
           {isEn ? book.descriptionEn || book.descriptionHi : book.descriptionHi}
         </p>
       </div>
 
       {/* Card Bottom Actions: Read Online & Download PDF */}
-      <div className="pt-3 border-t border-gold-500/20 flex items-center justify-between gap-2">
+      <div className="pt-3 border-t border-line flex items-center justify-between gap-2">
         <Link
           href={`/library/reader/${book.id}`}
-          className="px-3.5 py-1.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          className="px-3.5 py-1.5 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <BookOpen className="w-3.5 h-3.5" />
           <span>{isEn ? "Read Online" : "ऑनलाइन पढ़ें"}</span>
@@ -135,7 +135,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
             download
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 hover:text-white hover:bg-gold-500/20 text-xs font-semibold inline-flex items-center gap-1 transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-card border border-line text-gold-700 hover:text-gold-900 hover:bg-gold-500/20 text-xs font-semibold inline-flex items-center gap-1 transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             <span>{isEn ? "PDF" : "डाउनलोड"}</span>
@@ -143,7 +143,7 @@ export const BookCard3D: React.FC<BookCard3DProps> = ({ book, isEn = false }) =>
         ) : (
           <Link
             href={`/library/reader/${book.id}`}
-            className="text-xs text-spiritual-ivory/60 hover:text-gold-300 inline-flex items-center gap-1"
+            className="text-xs text-ink/60 hover:text-gold-700 inline-flex items-center gap-1"
           >
             <FileText className="w-3.5 h-3.5" />
             <span>{isEn ? "E-Book" : "ई-ग्रंथ"}</span>

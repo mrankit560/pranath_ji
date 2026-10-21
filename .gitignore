@@ -24,6 +24,7 @@ tsconfig.tsbuildinfo
 # misc
 .DS_Store
 *.pem
+.vscode/
 
 # debug logs
 npm-debug.log*
@@ -34,3 +35,10 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+
+# local theme specimen preview (not part of the app)
+.theme-preview/
+.claude/launch.json
+
+# local Cloudflare API token (never commit)
+.cloudflare-token

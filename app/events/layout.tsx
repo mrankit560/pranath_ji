@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "साढौली धाम में आगामी आध्यात्मिक महोत्सव, अखंड वाणी परायण एवं ध्यान शिविर की जानकारी।",
     url: "https://sadhaulidham.com/events",
-    images: [{ url: "https://sadhaulidham.com/assets/hero-reference-1.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://sadhaulidham.com/assets/sadhauli-banner.jpg", width: 1200, height: 630 }],
   },
 };
 

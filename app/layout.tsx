@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n/context";
-import { ThemeProvider } from "@/lib/theme/context";
 import { AudioProvider } from "@/lib/audio/AudioContext";
 import { LanguageWelcomeModal } from "@/components/header/LanguageWelcomeModal";
 import { PersistentAudioPlayer } from "@/components/audio/PersistentAudioPlayer";
+import { StoreHydrator } from "@/components/common/StoreHydrator";
+import { SSR_STATE_ID, serializeSsrState } from "@/lib/data/store";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sadhaulidham.com"),
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
       "श्री निजानंद आश्रम साढौली धाम, हरिद्वार — The official spiritual sanctuary of Divine Wisdom, Tartam Vani & Nijanand Sampradaya.",
     images: [
       {
-        url: "https://sadhaulidham.com/assets/hero-reference-1.jpg",
+        url: "https://sadhaulidham.com/assets/sadhauli-banner.jpg",
         width: 1200,
         height: 630,
         alt: "Sadhauli Dham Haridwar",
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
     title: "साढौली धाम | श्री प्राणनाथ जी वाणी — Sadhauli Dham",
     description:
       "श्री निजानंद आश्रम साढौली धाम, हरिद्वार — The official spiritual sanctuary of Divine Wisdom, Tartam Vani & Nijanand Sampradaya.",
-    images: ["https://sadhaulidham.com/assets/hero-reference-1.jpg"],
+    images: ["https://sadhaulidham.com/assets/sadhauli-banner.jpg"],
   },
 };
 
@@ -64,17 +65,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="hi" className="dark">
-      <body className="bg-[#080605] text-[#F7F1E3] antialiased selection:bg-gold-500 selection:text-black">
-        <ThemeProvider>
-          <I18nProvider>
-            <AudioProvider>
-              <LanguageWelcomeModal />
-              {children}
-              <PersistentAudioPlayer />
-            </AudioProvider>
-          </I18nProvider>
-        </ThemeProvider>
+    <html lang="hi">
+      <body className="bg-surface text-ink antialiased">
+        {/* The data this page was server-rendered from. The client store reads it
+            before React hydrates so both sides start from identical state. */}
+        <script
+          id={SSR_STATE_ID}
+          type="application/json"
+          dangerouslySetInnerHTML={{ __html: serializeSsrState() }}
+        />
+        <StoreHydrator />
+        <I18nProvider>
+          <AudioProvider>
+            <LanguageWelcomeModal />
+            {children}
+            <PersistentAudioPlayer />
+          </AudioProvider>
+        </I18nProvider>
       </body>
     </html>
   );

@@ -9,7 +9,8 @@
     "lint": "next lint",
     "build:worker": "npx @opennextjs/cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "preview": "npm run build:worker && npx wrangler dev",
-    "deploy": "npm run build:worker && npx wrangler deploy"
+    "deploy": "npm run build:worker && npx wrangler deploy",
+    "deploy:preview": "npm run build:worker && npx wrangler deploy --name pranath-ji-light-preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",

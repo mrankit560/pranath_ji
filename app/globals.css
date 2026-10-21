@@ -1,20 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@300;400;500;600;700;800&family=Noto+Serif+Devanagari:wght@400;600;700;800&family=Rozha+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Mukta:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-devanagari: 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Noto Serif Devanagari', 'Rozha One', 'Cinzel', serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  --bg-spiritual-navy: #0D0A08;
-  --bg-deep-card: rgba(18, 14, 12, 0.85);
-  --gold-antique: #D4AF37;
-  --gold-bright: #F4D06F;
-  --gold-warm: #C6922E;
-  --gold-border: rgba(212, 175, 55, 0.28);
+  --font-devanagari: 'Mukta', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Tiro Devanagari Hindi', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Mukta', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --surface: #FDFDFC;
+  --surface-2: #FFFFFF;
+  --surface-sunk: #F1F5F6;
+  --line: #E4E4DE;
+  --ink: #2B2620;
+  --ink-soft: #675E54;
+  --kumkum: #B81F27;
+  --kumkum-dk: #7E1319;
+  --gold-antique: #B98F23;
+  --gold-bright: #E3C878;
+  --gold-deep: #876612;
+  --gold-pale: #FAF1DA;
+  --gold-border: rgba(185, 143, 35, 0.34);
 }
 
 * {
@@ -25,19 +32,20 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background-color: #080605;
-  color: #F7F1E3;
+  background-color: var(--surface);
+  color: var(--ink);
   font-family: var(--font-devanagari), var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.15) 0%, rgba(13, 10, 8, 0) 60%),
-    radial-gradient(circle at 12% 40%, rgba(100, 30, 42, 0.14) 0%, transparent 45%),
-    radial-gradient(circle at 88% 70%, rgba(40, 92, 69, 0.12) 0%, transparent 45%);
+  /* Soft devotional light washes instead of the old dark vignette */
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(185, 143, 35, 0.07) 0%, rgba(253, 253, 252, 0) 55%),
+    radial-gradient(circle at 10% 42%, rgba(184, 31, 39, 0.035) 0%, transparent 42%),
+    radial-gradient(circle at 90% 72%, rgba(46, 107, 82, 0.035) 0%, transparent 42%);
   background-attachment: fixed;
 }
 
@@ -48,16 +56,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0D0A08;
+  background: var(--surface-sunk);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #D4AF37 0%, #704F15 100%);
+  background: linear-gradient(180deg, #CFAE4F 0%, var(--gold-antique) 100%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #F4D06F;
+  background: var(--gold-deep);
 }
 
 /* Typography styles */
@@ -75,12 +83,14 @@ body {
   line-height: 1.35;
 }
 
-/* Gold Text Gradients with anti-clipping ascender & descender buffers */
+/* Gold Text Gradients with anti-clipping ascender & descender buffers.
+   Tuned deep so gradient headings stay legible on ivory. */
+/* Display headings. These used to be a gold gradient, which on a pale ground
+   read as washed-out rather than rich. Sindoor red is the devotional register
+   and holds ~9:1 on marble. Gold stays, but only on small labels and rules. */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #FFF0BF 0%, #F4D06F 30%, #D4AF37 70%, #9E711E 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #7E1319;
+  font-family: 'Tiro Devanagari Hindi', 'Cormorant Garamond', Georgia, serif;
   display: inline-block;
   padding-top: 0.15em;
   padding-bottom: 0.2em;
@@ -96,70 +106,71 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-gold-glow {
-  color: #F4D06F;
-  text-shadow: 0 0 15px rgba(244, 208, 111, 0.45), 0 0 30px rgba(212, 175, 55, 0.25);
+  color: #7E1319;
+  text-shadow: none;
 }
 
-/* Glassmorphic Cards */
+/* Cards: frosted ivory panels with a warm gold hairline */
 .spiritual-glass-card {
-  background: linear-gradient(135deg, rgba(24, 18, 15, 0.85) 0%, rgba(14, 10, 8, 0.92) 100%);
+  background: #FFFFFF;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 12px 0 rgba(212, 175, 55, 0.05);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgba(38, 40, 42, 0.055), 0 14px 36px rgba(38, 40, 42, 0.06);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .spiritual-glass-card:hover {
-  border-color: rgba(244, 208, 111, 0.6);
-  box-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.65), 0 0 25px rgba(212, 175, 55, 0.22);
+  border-color: rgba(185, 143, 35, 0.55);
+  box-shadow: 0 30px 70px rgba(38, 40, 42, 0.17);
   transform: translateY(-4px);
 }
 
 /* Premium Gold Buttons */
 .btn-gold {
-  background: linear-gradient(135deg, #F4D06F 0%, #D4AF37 50%, #C6922E 100%);
-  color: #1A1208;
-  font-weight: 700;
-  border: 1px solid #FFE082;
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+  background: #B81F27;
+  color: #FFFFFF;
+  font-weight: 600;
+  border: 1px solid #B81F27;
+  box-shadow: 0 9px 22px rgba(184, 31, 39, 0.26);
   transition: all 0.3s ease;
 }
 
 .btn-gold:hover {
-  background: linear-gradient(135deg, #FFF3D1 0%, #F4D06F 50%, #D4AF37 100%);
-  box-shadow: 0 6px 28px rgba(244, 208, 111, 0.6);
+  background: #7E1319;
+  border-color: #7E1319;
+  box-shadow: 0 12px 26px rgba(184, 31, 39, 0.32);
   transform: translateY(-2px);
 }
 
 .btn-glass-gold {
-  background: rgba(212, 175, 55, 0.12);
-  border: 1px solid rgba(244, 208, 111, 0.4);
-  color: #F4D06F;
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  color: #7E1319;
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
 }
 
 .btn-glass-gold:hover {
-  background: rgba(212, 175, 55, 0.25);
-  border-color: #F4D06F;
-  box-shadow: 0 0 20px rgba(244, 208, 111, 0.35);
+  background: #FAF1DA;
+  border-color: rgba(185, 143, 35, 0.55);
+  box-shadow: 0 6px 18px rgba(38, 40, 42, 0.10);
   transform: translateY(-2px);
 }
 
 /* Floating Badges */
 .floating-badge {
-  background: rgba(14, 10, 8, 0.85);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 0 10px rgba(244, 208, 111, 0.1);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 20px rgba(38, 40, 42, 0.10);
   transition: all 0.4s ease;
 }
 
 .floating-badge:hover {
-  border-color: rgba(244, 208, 111, 0.8);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 25px rgba(244, 208, 111, 0.3);
+  border-color: rgba(184, 144, 42, 0.75);
+  box-shadow: 0 10px 26px rgba(74, 54, 11, 0.16);
   transform: translateY(-4px) scale(1.03);
 }
 
@@ -169,7 +180,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: #D4AF37;
+  color: #B98F23;
   margin: 32px 0;
 }
 
@@ -178,7 +189,20 @@ h1, h2, h3, h4, h5, h6 {
   content: '';
   height: 1px;
   flex: 1;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(185, 143, 35, 0.45), transparent);
+}
+
+/* Selection */
+::selection {
+  background: rgba(184, 31, 39, 0.16);
+  color: #2B2620;
+}
+
+/* Keyboard focus ring — was missing entirely before */
+:focus-visible {
+  outline: 2px solid #B81F27;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ========================================================================= */
@@ -214,12 +238,12 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
-  box-shadow: -8px 12px 24px -6px rgba(0, 0, 0, 0.8), -2px 0 8px rgba(244, 208, 111, 0.15);
+  box-shadow: -8px 12px 24px -10px rgba(74, 54, 11, 0.45), -2px 0 8px rgba(74, 54, 11, 0.10);
 }
 
 .book-3d-container:hover .book-3d-cover {
   transform: rotateY(-18deg) rotateX(6deg) translateZ(20px);
-  box-shadow: -16px 20px 32px -8px rgba(0, 0, 0, 0.9), 0 0 25px rgba(244, 208, 111, 0.35);
+  box-shadow: -16px 20px 32px -12px rgba(74, 54, 11, 0.50), 0 0 20px rgba(184, 144, 42, 0.25);
 }
 
 /* 3D Book Spine */
@@ -252,7 +276,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: rotateY(90deg) translateX(5px);
   transform-origin: right;
   border-radius: 0 2px 2px 0;
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 4px rgba(74, 54, 11, 0.25);
 }
 
 /* 3D Card Tilt with Dynamic Hologram Sheen */
@@ -285,8 +309,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes pulseGlow3d {
-  0%, 100% { transform: scale(1) translateZ(0); opacity: 0.85; filter: drop-shadow(0 0 20px rgba(244, 208, 111, 0.4)); }
-  50% { transform: scale(1.04) translateZ(25px); opacity: 1; filter: drop-shadow(0 0 40px rgba(244, 208, 111, 0.8)); }
+  0%, 100% { transform: scale(1) translateZ(0); opacity: 0.85; filter: drop-shadow(0 0 12px rgba(184, 144, 42, 0.30)); }
+  50% { transform: scale(1.04) translateZ(25px); opacity: 1; filter: drop-shadow(0 0 24px rgba(184, 144, 42, 0.50)); }
 }
 
 .animate-orbit-3d-cw {
@@ -304,49 +328,14 @@ h1, h2, h3, h4, h5, h6 {
   transform-style: preserve-3d;
 }
 
-/* ========================================================
-   LIGHT THEME MODE (Spiritual Warm Ivory & Saffron Palette)
-   ======================================================== */
-html[data-theme="light"], html.light, html.light body {
-  background-color: #fcf9f2 !important;
-  color: #2b1f13 !important;
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
-
-html.light .spiritual-glass-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border-color: rgba(184, 134, 11, 0.25) !important;
-  box-shadow: 0 10px 30px -5px rgba(184, 134, 11, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
-}
-
-html.light header {
-  background: rgba(255, 252, 245, 0.95) !important;
-  border-bottom-color: rgba(184, 134, 11, 0.2) !important;
-}
-
-html.light .text-spiritual-ivory {
-  color: #26190e !important;
-}
-
-html.light .text-spiritual-ivory\/70,
-html.light .text-spiritual-ivory\/60,
-html.light .text-spiritual-ivory\/80 {
-  color: #5c432d !important;
-}
-
-html.light .bg-spiritual-navy,
-html.light .bg-spiritual-navy\/80,
-html.light .bg-spiritual-navy\/90,
-html.light .bg-spiritual-navy\/95 {
-  background-color: rgba(255, 252, 245, 0.96) !important;
-}
-
-html.light .bg-black\/60,
-html.light .bg-black\/70,
-html.light .bg-black\/80 {
-  background-color: rgba(245, 238, 222, 0.9) !important;
-}
-
-
-
-
-

@@ -44,20 +44,20 @@ export default function ArticleDetailPage() {
 
   if (!article) {
     return (
-      <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory flex items-center justify-center p-4">
-        <div className="text-center spiritual-glass-card rounded-3xl p-8 max-w-md border border-gold-500/30">
-          <FileText className="w-12 h-12 text-gold-400 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-spiritual-ivory font-spiritual-heading mb-2">
+      <main className="min-h-screen bg-surface text-ink flex items-center justify-center p-4">
+        <div className="text-center spiritual-glass-card rounded-3xl p-8 max-w-md border border-line">
+          <FileText className="w-12 h-12 text-gold-700 mx-auto mb-3" />
+          <h2 className="text-xl font-bold text-ink font-spiritual-heading mb-2">
             {language === "hi" ? "आलेख नहीं मिला" : "Article Not Found"}
           </h2>
-          <p className="text-xs text-spiritual-ivory/60 mb-6">
+          <p className="text-xs text-ink/60 mb-6">
             {language === "hi"
               ? "यह आलेख अभी प्रकाशित नहीं हुआ है या हटा दिया गया है।"
               : "The requested article is not available."}
           </p>
           <Link
             href="/articles"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gold-gradient text-spiritual-dark text-xs font-bold"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gold-gradient text-on-gold text-xs font-bold"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{language === "hi" ? "सभी लेखों पर लौटें" : "Return to Articles"}</span>
@@ -68,7 +68,7 @@ export default function ArticleDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+    <main className="min-h-screen bg-surface text-ink">
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
@@ -76,7 +76,7 @@ export default function ArticleDetailPage() {
         {/* Back Link */}
         <Link
           href="/articles"
-          className="inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-200 mb-6 font-semibold"
+          className="inline-flex items-center gap-1.5 text-xs text-gold-700 hover:text-gold-800 mb-6 font-semibold"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{language === "hi" ? "सभी लेखों पर लौटें" : "Back to Articles"}</span>
@@ -84,7 +84,7 @@ export default function ArticleDetailPage() {
 
         {/* Header */}
         <div className="space-y-4 mb-8">
-          <span className="px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-bold uppercase">
+          <span className="px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-bold uppercase">
             {article.category}
           </span>
 
@@ -92,14 +92,14 @@ export default function ArticleDetailPage() {
             {language === "hi" ? article.titleHi : article.titleEn}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs text-spiritual-ivory/60 pb-6 border-b border-gold-500/20">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-ink/60 pb-6 border-b border-line">
             <span className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-gold-400" />
+              <Calendar className="w-4 h-4 text-gold-700" />
               {formatSpiritualDate(article.publishedAt, language)}
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5">
-              <User className="w-4 h-4 text-gold-400" />
+              <User className="w-4 h-4 text-gold-700" />
               {article.author}
             </span>
           </div>
@@ -107,7 +107,7 @@ export default function ArticleDetailPage() {
 
         {/* Featured Image */}
         {article.featuredImage && (
-          <div className="relative aspect-video w-full rounded-3xl overflow-hidden border border-gold-500/30 mb-10 shadow-2xl bg-black">
+          <div className="relative aspect-video w-full rounded-3xl overflow-hidden border border-line mb-10 shadow-2xl bg-black">
             <Image
               src={article.featuredImage}
               alt={article.titleHi}
@@ -118,21 +118,21 @@ export default function ArticleDetailPage() {
         )}
 
         {/* Content Body */}
-        <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-gold-500/30 space-y-6 text-sm sm:text-base text-spiritual-ivory/90 leading-relaxed font-devanagari">
+        <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-line space-y-6 text-sm sm:text-base text-ink/90 leading-relaxed font-devanagari">
           <div className="whitespace-pre-line leading-relaxed space-y-4">
             {language === "hi" ? article.contentHi : article.contentEn}
           </div>
 
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
-            <div className="pt-6 border-t border-gold-500/20 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-spiritual-ivory/60 font-semibold mr-1">
+            <div className="pt-6 border-t border-line flex flex-wrap items-center gap-2">
+              <span className="text-xs text-ink/60 font-semibold mr-1">
                 टैग्स:
               </span>
               {article.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs"
+                  className="px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs"
                 >
                   #{tag}
                 </span>

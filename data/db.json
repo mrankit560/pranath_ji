@@ -11,13 +11,13 @@
       "category": "bitak_saheb",
       "language": "hi",
       "coverUrl": "/assets/hero-reference-2.jpg",
-      "pdfUrl": "https://xlgbujvloncifedimtcv.supabase.co/storage/v1/object/public/uploads/1787773594223-shri-bitak-saheb-authentic-edition.pdf",
+      "pdfUrl": "https://xlgbujvloncifedimtcv.supabase.co/storage/v1/object/public/uploads/1792579158996-shri-bitak-saheb-authentic-edition.pdf",
       "pages": 180,
       "bookBlogHi": "नये साधकों एवं स्वाध्याय प्रेमियों के लिए यह संक्षिप्त बीतक सार एक सरल माध्यम है जिससे वे महामति जी के जीवन दर्शन और त्याग को सरलता से समझ सकते हैं।",
       "bookBlogEn": "Ideal for daily study and seekers who wish to understand the divine leela in an accessible format.",
       "featured": false,
       "published": true,
-      "updatedAt": "2026-08-26T19:46:36.619Z"
+      "updatedAt": "2026-10-21T10:39:21.006Z"
     },
     {
       "id": "book-prakash-teeka",
@@ -36,7 +36,7 @@
       "bookBlogEn": "Illuminating the path of soul-awakening and devotion to the Supreme Being Aksharatit.",
       "featured": false,
       "published": true,
-      "updatedAt": "2026-08-26T19:46:36.620Z"
+      "updatedAt": "2026-10-21T10:39:21.012Z"
     },
     {
       "id": "book-nitya-niyam",
@@ -55,7 +55,7 @@
       "bookBlogEn": "Essential compilation of daily recitations and prayers for seekers.",
       "featured": false,
       "published": true,
-      "updatedAt": "2026-08-26T19:46:36.620Z"
+      "updatedAt": "2026-10-21T10:39:21.012Z"
     },
     {
       "id": "book-tartam-sar",
@@ -74,7 +74,7 @@
       "bookBlogEn": "This essential book compiles the key verses and divine wisdom of the 14 Granths bestowed by Mahamati Shri Prannath Ji.",
       "featured": true,
       "published": true,
-      "updatedAt": "2026-08-26T19:46:36.620Z"
+      "updatedAt": "2026-10-21T10:39:21.012Z"
     },
     {
       "id": "book-chitwani-sadhna",
@@ -93,7 +93,7 @@
       "bookBlogEn": "A foundational text for daily meditation, visualization of Paramdham, and cultivating inner tranquility.",
       "featured": true,
       "published": true,
-      "updatedAt": "2026-08-26T19:46:36.620Z"
+      "updatedAt": "2026-10-21T10:39:21.012Z"
     },
     {
       "id": "book-bitak-saheb",
@@ -112,7 +112,7 @@
       "bookBlogEn": "Shri Bitak Saheb is the most revered historical scripture of the Nijanand Sampradaya, detailing the divine awakening movement across India, culminating in the holy union at Panna Dham with Maharaja Chhatrasal.",
       "featured": true,
       "published": true,
-      "updatedAt": "2026-08-26T19:46:36.620Z"
+      "updatedAt": "2026-10-21T10:39:21.012Z"
     }
   ],
   "scriptures": [
@@ -131,6 +131,22 @@
     }
   ],
   "videos": [
+    {
+      "id": "vid-1",
+      "youtubeId": "dQw4w9WgXcQ",
+      "titleHi": "तारतम वाणी अमृत वर्षा — श्री रास ग्रन्थ रहस्य",
+      "titleEn": "Tartam Vani Discourse — Secrets of Shri Raas Granth",
+      "descriptionHi": "साढौली धाम से पूज्य संतों द्वारा रास ग्रन्थ के गूढ़ आध्यात्मिक भावार्थ का सरस विवेचन।",
+      "descriptionEn": "Profound spiritual discourse revealing the esoteric essence of Shri Raas Granth.",
+      "category": "satsang",
+      "speaker": "पूज्य संत वृंद, साढौली धाम",
+      "duration": "45:20",
+      "thumbnail": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&auto=format&fit=crop&q=80",
+      "featured": true,
+      "published": true,
+      "isLive": false,
+      "publishedAt": "2026-08-25"
+    },
     {
       "id": "vid-2",
       "youtubeId": "dQw4w9WgXcQ",
@@ -159,22 +175,6 @@
       "duration": "18:30",
       "thumbnail": "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=800&auto=format&fit=crop&q=80",
       "featured": false,
-      "published": true,
-      "isLive": false,
-      "publishedAt": "2026-08-25"
-    },
-    {
-      "id": "vid-1",
-      "youtubeId": "dQw4w9WgXcQ",
-      "titleHi": "तारतम वाणी अमृत वर्षा — श्री रास ग्रन्थ रहस्य",
-      "titleEn": "Tartam Vani Discourse — Secrets of Shri Raas Granth",
-      "descriptionHi": "साढौली धाम से पूज्य संतों द्वारा रास ग्रन्थ के गूढ़ आध्यात्मिक भावार्थ का सरस विवेचन।",
-      "descriptionEn": "Profound spiritual discourse revealing the esoteric essence of Shri Raas Granth.",
-      "category": "satsang",
-      "speaker": "पूज्य संत वृंद, साढौली धाम",
-      "duration": "45:20",
-      "thumbnail": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&auto=format&fit=crop&q=80",
-      "featured": true,
       "published": true,
       "isLive": false,
       "publishedAt": "2026-08-25"
@@ -210,7 +210,7 @@
     {
       "id": "event-2",
       "titleHi": "भव्य श्री कृष्ण जन्मोत्सव एवं तारतम ज्ञान महायज्ञ 2026",
-      "titleEn": "Monthly Special Satsang & Meditation Camp",
+      "titleEn": "Grand Sharad Purnima & Tartam Gyan Mahotsav",
       "descriptionHi": "साधकों के लिए अंतर्मुखी साधना, अष्ट प्रहर लीला चितवनी एवं तारतम वाणी के गूढ़ तत्वों पर विशेष विचार-विमर्श।",
       "descriptionEn": "Intensive spiritual retreat focusing on inward contemplation, Asht Prahar Leela, and philosophical reflection.",
       "startAt": "2026-11-15T09:00:00.000Z",
@@ -222,23 +222,6 @@
       "speaker": "साधना पीठ संत",
       "eventType": "meditation",
       "livestreamUrl": "",
-      "status": "upcoming"
-    },
-    {
-      "id": "event-1",
-      "titleHi": "भव्य श्री कृष्ण जन्माष्टमी 2026 (अद्यतन उत्सव)",
-      "titleEn": "Vani manthan and meditation",
-      "descriptionHi": "श्री निजानंद आश्रम साढौली धाम, हरिद्वार में तीन दिवसीय पावन आध्यात्मिक महोत्सव, जिसमें अखंड वाणी परायण, दिव्य सत्संग एवं भंडारा आयोजित होगा।",
-      "descriptionEn": "Three-day sacred spiritual festival at Shri Nijanand Ashram Sadhauli Dham, Haridwar featuring Tartam Vani recitation, discourse, and Mahaprasad.",
-      "startAt": "2026-11-20T09:00:00.000Z",
-      "endAt": "2026-11-25T18:00:00.000Z",
-      "hasSpecificTime": true,
-      "timeStr": "09:00 AM – 06:00 PM IST",
-      "location": "श्री निजानंद आश्रम गोंदर, करनाल",
-      "image": "",
-      "speaker": "",
-      "eventType": "satsang",
-      "livestreamUrl": "https://youtube.com/@sadhaulidham3424",
       "status": "upcoming"
     }
   ],
@@ -414,12 +397,10 @@
       "descriptionEn": "The principal sacred holy retreat in Haridwar, radiating divine Tartam Vani discourses, meditation sanctums, and selfless seva.",
       "location": "हरिद्वार, उत्तराखण्ड (Haridwar, Uttarakhand)",
       "mapUrl": "https://maps.app.goo.gl/n5oY9okf86WyuiKN9?g_st=com.google.maps.preview.copy",
-      "imageUrl": "/assets/sadhauli-dham-2.jpg",
+      "imageUrl": "https://maps.app.goo.gl/bfUdxPCCB8vw54fEA",
       "images": [
         "/assets/sadhauli-dham-2.jpg",
-        "/assets/sadhauli-dham-1.jpg",
-        "/assets/hero-reference-1.jpg",
-        "/assets/paramdham-mandala.png"
+        "https://maps.app.goo.gl/bfUdxPCCB8vw54fEA"
       ],
       "phone": "+91 99271 97390",
       "order": 1,
@@ -551,8 +532,9 @@
   "adminCredentials": {
     "username": "admin",
     "email": "admin@sadhaulidham.com",
-    "password": "admin123",
-    "updatedAt": "2026-08-25T15:57:07.771Z"
+    "password": "",
+    "updatedAt": "2026-08-25T15:57:07.771Z",
+    "note": "Password is no longer stored here. Set ADMIN_PASSWORD_HASH in the environment (see scripts/hash-admin-password.mjs)."
   },
-  "updatedAt": "2026-08-26T19:46:31.443Z"
+  "updatedAt": "2026-10-21T13:18:31.126Z"
 }

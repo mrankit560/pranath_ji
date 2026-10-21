@@ -153,21 +153,21 @@ export default function AdminAudioPage() {
     <div className="space-y-6 max-w-6xl">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-100 to-surface-2 border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <div className="text-xs font-bold text-emerald-300">
+            <div className="text-xs font-bold text-emerald-700">
               {isEn ? "Database Updated" : "डेटाबेस अपडेट"}
             </div>
-            <div className="text-xs text-spiritual-ivory font-medium">
+            <div className="text-xs text-ink font-medium">
               {toastMessage}
             </div>
           </div>
           <button
             onClick={() => setToastMessage(null)}
-            className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2"
+            className="p-1 rounded-lg hover:bg-white/10 text-emerald-700 ml-2"
           >
             <X className="w-4 h-4" />
           </button>
@@ -176,16 +176,16 @@ export default function AdminAudioPage() {
 
       {/* In-App Delete Confirmation Modal */}
       {deleteCandidate && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+        <div className="fixed inset-0 z-50 bg-scrim/55 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-surface-2 text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-700 flex items-center justify-center mx-auto border border-red-500/40">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">
+              <h3 className="text-lg font-bold text-ink mb-1">
                 {isEn ? "Delete Audio Track?" : "ऑडियो ट्रैक हटाएं?"}
               </h3>
-              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+              <p className="text-xs text-ink/70 leading-relaxed">
                 {isEn
                   ? `Are you sure you want to delete "${deleteCandidate.titleEn || deleteCandidate.titleHi}"?`
                   : `क्या आप वाकई "${deleteCandidate.titleHi}" को हटाना चाहते हैं?`}
@@ -202,7 +202,7 @@ export default function AdminAudioPage() {
               <button
                 type="button"
                 onClick={() => setDeleteCandidate(null)}
-                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+                className="px-5 py-2.5 rounded-xl bg-card border border-line text-ink/80 text-xs font-semibold hover:bg-white/5"
               >
                 {isEn ? "Cancel" : "रद्द करें"}
               </button>
@@ -211,12 +211,12 @@ export default function AdminAudioPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
+      <div className="flex items-center justify-between pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
             {isEn ? "Audio, Aarti & Vani Gayan CMS" : "ऑडियो, आरती एवं वाणी गायन CMS"}
           </h1>
-          <p className="text-xs text-spiritual-ivory/60">
+          <p className="text-xs text-ink/60">
             {isEn
               ? "Manage devotional bhajans, aarti tracks, and daily recitations for the global audio player"
               : "ग्लोबल ऑडियो प्लेयर में प्रसारित होने वाले भजनों, आरतियों और नित्य नियम का प्रबंधन"}
@@ -225,7 +225,7 @@ export default function AdminAudioPage() {
 
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -243,15 +243,15 @@ export default function AdminAudioPage() {
       {showAddForm && (
         <form
           onSubmit={handleAddAudio}
-          className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/40 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80"
+          className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-line space-y-4 animate-fade-in shadow-2xl bg-surface-2/80"
         >
-          <h2 className="text-base font-bold text-gold-300 font-spiritual-heading">
+          <h2 className="text-base font-bold text-gold-700 font-spiritual-heading">
             {isEn ? "Add New Audio Track / Bhajan" : "नया ऑडियो ट्रैक / आरती जोड़ें"}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Track Title (Hindi) *" : "ट्रैक का नाम (हिन्दी) *"}
               </label>
               <input
@@ -260,12 +260,12 @@ export default function AdminAudioPage() {
                 value={form.titleHi}
                 onChange={(e) => setForm({ ...form, titleHi: e.target.value })}
                 placeholder="उदा. साढौली धाम संध्या आरती"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Track Title (English)" : "ट्रैक का नाम (अंग्रेज़ी)"}
               </label>
               <input
@@ -273,20 +273,20 @@ export default function AdminAudioPage() {
                 value={form.titleEn}
                 onChange={(e) => setForm({ ...form, titleEn: e.target.value })}
                 placeholder="e.g. Sadhauli Dham Evening Aarti"
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Category *" : "श्रेणी *"}
               </label>
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value as AudioTrack["category"] })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               >
                 <option value="aarti">{isEn ? "Aarti & Stuti" : "आरती व स्तुति"}</option>
                 <option value="bhajan">{isEn ? "Devotional Bhajan" : "भजन"}</option>
@@ -296,32 +296,32 @@ export default function AdminAudioPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Singer / Artist" : "गायक / आश्रम वृंद"}
               </label>
               <input
                 type="text"
                 value={form.speaker}
                 onChange={(e) => setForm({ ...form, speaker: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">
+              <label className="block text-xs font-semibold text-gold-700 mb-1">
                 {isEn ? "Duration (MM:SS)" : "अवधि (उदा. 08:00)"}
               </label>
               <input
                 type="text"
                 value={form.duration}
                 onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">
+            <label className="block text-xs font-semibold text-gold-700 mb-1">
               {isEn ? "Audio Stream URL or Upload Audio File *" : "ऑडियो लिंक या फ़ाइल अपलोड करें (MP3/OGG) *"}
             </label>
             <div className="flex gap-2">
@@ -331,9 +331,9 @@ export default function AdminAudioPage() {
                 value={form.audioUrl}
                 onChange={(e) => setForm({ ...form, audioUrl: e.target.value })}
                 placeholder="https://.../aarti.mp3"
-                className="flex-1 p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="flex-1 p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
-              <label className={`cursor-pointer px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform flex-shrink-0 ${isUploadingAudio ? "opacity-60 pointer-events-none" : ""}`}>
+              <label className={`cursor-pointer px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform flex-shrink-0 ${isUploadingAudio ? "opacity-60 pointer-events-none" : ""}`}>
                 <Upload className={`w-3.5 h-3.5 ${isUploadingAudio ? "animate-spin" : ""}`} />
                 <span>{isUploadingAudio ? (isEn ? "Uploading..." : "अपलोड हो रहा है...") : (isEn ? "Upload Audio" : "ऑडियो अपलोड")}</span>
                 <input
@@ -351,7 +351,7 @@ export default function AdminAudioPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none flex items-center gap-1.5"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50 disabled:pointer-events-none flex items-center gap-1.5"
             >
               <Music className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>
@@ -368,7 +368,7 @@ export default function AdminAudioPage() {
               type="button"
               disabled={isSaving}
               onClick={() => setShowAddForm(false)}
-              className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70 hover:bg-white/5 disabled:opacity-50"
+              className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70 hover:bg-white/5 disabled:opacity-50"
             >
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
@@ -377,10 +377,10 @@ export default function AdminAudioPage() {
       )}
 
       {/* Audio Table */}
-      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
+      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-line shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+          <table className="w-full text-left text-xs text-ink">
+            <thead className="bg-surface-sunk border-b border-line text-gold-700 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Play" : "प्ले"}</th>
                 <th className="p-3.5">{isEn ? "Title" : "शीर्षक"}</th>
@@ -397,27 +397,27 @@ export default function AdminAudioPage() {
                     <button
                       type="button"
                       onClick={() => playTrack(t)}
-                      className="w-8 h-8 rounded-full bg-gold-gradient text-spiritual-dark flex items-center justify-center shadow-gold-sm hover:scale-110 transition-transform"
+                      className="w-8 h-8 rounded-full bg-gold-gradient text-on-gold flex items-center justify-center shadow-gold-sm hover:scale-110 transition-transform"
                     >
                       <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                     </button>
                   </td>
-                  <td className="p-3.5 font-bold text-spiritual-ivory">
+                  <td className="p-3.5 font-bold text-ink">
                     {isEn ? t.titleEn || t.titleHi : t.titleHi}
                   </td>
-                  <td className="p-3.5 text-spiritual-ivory/70">{t.speaker}</td>
+                  <td className="p-3.5 text-ink/70">{t.speaker}</td>
                   <td className="p-3.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] uppercase font-bold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-700 text-[10px] uppercase font-bold">
                       {t.category}
                     </span>
                   </td>
-                  <td className="p-3.5 font-mono text-gold-300">{t.duration}</td>
+                  <td className="p-3.5 font-mono text-gold-700">{t.duration}</td>
                   <td className="p-3.5 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         type="button"
                         onClick={() => handleEdit(t)}
-                        className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                        className="p-1.5 rounded-lg border border-line text-gold-700 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Edit" : "संपादित करें"}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
@@ -425,7 +425,7 @@ export default function AdminAudioPage() {
                       <button
                         type="button"
                         onClick={() => setDeleteCandidate(t)}
-                        className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                        className="p-1.5 rounded-lg border border-red-500/30 text-red-700 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                         title={isEn ? "Delete" : "हटाएं"}
                       >
                         <Trash2 className="w-3.5 h-3.5" />

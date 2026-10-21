@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "श्री बीतक साहेब, तारतम वाणी के १४ ग्रन्थ एवं साधना पुस्तकें ऑनलाइन पढ़ें और डाउनलोड करें।",
     url: "https://sadhaulidham.com/library",
-    images: [{ url: "https://sadhaulidham.com/assets/hero-reference-1.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://sadhaulidham.com/assets/sadhauli-banner.jpg", width: 1200, height: 630 }],
   },
 };
 

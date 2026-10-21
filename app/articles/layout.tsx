@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "साढौली धाम शोध पीठ द्वारा प्रकाशित आध्यात्मिक, दार्शनिक एवं ऐतिहासिक आलेख।",
     url: "https://sadhaulidham.com/articles",
-    images: [{ url: "https://sadhaulidham.com/assets/hero-reference-1.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://sadhaulidham.com/assets/sadhauli-banner.jpg", width: 1200, height: 630 }],
   },
 };
 

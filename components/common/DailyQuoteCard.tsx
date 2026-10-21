@@ -19,7 +19,7 @@ export const DailyQuoteCard: React.FC = () => {
 
   return (
     <div className="relative max-w-4xl mx-auto px-4 py-8">
-      <div className="relative overflow-hidden rounded-3xl border border-gold-400/40 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-card to-black/90 p-6 sm:p-10 text-center shadow-2xl backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-3xl border border-gold-400/40 bg-gradient-to-b from-surface-2/90 via-card to-surface-sunk p-6 sm:p-10 text-center shadow-2xl backdrop-blur-xl">
         {/* Soft Radial Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -30,13 +30,13 @@ export const DailyQuoteCard: React.FC = () => {
         <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-gold-400/60" />
 
         {/* Tag */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-          <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-semibold uppercase tracking-wider mb-4">
+          <Sparkles className="w-3.5 h-3.5 text-gold-700" />
           {t("quote.title", "आज का आध्यात्मिक विचार")}
         </div>
 
         {/* Large Quote Mark */}
-        <Quote className="w-10 h-10 mx-auto text-gold-400/40 mb-2 rotate-180" />
+        <Quote className="w-10 h-10 mx-auto text-gold-700/40 mb-2 rotate-180" />
 
         {/* Quote Text */}
         <blockquote className="text-xl sm:text-2xl md:text-3xl font-spiritual-heading font-medium text-gold-gradient leading-relaxed max-w-2xl mx-auto mb-4">
@@ -45,7 +45,7 @@ export const DailyQuoteCard: React.FC = () => {
 
         {/* Attribution */}
         <div className="flex flex-col items-center justify-center">
-          <cite className="not-italic text-sm font-semibold text-spiritual-ivory/90 font-devanagari">
+          <cite className="not-italic text-sm font-semibold text-ink/90 font-devanagari">
             {language === "hi" ? thought.authorHi : thought.authorEn}
           </cite>
           <span className="text-xs text-gold-muted/80 mt-0.5">

@@ -272,15 +272,15 @@ export default function AdminMeditationPage() {
     <div className="space-y-6 max-w-6xl">
       {/* Toast Notification Alert */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950 to-spiritual-dark border-2 border-emerald-400 shadow-2xl animate-bounce-short">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400">
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-100 to-surface-2 border-2 border-emerald-400 shadow-2xl animate-bounce-short">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center border border-emerald-400">
+            <CheckCircle className="w-5 h-5 text-emerald-700" />
           </div>
           <div>
-            <div className="text-xs font-bold text-emerald-300">{isEn ? "Database Updated" : "डेटाबेस अपडेट"}</div>
-            <div className="text-xs text-spiritual-ivory font-medium">{toastMessage}</div>
+            <div className="text-xs font-bold text-emerald-700">{isEn ? "Database Updated" : "डेटाबेस अपडेट"}</div>
+            <div className="text-xs text-ink font-medium">{toastMessage}</div>
           </div>
-          <button onClick={() => setToastMessage(null)} className="p-1 rounded-lg hover:bg-white/10 text-emerald-300 ml-2">
+          <button onClick={() => setToastMessage(null)} className="p-1 rounded-lg hover:bg-white/10 text-emerald-700 ml-2">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -288,14 +288,14 @@ export default function AdminMeditationPage() {
 
       {/* In-App Delete Confirmation Modal */}
       {deleteCandidate && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-spiritual-navy text-center space-y-5">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto border border-red-500/40">
+        <div className="fixed inset-0 z-50 bg-scrim/55 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="spiritual-glass-card rounded-3xl max-w-md w-full p-6 border-2 border-red-500/50 shadow-2xl bg-surface-2 text-center space-y-5">
+            <div className="w-12 h-12 rounded-full bg-red-500/20 text-red-700 flex items-center justify-center mx-auto border border-red-500/40">
               <Trash2 className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-spiritual-ivory mb-1">{isEn ? "Delete Item?" : "सामग्री हटाएं?"}</h3>
-              <p className="text-xs text-spiritual-ivory/70 leading-relaxed">
+              <h3 className="text-lg font-bold text-ink mb-1">{isEn ? "Delete Item?" : "सामग्री हटाएं?"}</h3>
+              <p className="text-xs text-ink/70 leading-relaxed">
                 {isEn ? "Are you sure you want to permanently delete this item from the database?" : "क्या आप वाकई इसे डेटाबेस से हटाना चाहते हैं?"}
               </p>
             </div>
@@ -310,7 +310,7 @@ export default function AdminMeditationPage() {
               <button
                 type="button"
                 onClick={() => setDeleteCandidate(null)}
-                className="px-5 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/30 text-spiritual-ivory/80 text-xs font-semibold hover:bg-white/5"
+                className="px-5 py-2.5 rounded-xl bg-card border border-line text-ink/80 text-xs font-semibold hover:bg-white/5"
               >
                 {isEn ? "Cancel" : "रद्द करें"}
               </button>
@@ -320,12 +320,12 @@ export default function AdminMeditationPage() {
       )}
 
       {/* Header Banner */}
-      <div className="flex items-center justify-between pb-4 border-b border-gold-500/20">
+      <div className="flex items-center justify-between pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
             {isEn ? "Meditation & Chitwani CMS" : "चितवनी ध्यान साधना प्रबंधन"}
           </h1>
-          <p className="text-xs text-spiritual-ivory/60">
+          <p className="text-xs text-ink/60">
             {isEn
               ? "Manage Chitwani Articles (how-to blogs), Chitwani Books (PDFs), and Chitwani Video Guides"
               : "चितवनी लेख (विधि ब्लॉग), चितवनी ग्रन्थ (PDFs) एवं वीडियो मार्गदर्शिका का संपूर्ण प्रबंधन"}
@@ -337,7 +337,7 @@ export default function AdminMeditationPage() {
             setEditingId(null);
             setShowAddForm(!showAddForm);
           }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
         >
           <Plus className="w-4 h-4" />
           <span>
@@ -353,7 +353,7 @@ export default function AdminMeditationPage() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-2 border-b border-gold-500/20 pb-3">
+      <div className="flex gap-2 border-b border-line pb-3">
         <button
           onClick={() => {
             setActiveTab("articles");
@@ -362,8 +362,8 @@ export default function AdminMeditationPage() {
           }}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === "articles"
-              ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-              : "bg-spiritual-card text-spiritual-ivory/70 hover:text-gold-300"
+              ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+              : "bg-card text-ink/70 hover:text-gold-700"
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -378,8 +378,8 @@ export default function AdminMeditationPage() {
           }}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === "books"
-              ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-              : "bg-spiritual-card text-spiritual-ivory/70 hover:text-gold-300"
+              ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+              : "bg-card text-ink/70 hover:text-gold-700"
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -394,8 +394,8 @@ export default function AdminMeditationPage() {
           }}
           className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
             activeTab === "videos"
-              ? "bg-gold-gradient text-spiritual-dark shadow-gold-sm"
-              : "bg-spiritual-card text-spiritual-ivory/70 hover:text-gold-300"
+              ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+              : "bg-card text-ink/70 hover:text-gold-700"
           }`}
         >
           <Play className="w-4 h-4" />
@@ -405,49 +405,49 @@ export default function AdminMeditationPage() {
 
       {/* Dynamic Tab Form */}
       {showAddForm && activeTab === "articles" && (
-        <form onSubmit={handleSaveArticle} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80">
-          <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider">{isEn ? "Chitwani Article Details" : "चितवनी लेख विवरण"}</h2>
+        <form onSubmit={handleSaveArticle} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-surface-2/80">
+          <h2 className="text-sm font-bold text-gold-700 uppercase tracking-wider">{isEn ? "Chitwani Article Details" : "चितवनी लेख विवरण"}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Title (Hindi) *" : "शीर्षक (हिन्दी) *"}</label>
+              <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Title (Hindi) *" : "शीर्षक (हिन्दी) *"}</label>
               <input
                 type="text"
                 required
                 value={articleForm.titleHi}
                 onChange={(e) => setArticleForm({ ...articleForm, titleHi: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Title (English)" : "शीर्षक (अंग्रेज़ी)"}</label>
+              <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Title (English)" : "शीर्षक (अंग्रेज़ी)"}</label>
               <input
                 type="text"
                 value={articleForm.titleEn}
                 onChange={(e) => setArticleForm({ ...articleForm, titleEn: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Content (Hindi) *" : "लेख सामग्री (हिन्दी) *"}</label>
+            <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Content (Hindi) *" : "लेख सामग्री (हिन्दी) *"}</label>
             <textarea
               required
               rows={6}
               value={articleForm.contentHi}
               onChange={(e) => setArticleForm({ ...articleForm, contentHi: e.target.value })}
-              className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+              className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
             />
           </div>
           <div className="flex items-center gap-3 pt-2">
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
             >
               <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>{isSaving ? "Saving..." : isEn ? "Save Article" : "लेख सेव करें"}</span>
             </button>
-            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70">
+            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70">
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
           </div>
@@ -455,30 +455,30 @@ export default function AdminMeditationPage() {
       )}
 
       {showAddForm && activeTab === "books" && (
-        <form onSubmit={handleSaveBook} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80">
-          <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider">{isEn ? "Chitwani Book Details" : "चितवनी ग्रन्थ विवरण"}</h2>
+        <form onSubmit={handleSaveBook} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-surface-2/80">
+          <h2 className="text-sm font-bold text-gold-700 uppercase tracking-wider">{isEn ? "Chitwani Book Details" : "चितवनी ग्रन्थ विवरण"}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Book Title (Hindi) *" : "ग्रन्थ नाम (हिन्दी) *"}</label>
+              <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Book Title (Hindi) *" : "ग्रन्थ नाम (हिन्दी) *"}</label>
               <input
                 type="text"
                 required
                 value={bookForm.titleHi}
                 onChange={(e) => setBookForm({ ...bookForm, titleHi: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Book Title (English)" : "ग्रन्थ नाम (अंग्रेज़ी)"}</label>
+              <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Book Title (English)" : "ग्रन्थ नाम (अंग्रेज़ी)"}</label>
               <input
                 type="text"
                 value={bookForm.titleEn}
                 onChange={(e) => setBookForm({ ...bookForm, titleEn: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none"
               />
             </div>
           </div>
-          <div className="p-4 rounded-2xl bg-black/40 border border-gold-500/20 space-y-4">
+          <div className="p-4 rounded-2xl bg-surface-sunk/70 border border-line space-y-4">
             <ImageUploadField
               label={isEn ? "Cover Photo *" : "कवर फोटो *"}
               value={bookForm.coverUrl}
@@ -494,12 +494,12 @@ export default function AdminMeditationPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
             >
               <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>{isSaving ? "Saving..." : isEn ? "Save Book" : "ग्रन्थ सेव करें"}</span>
             </button>
-            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70">
+            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70">
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
           </div>
@@ -507,27 +507,27 @@ export default function AdminMeditationPage() {
       )}
 
       {showAddForm && activeTab === "videos" && (
-        <form onSubmit={handleSaveVideo} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-spiritual-navy/80">
-          <h2 className="text-sm font-bold text-gold-300 uppercase tracking-wider">{isEn ? "Chitwani Video Guide Details" : "चितवनी वीडियो विवरण"}</h2>
+        <form onSubmit={handleSaveVideo} className="spiritual-glass-card rounded-2xl p-6 border-2 border-gold-400/50 space-y-4 animate-fade-in shadow-2xl bg-surface-2/80">
+          <h2 className="text-sm font-bold text-gold-700 uppercase tracking-wider">{isEn ? "Chitwani Video Guide Details" : "चितवनी वीडियो विवरण"}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "Video Title (Hindi) *" : "वीडियो शीर्षक (हिन्दी) *"}</label>
+              <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Video Title (Hindi) *" : "वीडियो शीर्षक (हिन्दी) *"}</label>
               <input
                 type="text"
                 required
                 value={videoForm.titleHi}
                 onChange={(e) => setVideoForm({ ...videoForm, titleHi: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-devanagari"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gold-300 mb-1">{isEn ? "YouTube Video ID *" : "यूट्यूब वीडियो ID *"}</label>
+              <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "YouTube Video ID *" : "यूट्यूब वीडियो ID *"}</label>
               <input
                 type="text"
                 required
                 value={videoForm.youtubeId}
                 onChange={(e) => setVideoForm({ ...videoForm, youtubeId: e.target.value })}
-                className="w-full p-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-xs text-spiritual-ivory focus:border-gold-400 focus:outline-none font-mono"
+                className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-mono"
               />
             </div>
           </div>
@@ -535,12 +535,12 @@ export default function AdminMeditationPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm flex items-center gap-1.5 hover:scale-105 transition-transform disabled:opacity-50"
             >
               <Save className={`w-4 h-4 ${isSaving ? "animate-spin" : ""}`} />
               <span>{isSaving ? "Saving..." : isEn ? "Save Video" : "वीडियो सेव करें"}</span>
             </button>
-            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-spiritual-card border border-gold-500/20 text-xs text-spiritual-ivory/70">
+            <button type="button" disabled={isSaving} onClick={() => setShowAddForm(false)} className="px-4 py-2.5 rounded-xl bg-card border border-line text-xs text-ink/70">
               {isEn ? "Cancel" : "रद्द करें"}
             </button>
           </div>
@@ -548,10 +548,10 @@ export default function AdminMeditationPage() {
       )}
 
       {/* Tab Lists */}
-      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-gold-500/30 shadow-xl">
+      <div className="spiritual-glass-card rounded-2xl overflow-hidden border border-line shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-spiritual-ivory">
-            <thead className="bg-black/70 border-b border-gold-500/30 text-gold-300 uppercase tracking-wider font-semibold">
+          <table className="w-full text-left text-xs text-ink">
+            <thead className="bg-surface-sunk border-b border-line text-gold-700 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">{isEn ? "Title" : "शीर्षक"}</th>
                 <th className="p-3.5">{isEn ? "Author / Speaker" : "लेखक / वक्ता"}</th>
@@ -562,14 +562,14 @@ export default function AdminMeditationPage() {
               {activeTab === "articles" &&
                 articles.map((a) => (
                   <tr key={a.id} className="hover:bg-gold-500/5 transition-colors">
-                    <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? a.titleEn || a.titleHi : a.titleHi}</td>
-                    <td className="p-3.5 text-spiritual-ivory/70">{a.author}</td>
+                    <td className="p-3.5 font-bold text-ink">{isEn ? a.titleEn || a.titleHi : a.titleHi}</td>
+                    <td className="p-3.5 text-ink/70">{a.author}</td>
                     <td className="p-3.5 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           onClick={() => handleEditArticle(a)}
-                          className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg border border-line text-gold-700 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
                           title={isEn ? "Edit" : "संपादित करें"}
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -577,7 +577,7 @@ export default function AdminMeditationPage() {
                         <button
                           type="button"
                           onClick={() => setDeleteCandidate({ type: "article", item: a })}
-                          className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg border border-red-500/30 text-red-700 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                           title={isEn ? "Delete" : "हटाएं"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -590,14 +590,14 @@ export default function AdminMeditationPage() {
               {activeTab === "books" &&
                 books.map((b) => (
                   <tr key={b.id} className="hover:bg-gold-500/5 transition-colors">
-                    <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? b.titleEn || b.titleHi : b.titleHi}</td>
-                    <td className="p-3.5 text-spiritual-ivory/70">{b.author}</td>
+                    <td className="p-3.5 font-bold text-ink">{isEn ? b.titleEn || b.titleHi : b.titleHi}</td>
+                    <td className="p-3.5 text-ink/70">{b.author}</td>
                     <td className="p-3.5 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           onClick={() => handleEditBook(b)}
-                          className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg border border-line text-gold-700 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
                           title={isEn ? "Edit" : "संपादित करें"}
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -605,7 +605,7 @@ export default function AdminMeditationPage() {
                         <button
                           type="button"
                           onClick={() => setDeleteCandidate({ type: "book", item: b })}
-                          className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg border border-red-500/30 text-red-700 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                           title={isEn ? "Delete" : "हटाएं"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -618,14 +618,14 @@ export default function AdminMeditationPage() {
               {activeTab === "videos" &&
                 videos.map((v) => (
                   <tr key={v.id} className="hover:bg-gold-500/5 transition-colors">
-                    <td className="p-3.5 font-bold text-spiritual-ivory">{isEn ? v.titleEn || v.titleHi : v.titleHi}</td>
-                    <td className="p-3.5 text-spiritual-ivory/70">{v.speaker}</td>
+                    <td className="p-3.5 font-bold text-ink">{isEn ? v.titleEn || v.titleHi : v.titleHi}</td>
+                    <td className="p-3.5 text-ink/70">{v.speaker}</td>
                     <td className="p-3.5 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           onClick={() => handleEditVideo(v)}
-                          className="p-1.5 rounded-lg border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg border border-line text-gold-700 hover:bg-gold-500/20 hover:scale-105 transition-all shadow-sm"
                           title={isEn ? "Edit" : "संपादित करें"}
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -633,7 +633,7 @@ export default function AdminMeditationPage() {
                         <button
                           type="button"
                           onClick={() => setDeleteCandidate({ type: "video", item: v })}
-                          className="p-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
+                          className="p-1.5 rounded-lg border border-red-500/30 text-red-700 hover:bg-red-500/20 hover:scale-105 transition-all shadow-sm"
                           title={isEn ? "Delete" : "हटाएं"}
                         >
                           <Trash2 className="w-3.5 h-3.5" />

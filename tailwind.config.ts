@@ -9,51 +9,79 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        spiritual: {
-          navy: "#0D0A08",
-          dark: "#080605",
-          midnight: "#111827",
-          maroon: "#641E2A",
-          emerald: "#285C45",
-          purple: "#51325F",
-          ivory: "#F7F1E3",
-          card: "rgba(18, 14, 12, 0.85)",
-          glass: "rgba(13, 10, 8, 0.88)",
+        /* ---- GROUND: marble white, not aged paper ----
+           The previous warm ivory sat at the same temperature as the gold
+           accent, so gold read as dullness rather than light. A cool ground
+           gives the warm accents something to shine against. */
+        surface: {
+          DEFAULT: "#FDFDFC", // marble white page
+          2: "#FFFFFF",       // cards sit slightly brighter than the page
+          sunk: "#F1F5F6",    // cool stone wash - the alternating band
         },
+        card: "#FFFFFF",
+        field: "#FFFFFF",
+        scrim: "#201C17",     // deliberate dark veil over photos / modals
+        line: "#E4E4DE",      // neutral hairline: reads on warm and cool alike
+
+        /* ---- INK ---- */
+        ink: {
+          DEFAULT: "#2B2620",
+          soft: "#675E54",
+        },
+        "on-gold": "#2B2620",
+
+        /* ---- KUMKUM: the heading colour. Headings were gold and read as
+           washed out; sindoor red is the devotional register and carries
+           far better contrast on a pale ground. ---- */
+        kumkum: {
+          DEFAULT: "#B81F27",
+          dk: "#7E1319",
+        },
+        leaf: "#2E6B52",
+
+        /* ---- GOLD: demoted to decoration - rules, icons, small labels.
+           700/800 are the only shades used for text. ---- */
         gold: {
-          50: "#FFFDF7",
-          100: "#FFF9E6",
-          200: "#FFF0BF",
-          300: "#FCE28D",
-          400: "#F4D06F",
-          500: "#D4AF37",
-          600: "#C6922E",
-          700: "#9E711E",
-          800: "#704F15",
-          900: "#4A330B",
-          muted: "#D8C79A",
-          antique: "#D4AF37",
-          bright: "#F4D06F",
-          warm: "#C6922E",
+          50: "#FFFDF6",
+          100: "#FAF1DA",
+          200: "#F2E3B8",
+          300: "#E3C878",
+          400: "#CFAE4F",
+          500: "#B98F23",
+          600: "#9D7A1C",
+          700: "#876612",
+          800: "#6B500E",
+          900: "#4A360B",
+          muted: "#7A6436",
+          antique: "#B98F23",
+          bright: "#E3C878",
+          warm: "#9D7A1C",
+        },
+
+        /* decorative tints behind ink */
+        spiritual: {
+          maroon: "#F3CBCF",
+          emerald: "#C4E2D3",
+          purple: "#D8CDE8",
         },
       },
       fontFamily: {
-        devanagari: ["Noto Sans Devanagari", "var(--font-noto-devanagari)", "sans-serif"],
-        heading: ["Rozha One", "Cinzel", "var(--font-cinzel)", "serif"],
-        sans: ["Inter", "Poppins", "var(--font-inter)", "sans-serif"],
+        devanagari: ["Mukta", "Noto Sans Devanagari", "sans-serif"],
+        heading: ["Tiro Devanagari Hindi", "Cormorant Garamond", "Georgia", "serif"],
+        sans: ["Mukta", "Inter", "system-ui", "sans-serif"],
       },
       backgroundImage: {
-        "gold-gradient": "linear-gradient(135deg, #F4D06F 0%, #D4AF37 50%, #C6922E 100%)",
-        "gold-radial": "radial-gradient(circle at center, rgba(244, 208, 111, 0.22) 0%, rgba(13, 10, 8, 0) 70%)",
-        "spiritual-vignette": "radial-gradient(circle at center, transparent 30%, rgba(8, 6, 5, 0.85) 100%)",
-        "card-glass": "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(212, 175, 55, 0.03) 100%)",
-        "gold-border-gradient": "linear-gradient(135deg, rgba(244, 208, 111, 0.6) 0%, rgba(212, 175, 55, 0.2) 50%, rgba(198, 146, 46, 0.6) 100%)",
+        "gold-gradient": "linear-gradient(135deg, #E3C878 0%, #B98F23 55%, #9D7A1C 100%)",
+        "gold-radial": "radial-gradient(circle at center, rgba(185, 143, 35, 0.12) 0%, rgba(253, 253, 252, 0) 70%)",
+        "spiritual-vignette": "radial-gradient(circle at center, transparent 35%, rgba(184, 144, 42, 0.10) 100%)",
+        "card-glass": "linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(250, 243, 228, 0.88) 100%)",
+        "gold-border-gradient": "linear-gradient(135deg, rgba(184, 144, 42, 0.55) 0%, rgba(184, 144, 42, 0.18) 50%, rgba(156, 120, 33, 0.55) 100%)",
       },
       boxShadow: {
-        "gold-sm": "0 0 10px rgba(212, 175, 55, 0.2)",
-        "gold-md": "0 0 20px rgba(212, 175, 55, 0.35)",
-        "gold-lg": "0 0 35px rgba(244, 208, 111, 0.45)",
-        "gold-inset": "inset 0 0 15px rgba(212, 175, 55, 0.2)",
+        "gold-sm": "0 2px 10px rgba(38, 40, 42, 0.055)",
+        "gold-md": "0 14px 36px rgba(38, 40, 42, 0.10)",
+        "gold-lg": "0 30px 70px rgba(38, 40, 42, 0.17)",
+        "gold-inset": "inset 0 1px 3px rgba(38, 40, 42, 0.06)",
       },
       keyframes: {
         float: {

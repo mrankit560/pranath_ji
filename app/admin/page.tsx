@@ -69,49 +69,49 @@ export default function AdminDashboardPage() {
       label: isEn ? "Shree Prannath Ji Articles" : "श्री प्राणनाथ जी लेख",
       count: prannathArticles.length,
       icon: Sparkles,
-      color: "text-gold-400",
+      color: "text-gold-700",
       href: "/admin/prannath-ji",
     },
     {
       label: isEn ? "Aadhyatmik Gyan Blogs" : "आध्यात्मिक ज्ञान ब्लॉग",
       count: adhyatmikBlogs.length,
       icon: Compass,
-      color: "text-amber-400",
+      color: "text-amber-700",
       href: "/admin/adhyatmik-gyan",
     },
     {
       label: isEn ? "PDF Library Books" : "PDF ग्रंथालय पुस्तकें",
       count: books.length,
       icon: BookOpen,
-      color: "text-emerald-400",
+      color: "text-emerald-700",
       href: "/admin/books",
     },
     {
       label: isEn ? "Media Centre Videos" : "मीडिया केंद्र वीडियो",
       count: videos.length,
       icon: Video,
-      color: "text-red-400",
+      color: "text-red-700",
       href: "/admin/videos",
     },
     {
       label: isEn ? "Chitwani Meditation Items" : "चितवनी ध्यान सामग्री",
       count: chitwaniBooks.length,
       icon: Flower2,
-      color: "text-purple-400",
+      color: "text-purple-700",
       href: "/admin/meditation",
     },
     {
       label: isEn ? "Festival Events" : "आश्रम कार्यक्रम व उत्सव",
       count: events.length,
       icon: Calendar,
-      color: "text-blue-400",
+      color: "text-blue-700",
       href: "/admin/events",
     },
     {
       label: isEn ? "Holy Dham Locations" : "पवित्र धाम स्थान",
       count: dhams.length,
       icon: MapPin,
-      color: "text-yellow-400",
+      color: "text-yellow-700",
       href: "/admin/dhams",
     },
   ];
@@ -119,16 +119,16 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 max-w-6xl">
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gold-500/20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-line">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-[10px] font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-3 h-3 text-gold-400" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-[10px] font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-3 h-3 text-gold-700" />
             {isEn ? "Paramdham CMS Control Center" : "प्रशासनिक नियंत्रण कक्ष (परमधाम CMS)"}
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading">
             {isEn ? "Sadhauli Dham Paramdham Dashboard" : "साढौली धाम परमधाम डैशबोर्ड"}
           </h1>
-          <p className="text-xs sm:text-sm text-spiritual-ivory/60">
+          <p className="text-xs sm:text-sm text-ink/60">
             {isEn
               ? "Full freedom to manage blogs, books, videos, dhams, and festival events."
               : "वेबसाइट के सभी सेक्शन्स, ब्लॉग, पुस्तकें, वीडियो, धाम एवं कार्यक्रमों का संपूर्ण प्रबंधन।"}
@@ -139,14 +139,14 @@ export default function AdminDashboardPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/admin/prannath-ji"
-            className="px-3.5 py-2 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+            className="px-3.5 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
           >
             <Plus className="w-4 h-4" />
             <span>{isEn ? "New Article" : "नया लेख"}</span>
           </Link>
           <Link
             href="/admin/books"
-            className="px-3.5 py-2 rounded-xl bg-spiritual-card border border-gold-500/30 text-gold-300 text-xs font-semibold hover:bg-gold-500/20 flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/20 flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             <span>{isEn ? "New PDF Book" : "नई PDF पुस्तक"}</span>
@@ -162,15 +162,15 @@ export default function AdminDashboardPage() {
             <Link
               key={card.href}
               href={card.href}
-              className="spiritual-glass-card rounded-2xl p-4 sm:p-5 border border-gold-500/25 flex flex-col justify-between hover:border-gold-400/60 transition-all group"
+              className="spiritual-glass-card rounded-2xl p-4 sm:p-5 border border-line flex flex-col justify-between hover:border-gold-400/60 transition-all group"
             >
               <div className="flex items-center justify-between mb-2">
                 <Icon className={`w-5 h-5 ${card.color}`} />
-                <span className="text-xl sm:text-2xl font-extrabold text-spiritual-ivory font-mono group-hover:text-gold-300 transition-colors">
+                <span className="text-xl sm:text-2xl font-extrabold text-ink font-mono group-hover:text-gold-700 transition-colors">
                   {card.count}
                 </span>
               </div>
-              <span className="text-xs text-spiritual-ivory/70 font-medium">
+              <span className="text-xs text-ink/70 font-medium">
                 {card.label}
               </span>
             </Link>
@@ -179,16 +179,16 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Home About Us Quick Jump Card */}
-      <div className="spiritual-glass-card rounded-3xl p-6 border-2 border-gold-400/40 bg-gradient-to-r from-spiritual-navy via-[#1c140e] to-spiritual-navy flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="spiritual-glass-card rounded-3xl p-6 border-2 border-gold-400/40 bg-gradient-to-r from-surface-2 via-surface-sunk to-surface-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-300 text-[10px] font-bold uppercase">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-700 text-[10px] font-bold uppercase">
             <Info className="w-3 h-3" />
             <span>{isEn ? "Home Page Section" : "होम पेज सेक्शन"}</span>
           </div>
           <h3 className="text-base sm:text-lg font-bold text-gold-gradient font-spiritual-heading">
             {isEn ? "Edit Home 'About Us' & Message Content" : "होम पेज 'हमारे बारे में' व संदेश संपादित करें"}
           </h3>
-          <p className="text-xs text-spiritual-ivory/70 max-w-xl">
+          <p className="text-xs text-ink/70 max-w-xl">
             {isEn
               ? "Modify the exact verbatim text for Ashram Introduction, Purpose of Life, 6 Questions, Services, and Message."
               : "आश्रम परिचय, मानव जीवन का उद्देश्य, ६ प्रश्न, हमारी सेवाएँ एवं संदेश को आसानी से संपादित करें।"}
@@ -197,7 +197,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/about"
-          className="px-5 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform flex-shrink-0"
+          className="px-5 py-2.5 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold inline-flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform flex-shrink-0"
         >
           <span>{isEn ? "Edit About Content" : "सामग्री संपादित करें"}</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -205,33 +205,33 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Daily Spiritual Thought Editor */}
-      <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-gold-500/30">
+      <div className="spiritual-glass-card rounded-3xl p-6 sm:p-8 border border-line">
         <h2 className="text-lg font-bold text-gold-gradient font-spiritual-heading mb-4">
           {isEn ? "Today's Spiritual Thought (Home Card)" : "आज का आध्यात्मिक विचार (होमपेज कार्ड)"}
         </h2>
 
         <form onSubmit={handleSaveThought} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">
+            <label className="block text-xs font-semibold text-gold-700 mb-1">
               {isEn ? "Spiritual Thought (Hindi)" : "आध्यात्मिक विचार (हिन्दी)"}
             </label>
             <textarea
               rows={2}
               value={editQuoteHi}
               onChange={(e) => setEditQuoteHi(e.target.value)}
-              className="w-full p-3 rounded-xl bg-black/60 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory focus:border-gold-400 focus:outline-none resize-none font-devanagari"
+              className="w-full p-3 rounded-xl bg-field border border-line text-xs sm:text-sm text-ink focus:border-gold-400 focus:outline-none resize-none font-devanagari"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gold-300 mb-1">
+            <label className="block text-xs font-semibold text-gold-700 mb-1">
               {isEn ? "Spiritual Thought (English)" : "आध्यात्मिक विचार (English)"}
             </label>
             <textarea
               rows={2}
               value={editQuoteEn}
               onChange={(e) => setEditQuoteEn(e.target.value)}
-              className="w-full p-3 rounded-xl bg-black/60 border border-gold-500/30 text-xs sm:text-sm text-spiritual-ivory focus:border-gold-400 focus:outline-none resize-none font-sans"
+              className="w-full p-3 rounded-xl bg-field border border-line text-xs sm:text-sm text-ink focus:border-gold-400 focus:outline-none resize-none font-sans"
             />
           </div>
 
@@ -239,7 +239,7 @@ export default function AdminDashboardPage() {
             <button
               type="submit"
               disabled={isSavingThought}
-              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-spiritual-dark font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform disabled:opacity-50"
             >
               {isSavingThought
                 ? isEn
@@ -250,7 +250,7 @@ export default function AdminDashboardPage() {
                 : "विचार अपडेट करें"}
             </button>
             {isSavedQuote && (
-              <span className="text-xs text-emerald-400 font-semibold animate-fade-in">
+              <span className="text-xs text-emerald-700 font-semibold animate-fade-in">
                 ✓ {isEn ? "Updated successfully!" : "सफलतापूर्वक अपडेट किया गया!"}
               </span>
             )}

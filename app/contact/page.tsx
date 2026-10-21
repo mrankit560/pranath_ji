@@ -55,15 +55,15 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-spiritual-dark text-spiritual-ivory">
+    <main className="min-h-screen bg-surface text-ink">
       <Navbar onOpenSearch={() => setIsSearchOpen(true)} />
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Banner */}
-      <section className="pt-32 pb-12 bg-gradient-to-b from-spiritual-navy/90 via-spiritual-navy/50 to-transparent border-b border-gold-500/20 text-center">
+      <section className="pt-32 pb-12 bg-gradient-to-b from-surface-2/90 via-surface-2/50 to-transparent border-b border-line text-center">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-semibold uppercase tracking-wider mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-gold-700" />
             {language === "hi" ? "आश्रम संपर्क" : "Contact & Location"}
           </div>
 
@@ -86,23 +86,23 @@ export default function ContactPage() {
           {/* Left Column: Contact Cards & Info */}
           <div className="lg:col-span-5 space-y-6">
             {/* Address Card */}
-            <div className="spiritual-glass-card rounded-2xl p-6 border border-gold-500/30">
+            <div className="spiritual-glass-card rounded-2xl p-6 border border-line">
               <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-300 flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-700 flex-shrink-0">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-gold-300 uppercase tracking-wider mb-1">
+                  <h3 className="text-sm font-bold text-gold-700 uppercase tracking-wider mb-1">
                     {language === "hi" ? "आश्रम का पता" : "Ashram Address"}
                   </h3>
-                  <p className="text-sm text-spiritual-ivory/90 leading-relaxed">
+                  <p className="text-sm text-ink/90 leading-relaxed">
                     {language === "hi" ? settings.addressHi : settings.addressEn}
                   </p>
                   <a
                     href={settings.googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-200 mt-2 font-semibold"
+                    className="inline-flex items-center gap-1.5 text-xs text-gold-700 hover:text-gold-800 mt-2 font-semibold"
                   >
                     <span>Google Maps पर देखें</span>
                     <ExternalLink className="w-3 h-3" />
@@ -112,35 +112,35 @@ export default function ContactPage() {
             </div>
 
             {/* Phone & Email Card */}
-            <div className="spiritual-glass-card rounded-2xl p-6 border border-gold-500/30 space-y-4">
+            <div className="spiritual-glass-card rounded-2xl p-6 border border-line space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-700 flex-shrink-0">
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+                  <h3 className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
                     {language === "hi" ? "फोन नंबर" : "Phone"}
                   </h3>
                   <a
                     href={`tel:${settings.phone}`}
-                    className="text-base font-bold text-spiritual-ivory hover:text-gold-300 transition-colors"
+                    className="text-base font-bold text-ink hover:text-gold-700 transition-colors"
                   >
                     {settings.phone}
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 pt-3 border-t border-gold-500/20">
-                <div className="w-11 h-11 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300 flex-shrink-0">
+              <div className="flex items-center gap-4 pt-3 border-t border-line">
+                <div className="w-11 h-11 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-700 flex-shrink-0">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-bold text-purple-300 uppercase tracking-wider">
+                  <h3 className="text-xs font-bold text-purple-700 uppercase tracking-wider">
                     {language === "hi" ? "ईमेल" : "Email"}
                   </h3>
                   <a
                     href={`mailto:${settings.email}`}
-                    className="text-sm font-semibold text-spiritual-ivory hover:text-gold-300 transition-colors"
+                    className="text-sm font-semibold text-ink hover:text-gold-700 transition-colors"
                   >
                     {settings.email}
                   </a>
@@ -149,16 +149,16 @@ export default function ContactPage() {
             </div>
 
             {/* YouTube & Social Card */}
-            <div className="spiritual-glass-card rounded-2xl p-6 border border-gold-500/30">
+            <div className="spiritual-glass-card rounded-2xl p-6 border border-line">
               <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-400 flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-700 flex-shrink-0">
                   <Youtube className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-red-400 uppercase tracking-wider mb-1">
+                  <h3 className="text-sm font-bold text-red-700 uppercase tracking-wider mb-1">
                     {language === "hi" ? "आधिकारिक यूट्यूब चैनल" : "Official YouTube"}
                   </h3>
-                  <p className="text-xs text-spiritual-ivory/70 mb-2">
+                  <p className="text-xs text-ink/70 mb-2">
                     साढौली धाम से दैनिक लाइव सत्संग एवं वाणी गायन से जुड़ें।
                   </p>
                   <a
@@ -175,7 +175,7 @@ export default function ContactPage() {
             </div>
 
             {/* Google Map Embed Frame */}
-            <div className="rounded-2xl overflow-hidden border border-gold-500/30 h-60 bg-black">
+            <div className="rounded-2xl overflow-hidden border border-line h-60 bg-black">
               <iframe
                 title="Sadhauli Dham Map"
                 src="https://maps.google.com/maps?q=Shri%20Nijanand%20Ashram%20Sadhauli%20Dham%20Haridwar%20Uttarakhand&t=&z=15&ie=UTF8&iwloc=&output=embed"
@@ -190,20 +190,20 @@ export default function ContactPage() {
 
           {/* Right Column: Contact Form */}
           <div className="lg:col-span-7">
-            <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-gold-500/30">
+            <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-line">
               <h2 className="text-xl sm:text-2xl font-bold text-gold-gradient font-spiritual-heading mb-2 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-gold-400" />
+                <MessageSquare className="w-5 h-5 text-gold-700" />
                 <span>{language === "hi" ? "हमें संदेश भेजें" : "Send Us a Message"}</span>
               </h2>
-              <p className="text-xs sm:text-sm text-spiritual-ivory/70 mb-6">
+              <p className="text-xs sm:text-sm text-ink/70 mb-6">
                 {language === "hi"
                   ? "सत्संग, ग्रन्थ अध्ययन या आश्रम कार्यक्रमों के विषय में जानकारी प्राप्त करने हेतु संपर्क करें।"
                   : "Reach out for inquiries regarding Satsangs, scriptures, or ashram activities."}
               </p>
 
               {isSuccess && (
-                <div className="mb-6 p-4 rounded-2xl bg-emerald-500/15 border border-emerald-400/50 flex items-center gap-3 text-emerald-300 text-xs sm:text-sm animate-fade-in">
-                  <CheckCircle className="w-5 h-5 flex-shrink-0 text-emerald-400" />
+                <div className="mb-6 p-4 rounded-2xl bg-emerald-500/15 border border-emerald-400/50 flex items-center gap-3 text-emerald-700 text-xs sm:text-sm animate-fade-in">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0 text-emerald-700" />
                   <span>{t("contact.success", "आपका संदेश सफलतापूर्वक प्राप्त हो गया है।")}</span>
                 </div>
               )}
@@ -212,7 +212,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Name */}
                   <div>
-                    <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-gold-700 mb-1.5">
                       {t("contact.name", "आपका नाम")} *
                     </label>
                     <input
@@ -221,13 +221,13 @@ export default function ContactPage() {
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       placeholder={t("contact.namePlaceholder", "उदा. रमेश शर्मा")}
-                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-spiritual-ivory placeholder-spiritual-ivory/40 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-ink placeholder-ink/55 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
                     />
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-gold-700 mb-1.5">
                       {t("contact.emailLabel", "ईमेल पता")} *
                     </label>
                     <input
@@ -236,7 +236,7 @@ export default function ContactPage() {
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       placeholder={t("contact.emailPlaceholder", "name@example.com")}
-                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-spiritual-ivory placeholder-spiritual-ivory/40 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-ink placeholder-ink/55 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
                     />
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Phone */}
                   <div>
-                    <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-gold-700 mb-1.5">
                       {t("contact.phoneLabel", "मोबाइल नंबर (वैकल्पिक)")}
                     </label>
                     <input
@@ -252,13 +252,13 @@ export default function ContactPage() {
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       placeholder="+91 98765 43210"
-                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-spiritual-ivory placeholder-spiritual-ivory/40 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-ink placeholder-ink/55 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
                     />
                   </div>
 
                   {/* Subject */}
                   <div>
-                    <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-gold-700 mb-1.5">
                       {t("contact.subject", "विषय")} *
                     </label>
                     <input
@@ -267,14 +267,14 @@ export default function ContactPage() {
                       value={form.subject}
                       onChange={(e) => setForm({ ...form, subject: e.target.value })}
                       placeholder={t("contact.subjectPlaceholder", "सत्संग जानकारी / प्रश्न")}
-                      className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-spiritual-ivory placeholder-spiritual-ivory/40 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-ink placeholder-ink/55 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors"
                     />
                   </div>
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-gold-700 mb-1.5">
                     {t("contact.message", "आपका संदेश")} *
                   </label>
                   <textarea
@@ -283,15 +283,15 @@ export default function ContactPage() {
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     placeholder={t("contact.messagePlaceholder", "कृपया अपना संदेश या जिज्ञासा यहाँ लिखें...")}
-                    className="w-full px-4 py-2.5 rounded-xl bg-black/60 border border-gold-500/30 text-spiritual-ivory placeholder-spiritual-ivory/40 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-field border border-line text-ink placeholder-ink/55 text-xs sm:text-sm focus:outline-none focus:border-gold-400 transition-colors resize-none"
                   />
                 </div>
 
                 {/* Privacy Assurance Note */}
-                <div className="p-3.5 rounded-2xl bg-black/40 border border-gold-500/20 text-[11px] sm:text-xs text-spiritual-ivory/70 leading-relaxed flex items-start gap-2.5">
-                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-2xl bg-surface-sunk/70 border border-line text-[11px] sm:text-xs text-ink/70 leading-relaxed flex items-start gap-2.5">
+                  <CheckCircle className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
                   <p>
-                    <strong className="text-gold-300 font-semibold">
+                    <strong className="text-gold-700 font-semibold">
                       {language === "en" ? "Privacy Assurance:" : "गोपनीयता आश्वासन:"}
                     </strong>{" "}
                     {language === "en"
@@ -304,7 +304,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto px-8 py-3 rounded-full bg-gold-gradient text-spiritual-dark font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-gold-sm hover:scale-105 transition-all disabled:opacity-50"
+                  className="w-full sm:w-auto px-8 py-3 rounded-full bg-gold-gradient text-on-gold font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-gold-sm hover:scale-105 transition-all disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                   <span>

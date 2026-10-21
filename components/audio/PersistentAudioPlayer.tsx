@@ -59,15 +59,15 @@ export const PersistentAudioPlayer: React.FC = () => {
       {/* Playlist Drawer */}
       {showPlaylist && (
         <div className="max-w-4xl mx-auto mb-2 px-4">
-          <div className="bg-spiritual-navy/95 border border-gold-500/40 rounded-2xl p-4 backdrop-blur-2xl shadow-2xl max-h-64 overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-gold-500/20 mb-3">
-              <span className="text-sm font-bold text-gold-300 flex items-center gap-2">
+          <div className="bg-surface-2/95 border border-line rounded-2xl p-4 backdrop-blur-2xl shadow-2xl max-h-64 overflow-y-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-line mb-3">
+              <span className="text-sm font-bold text-gold-700 flex items-center gap-2">
                 <ListMusic className="w-4 h-4" />
                 {t("audio.playlist", "प्लेलिस्ट")} ({playlist.length})
               </span>
               <button
                 onClick={() => setShowPlaylist(false)}
-                className="text-spiritual-ivory/60 hover:text-gold-300 p-1"
+                className="text-ink/60 hover:text-gold-700 p-1"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -81,8 +81,8 @@ export const PersistentAudioPlayer: React.FC = () => {
                     onClick={() => playTrack(track)}
                     className={`w-full text-left p-2.5 rounded-xl text-xs flex items-center justify-between transition-colors ${
                       isSelected
-                        ? "bg-gold-500/20 text-gold-300 font-bold border border-gold-400/40"
-                        : "text-spiritual-ivory/80 hover:bg-gold-500/10"
+                        ? "bg-gold-500/20 text-gold-700 font-bold border border-gold-400/40"
+                        : "text-ink/80 hover:bg-gold-500/10"
                     }`}
                   >
                     <div className="flex items-center gap-3 truncate">
@@ -101,7 +101,7 @@ export const PersistentAudioPlayer: React.FC = () => {
       )}
 
       {/* Main Player Bar */}
-      <div className="bg-spiritual-navy/95 border-t border-gold-500/40 backdrop-blur-2xl px-4 py-2.5 shadow-2xl shadow-black/80">
+      <div className="bg-surface-2/95 border-t border-line backdrop-blur-2xl px-4 py-2.5 shadow-2xl shadow-gold-900/15/80">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4">
           {/* Track Info */}
           <div className="flex items-center gap-3 w-full md:w-1/3 min-w-0">
@@ -115,10 +115,10 @@ export const PersistentAudioPlayer: React.FC = () => {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs sm:text-sm font-bold text-gold-200 truncate">
+              <div className="text-xs sm:text-sm font-bold text-gold-800 truncate">
                 {language === "hi" ? currentTrack.titleHi : currentTrack.titleEn}
               </div>
-              <div className="text-[10px] sm:text-xs text-spiritual-ivory/60 truncate">
+              <div className="text-[10px] sm:text-xs text-ink/60 truncate">
                 {currentTrack.speaker || t("audio.nowPlaying", "अब बज रहा है")}
               </div>
             </div>
@@ -130,7 +130,7 @@ export const PersistentAudioPlayer: React.FC = () => {
             <div className="flex items-center gap-4 mb-1">
               <button
                 onClick={prevTrack}
-                className="p-1.5 text-spiritual-ivory/70 hover:text-gold-300 transition-colors"
+                className="p-1.5 text-ink/70 hover:text-gold-700 transition-colors"
                 aria-label="Previous Track"
               >
                 <SkipBack className="w-4 h-4" />
@@ -138,7 +138,7 @@ export const PersistentAudioPlayer: React.FC = () => {
 
               <button
                 onClick={togglePlay}
-                className="w-9 h-9 rounded-full bg-gold-gradient text-spiritual-dark flex items-center justify-center shadow-gold-sm hover:scale-105 transition-transform"
+                className="w-9 h-9 rounded-full bg-gold-gradient text-on-gold flex items-center justify-center shadow-gold-sm hover:scale-105 transition-transform"
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
@@ -150,7 +150,7 @@ export const PersistentAudioPlayer: React.FC = () => {
 
               <button
                 onClick={nextTrack}
-                className="p-1.5 text-spiritual-ivory/70 hover:text-gold-300 transition-colors"
+                className="p-1.5 text-ink/70 hover:text-gold-700 transition-colors"
                 aria-label="Next Track"
               >
                 <SkipForward className="w-4 h-4" />
@@ -159,7 +159,7 @@ export const PersistentAudioPlayer: React.FC = () => {
 
             {/* Scrubber */}
             <div className="w-full flex items-center gap-2">
-              <span className="text-[10px] text-spiritual-ivory/60 font-mono w-8 text-right">
+              <span className="text-[10px] text-ink/60 font-mono w-8 text-right">
                 {formatTime(currentTime)}
               </span>
               <input
@@ -168,9 +168,9 @@ export const PersistentAudioPlayer: React.FC = () => {
                 max={duration || 100}
                 value={currentTime}
                 onChange={handleSeekChange}
-                className="w-full h-1 bg-gold-950/60 rounded-lg appearance-none cursor-pointer accent-gold-400"
+                className="w-full h-1 bg-gold-200/60 rounded-lg appearance-none cursor-pointer accent-gold-400"
               />
-              <span className="text-[10px] text-spiritual-ivory/60 font-mono w-8">
+              <span className="text-[10px] text-ink/60 font-mono w-8">
                 {formatTime(duration)}
               </span>
             </div>
@@ -182,10 +182,10 @@ export const PersistentAudioPlayer: React.FC = () => {
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setVolume(volume > 0 ? 0 : 0.85)}
-                className="text-spiritual-ivory/70 hover:text-gold-300"
+                className="text-ink/70 hover:text-gold-700"
               >
                 {volume === 0 ? (
-                  <VolumeX className="w-4 h-4 text-red-400" />
+                  <VolumeX className="w-4 h-4 text-red-700" />
                 ) : (
                   <Volume2 className="w-4 h-4" />
                 )}
@@ -197,7 +197,7 @@ export const PersistentAudioPlayer: React.FC = () => {
                 step={0.05}
                 value={volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="w-16 h-1 bg-gold-950/60 rounded-lg appearance-none cursor-pointer accent-gold-400"
+                className="w-16 h-1 bg-gold-200/60 rounded-lg appearance-none cursor-pointer accent-gold-400"
               />
             </div>
 
@@ -206,8 +206,8 @@ export const PersistentAudioPlayer: React.FC = () => {
               onClick={() => setShowPlaylist(!showPlaylist)}
               className={`p-1.5 rounded-lg border transition-colors ${
                 showPlaylist
-                  ? "bg-gold-500/20 text-gold-300 border-gold-400/50"
-                  : "text-spiritual-ivory/70 border-gold-500/20 hover:text-gold-300"
+                  ? "bg-gold-500/20 text-gold-700 border-gold-400/50"
+                  : "text-ink/70 border-line hover:text-gold-700"
               }`}
               title={t("audio.playlist", "प्लेलिस्ट")}
             >
@@ -217,7 +217,7 @@ export const PersistentAudioPlayer: React.FC = () => {
             {/* Close */}
             <button
               onClick={closePlayer}
-              className="p-1.5 text-spiritual-ivory/50 hover:text-red-400 transition-colors"
+              className="p-1.5 text-ink/60 hover:text-red-700 transition-colors"
               title="Close Player"
             >
               <X className="w-4 h-4" />

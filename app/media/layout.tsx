@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description:
       "साढौली धाम से दैनिक सत्संग, अमृतवाणी प्रवचन एवं आधिकारिक यूट्यूब चैनल के माध्यम से दिव्य दर्शन।",
     url: "https://sadhaulidham.com/media",
-    images: [{ url: "https://sadhaulidham.com/assets/hero-reference-2.jpg", width: 1200, height: 630 }],
+    images: [{ url: "https://sadhaulidham.com/assets/sadhauli-banner.jpg", width: 1200, height: 630 }],
   },
 };
 

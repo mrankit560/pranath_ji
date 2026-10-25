@@ -1,6 +1,6 @@
 /**
  * Cloudflare Native Bindings Accessor
- * Provides unified access to Cloudflare KV and R2 bindings across edge runtimes and local mock fallbacks.
+ * Provides unified access to Cloudflare KV and R2 bindings across OpenNext and Cloudflare Workers runtimes.
  */
 
 export interface CloudflareKV {
@@ -17,37 +17,58 @@ export interface CloudflareR2 {
   list(options?: any): Promise<any>;
 }
 
+/** Retrieve the Cloudflare execution environment context */
+export function getCloudflareEnv(): any {
+  if (typeof globalThis === "undefined") return null;
+  const g = globalThis as any;
+
+  // 1. OpenNext symbol-based context (Symbol.for("__cloudflare-context__"))
+  try {
+    const ctxSymbol = Symbol.for("__cloudflare-context__");
+    const ctx = g[ctxSymbol];
+    if (ctx && ctx.env) return ctx.env;
+  } catch {}
+
+  // 2. OpenNext direct context properties
+  if (g.__cloudflare_context__?.env) return g.__cloudflare_context__.env;
+  if (g.__cf_env__) return g.__cf_env__;
+  if (g.__ENV__) return g.__ENV__;
+  if (g.env) return g.env;
+
+  // 3. Process environment (if mapped)
+  if (typeof process !== "undefined" && (process as any)?.env) {
+    const p = (process as any).env;
+    if (p.PARAMDHAM_R2 || p.PARAMDHAM_KV) return p;
+  }
+
+  return g;
+}
+
 export function getCloudflareKV(): CloudflareKV | null {
   try {
-    if (typeof globalThis !== "undefined") {
-      const g = globalThis as any;
-      if (g.PARAMDHAM_KV) return g.PARAMDHAM_KV;
-      if (g.DATA_STORE) return g.DATA_STORE;
-      if (g.PARAMDHAM_DB) return g.PARAMDHAM_DB;
-      if (g.__ENV__?.PARAMDHAM_KV) return g.__ENV__.PARAMDHAM_KV;
-      if (g.env?.PARAMDHAM_KV) return g.env.PARAMDHAM_KV;
-    }
-    if (typeof process !== "undefined" && (process as any).env) {
-      const p = (process as any).env;
-      if (p.PARAMDHAM_KV && typeof p.PARAMDHAM_KV.get === "function") return p.PARAMDHAM_KV;
-      if (p.DATA_STORE && typeof p.DATA_STORE.get === "function") return p.DATA_STORE;
-    }
+    const env = getCloudflareEnv();
+    if (!env) return null;
+    const kv =
+      env.PARAMDHAM_KV ||
+      env.DATA_STORE ||
+      env.PARAMDHAM_DB ||
+      env.KV;
+    if (kv && typeof kv.get === "function") return kv;
   } catch {}
   return null;
 }
 
 export function getCloudflareR2(): CloudflareR2 | null {
   try {
-    if (typeof globalThis !== "undefined") {
-      const g = globalThis as any;
-      if (g.PARAMDHAM_R2) return g.PARAMDHAM_R2;
-      if (g.__ENV__?.PARAMDHAM_R2) return g.__ENV__.PARAMDHAM_R2;
-      if (g.env?.PARAMDHAM_R2) return g.env.PARAMDHAM_R2;
-    }
-    if (typeof process !== "undefined" && (process as any).env) {
-      const p = (process as any).env;
-      if (p.PARAMDHAM_R2 && typeof p.PARAMDHAM_R2.put === "function") return p.PARAMDHAM_R2;
-    }
+    const env = getCloudflareEnv();
+    if (!env) return null;
+    const r2 =
+      env.PARAMDHAM_R2 ||
+      env["sadhauli-dham-uploads"] ||
+      env.R2 ||
+      env.UPLOADS_BUCKET ||
+      env.BUCKET;
+    if (r2 && typeof r2.put === "function") return r2;
   } catch {}
   return null;
 }

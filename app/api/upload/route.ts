@@ -47,25 +47,27 @@ export async function POST(req: NextRequest) {
     const filename = `${timestamp}-${baseName}${extension}`;
 
     let uploadedUrl = "";
+    let r2ErrorDetails = "";
 
     // 1. Primary for Cloudflare: Cloudflare R2 Bucket
     const r2 = getCloudflareR2();
     if (r2) {
       try {
-        await r2.put(filename, buffer, {
+        await r2.put(filename, bytes, {
           httpMetadata: {
             contentType: file.type || (filename.endsWith(".pdf") ? "application/pdf" : "application/octet-stream"),
           },
         });
         uploadedUrl = `/api/uploads/${filename}`;
         console.log(`[Upload API] Successfully saved ${filename} to Cloudflare R2: ${uploadedUrl}`);
-      } catch (r2Err) {
+      } catch (r2Err: any) {
+        r2ErrorDetails = r2Err?.message || String(r2Err);
         console.warn("[Upload API] Cloudflare R2 upload error:", r2Err);
       }
     }
 
-    // 1. Primary: Upload directly to Supabase Storage 'uploads' bucket
-    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+    // 2. Primary: Upload directly to Supabase Storage 'uploads' bucket
+    if (!uploadedUrl && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
       try {
         const uploadEndpoint = `${SUPABASE_URL}/storage/v1/object/uploads/${filename}`;
         const res = await fetch(uploadEndpoint, {
@@ -113,7 +115,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Failed to persist file to cloud storage or local disk.",
+          error: r2ErrorDetails
+            ? `R2 upload failed: ${r2ErrorDetails}`
+            : "Failed to persist file to cloud storage. Please verify PARAMDHAM_R2 binding in Cloudflare.",
         },
         { status: 500 }
       );

@@ -32,6 +32,7 @@ import {
   initialChitwaniBooks,
   initialChitwaniVideos,
 } from "./seedData";
+import { getCloudflareKV } from "@/lib/cloudflare/bindings";
 
 const defaultAdminCredentials: AdminCredentials = {
   username: "admin",
@@ -46,15 +47,31 @@ type Listener = () => void;
 export const SSR_STATE_ID = "__sadhauli_state__";
 
 /**
- * JSON for the root layout to embed so the client can hydrate from exactly what
+ * Serializes the database snapshot so the client can hydrate from the exact data
  * the server rendered. Credentials are stripped - this payload is public.
  */
-export function serializeSsrState(): string {
-  const snap = getServerDatabaseSnapshot();
+export function serializeSsrState(customSnap?: any): string {
+  const snap = customSnap || getServerDatabaseSnapshot();
   if (!snap) return "null";
   const { adminCredentials, ...safe } = snap;
   // escape "<" so a value containing "</script>" cannot break out of the tag
   return JSON.stringify(safe).replace(/</g, "\\u003c");
+}
+
+export async function getLiveDatabaseSnapshot(): Promise<any> {
+  // 1. In Cloudflare Workers runtime: read from KV binding directly
+  const kv = getCloudflareKV();
+  if (kv) {
+    try {
+      const liveData = await kv.get("paramdham_portal_data", "json");
+      if (liveData) return liveData;
+    } catch (err) {
+      console.warn("[Store SSR] Failed to read from Cloudflare KV:", err);
+    }
+  }
+
+  // 2. In Node runtime: read local disk data/db.json
+  return getServerDatabaseSnapshot();
 }
 
 function getServerDatabaseSnapshot(): any {

@@ -5,7 +5,7 @@ import { AudioProvider } from "@/lib/audio/AudioContext";
 import { LanguageWelcomeModal } from "@/components/header/LanguageWelcomeModal";
 import { PersistentAudioPlayer } from "@/components/audio/PersistentAudioPlayer";
 import { StoreHydrator } from "@/components/common/StoreHydrator";
-import { SSR_STATE_ID, serializeSsrState } from "@/lib/data/store";
+import { SSR_STATE_ID, serializeSsrState, getLiveDatabaseSnapshot } from "@/lib/data/store";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sadhaulidham.com"),
@@ -59,11 +59,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const ssrState = await getLiveDatabaseSnapshot();
+
   return (
     <html lang="hi">
       <body className="bg-surface text-ink antialiased">
@@ -72,7 +74,7 @@ export default function RootLayout({
         <script
           id={SSR_STATE_ID}
           type="application/json"
-          dangerouslySetInnerHTML={{ __html: serializeSsrState() }}
+          dangerouslySetInnerHTML={{ __html: serializeSsrState(ssrState) }}
         />
         <StoreHydrator />
         <I18nProvider>

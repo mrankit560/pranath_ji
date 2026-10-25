@@ -9,5 +9,17 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "PARAMDHAM_KV",
+      "id": "PARAMDHAM_KV"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PARAMDHAM_R2",
+      "bucket_name": "pranath-uploads"
+    }
+  ]
 }

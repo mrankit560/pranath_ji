@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { getCloudflareR2 } from "@/lib/cloudflare/bindings";
 import path from "path";
 import { SUPABASE_URL } from "@/lib/supabase/client";
 
@@ -48,6 +48,22 @@ export async function POST(req: NextRequest) {
 
     let uploadedUrl = "";
 
+    // 1. Primary for Cloudflare: Cloudflare R2 Bucket
+    const r2 = getCloudflareR2();
+    if (r2) {
+      try {
+        await r2.put(filename, buffer, {
+          httpMetadata: {
+            contentType: file.type || (filename.endsWith(".pdf") ? "application/pdf" : "application/octet-stream"),
+          },
+        });
+        uploadedUrl = `/api/uploads/${filename}`;
+        console.log(`[Upload API] Successfully saved ${filename} to Cloudflare R2: ${uploadedUrl}`);
+      } catch (r2Err) {
+        console.warn("[Upload API] Cloudflare R2 upload error:", r2Err);
+      }
+    }
+
     // 1. Primary: Upload directly to Supabase Storage 'uploads' bucket
     if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
       try {
@@ -75,18 +91,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Local disk fallback / local copy (when filesystem is writable in Node environment)
-    try {
-      const uploadsDir = path.join(process.cwd(), "public", "uploads");
-      await mkdir(uploadsDir, { recursive: true });
-      const filePath = path.join(uploadsDir, filename);
-      await writeFile(filePath, buffer);
-      if (!uploadedUrl) {
+    // 3. Local disk fallback / local copy (when filesystem is writable in Node environment)
+    if (!uploadedUrl && typeof window === "undefined") {
+      try {
+        const nodeRequire = eval("require");
+        const fs = nodeRequire("fs");
+        const uploadsDir = path.join(process.cwd(), "public", "uploads");
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        const filePath = path.join(uploadsDir, filename);
+        fs.writeFileSync(filePath, buffer);
         uploadedUrl = `/uploads/${filename}`;
         console.log(`[Upload API] Successfully saved ${filename} to local disk: ${uploadedUrl}`);
+      } catch (fsErr) {
+        console.warn("[Upload API] Local disk write skipped or failed:", fsErr);
       }
-    } catch (fsErr) {
-      console.warn("[Upload API] Local disk write skipped or failed:", fsErr);
     }
 
     if (!uploadedUrl) {

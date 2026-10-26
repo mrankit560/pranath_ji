@@ -7,6 +7,7 @@ import { Navbar } from "@/components/header/Navbar";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { DailyQuoteCard } from "@/components/common/DailyQuoteCard";
 import { HolyDhamsSection } from "@/components/home/HolyDhamsSection";
+import { SpiritualCentersSection } from "@/components/home/SpiritualCentersSection";
 import { SatguruSection } from "@/components/home/SatguruSection";
 import { SectionDivider } from "@/components/common/SectionDivider";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
@@ -84,7 +85,7 @@ export default function HomePage() {
             {/* Quick Action Buttons */}
             <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2.5 flex-shrink-0 w-full lg:w-auto">
               <a
-                href="#holy-dhams"
+                href="#spiritual-centers"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-gradient text-on-gold font-bold text-xs shadow-gold-sm hover:scale-105 transition-transform"
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -109,9 +110,14 @@ export default function HomePage() {
       {/* 3. Satguru Maharaj Ji */}
       <SatguruSection />
 
+      <SectionDivider symbol="🪷" />
+
+      {/* 4. Our Spiritual Wisdom & Seva Centers (3 Centers established by Maharaj Ji) */}
+      <SpiritualCentersSection />
+
       <SectionDivider symbol="🏛️" />
 
-      {/* 4. Holy Dham Section (Different Locations & Multi-Photo Galleries) */}
+      {/* 5. Sacred Supreme Dhams of Nijanand Sampradaya (Panna, Jamnagar, Surat) */}
       <div id="holy-dhams">
         <HolyDhamsSection />
       </div>

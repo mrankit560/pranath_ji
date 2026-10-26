@@ -193,7 +193,7 @@ export const HeroSection: React.FC = () => {
                   <FileText className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-gold-700 transition-colors">
-                  {language === "hi" ? "PDF लाइब्रेरी" : "PDF Library"}
+                  {language === "hi" ? "साहित्य" : "Sahitya"}
                 </span>
                 <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "ई-बुक्स" : "E-Books"}

@@ -58,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       icon: Home,
     },
     {
-      name: isEn ? "Shree Prannath Ji" : "श्री प्राणनाथ जी",
+      name: isEn ? "Divya Brahm Vani" : "दिव्य ब्रह्मवाणी",
       href: "/prannath-ji",
       icon: Sparkles,
     },
@@ -68,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       icon: Compass,
     },
     {
-      name: isEn ? "PDF Library" : "PDF लाइब्रेरी",
+      name: isEn ? "Sahitya" : "साहित्य",
       href: "/library",
       icon: BookOpen,
       subItems: [

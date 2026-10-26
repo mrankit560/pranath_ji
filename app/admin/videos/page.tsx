@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { Video } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Edit3, Video as VideoIcon, Play, Radio, Sparkles, CheckCircle, X } from "lucide-react";
+import { Plus, Trash2, Edit3, Video as VideoIcon, Play, Radio, Sparkles, CheckCircle, X, ExternalLink } from "lucide-react";
 
 export default function AdminVideosPage() {
   const { language } = useI18n();
@@ -219,33 +220,44 @@ export default function AdminVideosPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between pb-4 border-b border-line">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "Satsang & Video Discourses CMS" : "सत्संग वीडियो एवं लाइव स्ट्रीम प्रबंधन"}
+            {isEn ? "Media Centre CMS (Videos & Satsang)" : "मीडिया केंद्र प्रबंधन (वीडियो एवं सत्संग)"}
           </h1>
           <p className="text-xs text-ink/60 mt-1">
             {isEn
-              ? "Add YouTube discourses, categorize Vani recitations, and configure live stream links"
+              ? "Add YouTube discourses, categorize Vani recitations, and configure live broadcasts"
               : "यूट्यूब सत्संग लिंक जोड़ें, वाणी गायन व प्रवचन श्रेणीबद्ध करें तथा लाइव प्रसारण प्रबंधित करें"}
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
-        >
-          <Plus className="w-4 h-4" />
-          <span>
-            {showAddForm
-              ? isEn
-                ? "Close Form"
-                : "फॉर्म बंद करें"
-              : isEn
-              ? "Add YouTube Video"
-              : "नया वीडियो जोड़ें"}
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/media"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View Media Centre on Site ↗" : "मीडिया केंद्र देखें ↗"}</span>
+          </Link>
+
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+            <span>
+              {showAddForm
+                ? isEn
+                  ? "Close Form"
+                  : "फॉर्म बंद करें"
+                : isEn
+                ? "Add YouTube Video"
+                : "नया वीडियो जोड़ें"}
+            </span>
+          </button>
+        </div>
       </div>
 
       {showAddForm && (

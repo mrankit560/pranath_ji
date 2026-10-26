@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { AboutSectionContent } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Save, Info, Sparkles, CheckCircle } from "lucide-react";
+import { Save, Info, Sparkles, CheckCircle, ExternalLink } from "lucide-react";
 
 export default function AdminAboutPage() {
   const { language } = useI18n();
@@ -76,24 +77,35 @@ export default function AdminAboutPage() {
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-line">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "Home 'About Us' Content Editor" : "होम पेज 'हमारे बारे में' सामग्री संपादक"}
+            {isEn ? "About Ashram Content CMS" : "आश्रम परिचय सामग्री प्रबंधन"}
           </h1>
-          <p className="text-xs text-ink/60">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
-              ? "Edit the verbatim text for the Ashram Introduction, Questions, Services, and Message displayed on the Home Page"
-              : "होमपेज पर प्रदर्शित होने वाले आश्रम परिचय, प्रश्नोत्तरी, सेवाओं एवं संदेश का संपूर्ण संपादन"}
+              ? "Edit Ashram Introduction, 6 Core Questions, Purpose of Life, Services, and Divine Message"
+              : "आश्रम परिचय, मानव जीवन का उद्देश्य, ६ प्रश्न, हमारी सेवाएँ एवं पावन संदेश संपादित करें"}
           </p>
         </div>
 
-        {isSaved && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-700 text-xs font-bold animate-fade-in">
-            <CheckCircle className="w-4 h-4" />
-            <span>{isEn ? "Saved to Live Site!" : "वेबसाइट पर सेव हो गया!"}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/about"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View About on Site ↗" : "आश्रम परिचय देखें ↗"}</span>
+          </Link>
+
+          {isSaved && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-700 text-xs font-bold animate-fade-in">
+              <CheckCircle className="w-4 h-4" />
+              <span>{isEn ? "Saved to Live Site!" : "वेबसाइट पर सेव हो गया!"}</span>
+            </div>
+          )}
+        </div>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">

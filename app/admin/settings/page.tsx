@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { SiteSettings, AdminCredentials } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
@@ -16,6 +17,7 @@ import {
   Lock,
   AlertCircle,
   Image as ImageIcon,
+  ExternalLink,
 } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
@@ -107,24 +109,35 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="space-y-8 max-w-4xl">
-      <div className="flex items-center justify-between pb-4 border-b border-line">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "Portal & Security Settings" : "पोर्टल एवं सुरक्षा सेटिंग्स"}
+            {isEn ? "Portal & Settings" : "पोर्टल एवं सेटिंग्स"}
           </h1>
-          <p className="text-xs text-ink/60">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
-              ? "Manage admin login credentials, official contact details, and social media links"
-              : "एडमिन लॉगिन क्रेडेंशियल्स, आधिकारिक संपर्क विवरण एवं सोशल मीडिया लिंक्स प्रबंधित करें"}
+              ? "Manage admin security credentials, official contact details, address, and social links"
+              : "एडमिन सुरक्षा क्रेडेंशियल्स, आधिकारिक संपर्क विवरण, आश्रम पता एवं सोशल मीडिया लिंक्स प्रबंधित करें"}
           </p>
         </div>
 
-        {(toast || authToast) && (
-          <span className="text-xs font-bold text-emerald-700 flex items-center gap-1 animate-fade-in">
-            <CheckCircle className="w-4 h-4" />
-            {isEn ? "Saved successfully!" : "सफलतापूर्वक सुरक्षित किया गया!"}
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/contact"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View Contacts on Site ↗" : "संपर्क देखें ↗"}</span>
+          </Link>
+
+          {(toast || authToast) && (
+            <span className="text-xs font-bold text-emerald-700 flex items-center gap-1 animate-fade-in">
+              <CheckCircle className="w-4 h-4" />
+              {isEn ? "Saved successfully!" : "सफलतापूर्वक सुरक्षित किया गया!"}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* 1. Admin Login Credentials & Security Box */}

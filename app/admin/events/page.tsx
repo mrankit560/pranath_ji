@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { EventItem } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
@@ -294,16 +295,25 @@ export default function AdminEventsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "Events & Utsav Management" : "महोत्सव व कार्यक्रम प्रबंधन (Events CMS)"}
+            {isEn ? "Events & Festivals CMS" : "उत्सव एवं कार्यक्रम प्रबंधन"}
           </h1>
           <p className="text-xs text-ink/60 mt-1">
             {isEn
               ? "Schedule upcoming festivals, live streams, discourses, and adjust start/end dates"
-              : "आगामी महोत्सवों, पावन तिथियों, लाइव प्रसारण व सत्संग कार्यक्रमों की तिथियां व विवरण प्रबंधित करें"}
+              : "आगामी वार्षिकोत्सव, शरदोत्सव, जन्माष्टमी, लाइव प्रसारण व सत्संग कार्यक्रमों की तिथियां व विवरण प्रबंधित करें"}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
+          <Link
+            href="/events"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View Events on Site ↗" : "कार्यक्रम देखें ↗"}</span>
+          </Link>
+
           <button
             onClick={() => {
               setEditingId(null);

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { Article, ChitwaniBook, ChitwaniVideo } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
@@ -15,6 +16,7 @@ import {
   Save,
   X,
   CheckCircle,
+  ExternalLink,
 } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { PdfUploadField } from "@/components/admin/PdfUploadField";
@@ -321,36 +323,47 @@ export default function AdminMeditationPage() {
       )}
 
       {/* Header Banner */}
-      <div className="flex items-center justify-between pb-4 border-b border-line">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "Meditation & Chitwani CMS" : "चितवनी ध्यान साधना प्रबंधन"}
+            {isEn ? "Meditation CMS (Chitwani)" : "ध्यान साधना प्रबंधन (चितवनी)"}
           </h1>
-          <p className="text-xs text-ink/60">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
               ? "Manage Chitwani Articles (how-to blogs), Chitwani Books (PDFs), and Chitwani Video Guides"
               : "चितवनी लेख (विधि ब्लॉग), चितवनी ग्रन्थ (PDFs) एवं वीडियो मार्गदर्शिका का संपूर्ण प्रबंधन"}
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setEditingId(null);
-            setShowAddForm(!showAddForm);
-          }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
-        >
-          <Plus className="w-4 h-4" />
-          <span>
-            {showAddForm
-              ? isEn
-                ? "Close Form"
-                : "फॉर्म बंद करें"
-              : isEn
-              ? "Add New Item"
-              : "नई सामग्री जोड़ें"}
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/meditation"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View Meditation on Site ↗" : "ध्यान साधना देखें ↗"}</span>
+          </Link>
+
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setShowAddForm(!showAddForm);
+            }}
+            className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+            <span>
+              {showAddForm
+                ? isEn
+                  ? "Close Form"
+                  : "फॉर्म बंद करें"
+                : isEn
+                ? "Add New Item"
+                : "नई सामग्री जोड़ें"}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Tab Navigation */}

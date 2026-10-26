@@ -58,47 +58,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     },
     {
       href: "/admin/prannath-ji",
-      label: isEn ? "Shree Prannath Ji Articles" : "श्री प्राणनाथ जी लेख CMS",
+      label: isEn ? "Divine Brahm Vani" : "दिव्य ब्रह्मवाणी",
       icon: Sparkles,
     },
     {
       href: "/admin/adhyatmik-gyan",
-      label: isEn ? "Aadhyatmik Gyan Blogs" : "आध्यात्मिक ज्ञान ब्लॉग",
+      label: isEn ? "Spiritual Wisdom" : "आध्यात्मिक ज्ञान",
       icon: Compass,
     },
     {
       href: "/admin/books",
-      label: isEn ? "PDF Library Books" : "PDF ग्रंथालय व पुस्तकें",
+      label: isEn ? "Literature" : "साहित्य",
       icon: BookOpen,
     },
     {
       href: "/admin/videos",
-      label: isEn ? "Media Centre Videos" : "मीडिया केंद्र वीडियो",
+      label: isEn ? "Media Centre" : "मीडिया केंद्र",
       icon: Video,
     },
     {
       href: "/admin/meditation",
-      label: isEn ? "Meditation (Chitwani CMS)" : "चितवनी ध्यान CMS",
+      label: isEn ? "Meditation" : "ध्यान साधना",
       icon: Flower2,
     },
     {
       href: "/admin/events",
-      label: isEn ? "Festival Events Calendar" : "उत्सव एवं कार्यक्रम",
+      label: isEn ? "Events" : "उत्सव एवं कार्यक्रम",
       icon: Calendar,
     },
     {
       href: "/admin/dhams",
-      label: isEn ? "Holy Dham Locations" : "पवित्र आश्रम व धाम स्थान",
+      label: isEn ? "Holy Dhams & Centers" : "पवित्र धाम एवं साधना केंद्र",
       icon: MapPin,
     },
     {
       href: "/admin/about",
-      label: isEn ? "Home About Us Content" : "होम 'हमारे बारे में' सामग्री",
+      label: isEn ? "About Ashram" : "आश्रम परिचय",
       icon: Info,
     },
     {
       href: "/admin/settings",
-      label: isEn ? "Portal & Social Settings" : "पोर्टल व सोशल सेटिंग्स",
+      label: isEn ? "Portal & Settings" : "पोर्टल एवं सेटिंग्स",
       icon: Settings,
     },
   ];

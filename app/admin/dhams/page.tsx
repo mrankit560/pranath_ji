@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { HolyDham } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
@@ -329,36 +330,47 @@ export default function AdminDhamsPage() {
       )}
 
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-line">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "Holy Dhams & Ashrams CMS" : "पावन धाम व आश्रम प्रबंधन"}
+            {isEn ? "Holy Dhams & Spiritual Centers CMS" : "पवित्र धाम एवं साधना केंद्र प्रबंधन"}
           </h1>
-          <p className="text-xs text-ink/60">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
-              ? "Manage sacred Prannathi ashrams (Sadhauli Dham, Gondar Dham, Surat, Panna etc.) with Multiple Photos & Sliders"
-              : "साढौली धाम, गोंदर धाम, सूरत, पन्ना आदि पावन तीर्थों की तस्वीरें, गैलरी, गूगल मैप्स व संपर्क प्रबंधित करें"}
+              ? "Manage sacred Prannathi Dhams (Sadhauli, Navtanpuri, Mahamangalapuri, Padmavatipuri) & Spiritual Centers"
+              : "चार पावन धाम (पन्ना, जामनगर, सूरत, नौतनपुरी) एवं साधना केंद्र (साढौली धाम, गोंदर धाम आदि) की तस्वीरें, स्लाइडर, मैप्स व विवरण प्रबंधित करें"}
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setEditingId(null);
-            setShowAddForm(!showAddForm);
-          }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
-        >
-          <Plus className="w-4 h-4" />
-          <span>
-            {showAddForm
-              ? isEn
-                ? "Close Form"
-                : "फॉर्म बंद करें"
-              : isEn
-              ? "Add New Dham"
-              : "नया धाम जोड़ें"}
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/#dhams"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View Dhams on Site ↗" : "धाम वेबसाइट पर देखें ↗"}</span>
+          </Link>
+
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setShowAddForm(!showAddForm);
+            }}
+            className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+            <span>
+              {showAddForm
+                ? isEn
+                  ? "Close Form"
+                  : "फॉर्म बंद करें"
+                : isEn
+                ? "Add New Dham"
+                : "नया धाम जोड़ें"}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Add / Edit Form */}

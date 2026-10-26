@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { store } from "@/lib/data/store";
 import { Book } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
-import { Plus, Trash2, Edit3, BookOpen, Save, X, Download, CheckCircle } from "lucide-react";
+import { Plus, Trash2, Edit3, BookOpen, Save, X, Download, CheckCircle, ExternalLink } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { PdfUploadField } from "@/components/admin/PdfUploadField";
 
@@ -240,36 +241,47 @@ export default function AdminBooksPage() {
       )}
 
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-line">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 className="text-2xl font-bold text-gold-gradient font-spiritual-heading">
-            {isEn ? "PDF Library & Books CMS" : "PDF ग्रंथालय व पुस्तक प्रबंधन"}
+            {isEn ? "Literature CMS (Books & Sacred Granths)" : "साहित्य एवं पावन ग्रंथ प्रबंधन"}
           </h1>
-          <p className="text-xs text-ink/60">
+          <p className="text-xs text-ink/60 mt-1">
             {isEn
-              ? "Add, edit, and organize PDF books across categories (Bitak Saheb, Tartam Vani, Other Books) with Book Reviews"
-              : "श्री बीतक साहेब, तारतम वाणी एवं अन्य पुस्तकों को PDF लिंक, समीक्षा/ब्लॉग एवं विवरण सहित प्रबंधित करें"}
+              ? "Manage sacred scriptures (Shri Bitak Saheb, Tartam Vani, and Granths) with PDF uploads, interactive chapters, and reader reviews"
+              : "श्री बीतक साहेब, तारतम वाणी एवं पावन ग्रंथों को PDF संकलन, अध्याय विवरण एवं समीक्षा सहित प्रबंधित करें"}
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setEditingId(null);
-            setShowAddForm(!showAddForm);
-          }}
-          className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
-        >
-          <Plus className="w-4 h-4" />
-          <span>
-            {showAddForm
-              ? isEn
-                ? "Close Form"
-                : "फॉर्म बंद करें"
-              : isEn
-              ? "Add New Book"
-              : "नई पुस्तक जोड़ें"}
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/library"
+            target="_blank"
+            className="px-3.5 py-2 rounded-xl bg-card border border-line text-gold-700 text-xs font-semibold hover:bg-gold-500/10 flex items-center gap-1.5 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>{isEn ? "View Literature on Site ↗" : "साहित्य देखें ↗"}</span>
+          </Link>
+
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setShowAddForm(!showAddForm);
+            }}
+            className="px-4 py-2 rounded-xl bg-gold-gradient text-on-gold text-xs font-bold flex items-center gap-1.5 shadow-gold-sm hover:scale-105 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+            <span>
+              {showAddForm
+                ? isEn
+                  ? "Close Form"
+                  : "फॉर्म बंद करें"
+                : isEn
+                ? "Add New Book"
+                : "नई पुस्तक जोड़ें"}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Add / Edit Book Form */}

@@ -6,6 +6,7 @@ import { Article } from "@/lib/data/types";
 import { useI18n } from "@/lib/i18n/context";
 import { Plus, Trash2, Edit3, FileText, Sparkles, CheckCircle, X } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function AdminArticlesPage() {
   const { language } = useI18n();
@@ -17,6 +18,7 @@ export default function AdminArticlesPage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<Article | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"hi" | "en">("hi");
 
   const [form, setForm] = useState({
     titleHi: "",
@@ -316,18 +318,50 @@ export default function AdminArticlesPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-gold-700 mb-1">
-              {isEn ? "Article Content (Hindi - Full Text) *" : "लेख की संपूर्ण सामग्री (हिन्दी) *"}
-            </label>
-            <textarea
-              required
-              rows={8}
-              value={form.contentHi}
-              onChange={(e) => setForm({ ...form, contentHi: e.target.value })}
-              placeholder="यहाँ विस्तृत लेख लिखें..."
-              className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
-            />
+          {/* Bilingual Rich Text Editor */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between border-b border-line pb-2">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("hi")}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    activeTab === "hi"
+                      ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+                      : "bg-surface text-ink/75 border border-line hover:border-gold-400/50"
+                  }`}
+                >
+                  हिन्दी सामग्री (Full Rich Text) *
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("en")}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    activeTab === "en"
+                      ? "bg-gold-gradient text-on-gold shadow-gold-sm"
+                      : "bg-surface text-ink/75 border border-line hover:border-gold-400/50"
+                  }`}
+                >
+                  English Content (Optional)
+                </button>
+              </div>
+            </div>
+
+            {activeTab === "hi" ? (
+              <RichTextEditor
+                value={form.contentHi}
+                onChange={(html) => setForm({ ...form, contentHi: html })}
+                placeholder="यहाँ विस्तृत आध्यात्मिक आलेख लिखें..."
+                minHeight="340px"
+              />
+            ) : (
+              <RichTextEditor
+                value={form.contentEn}
+                onChange={(html) => setForm({ ...form, contentEn: html })}
+                placeholder="Write article in English here..."
+                minHeight="340px"
+              />
+            )}
           </div>
 
           <div className="flex items-center gap-3 pt-2">

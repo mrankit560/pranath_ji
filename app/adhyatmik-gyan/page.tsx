@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
@@ -20,8 +20,8 @@ import {
   ChevronRight,
   X,
   Share2,
+  Check,
 } from "lucide-react";
-
 import { formatSpiritualDate } from "@/lib/utils/formatDate";
 
 export default function AdhyatmikGyanPage() {
@@ -32,6 +32,7 @@ export default function AdhyatmikGyanPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedBlog, setSelectedBlog] = useState<Article | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     setBlogs(store.getAdhyatmikBlogs());
@@ -41,23 +42,62 @@ export default function AdhyatmikGyanPage() {
     return () => unsub();
   }, []);
 
-  const categories = [
-    { id: "all", label: isEn ? "All Wisdom" : "सभी विषय" },
-    { id: "तत्व ज्ञान", label: isEn ? "Tattva Gyan" : "तत्व ज्ञान" },
-    { id: "चितवनी ध्यान", label: isEn ? "Chitwani Dhyan" : "चितवनी ध्यान" },
-    { id: "वाणी व्याख्या", label: isEn ? "Vani Commentary" : "वाणी व्याख्या" },
-    { id: "आध्यात्मिक साधना", label: isEn ? "Spiritual Practice" : "आध्यात्मिक साधना" },
-  ];
+  // Compute all available categories dynamically
+  const categories = useMemo(() => {
+    const defaultList = [
+      { id: "all", label: isEn ? "All Wisdom" : "सभी विषय" },
+      { id: "तत्व ज्ञान", label: isEn ? "Tattva Gyan" : "तत्व ज्ञान" },
+      { id: "चितवनी ध्यान", label: isEn ? "Chitwani Dhyan" : "चितवनी ध्यान" },
+      { id: "वाणी व्याख्या", label: isEn ? "Vani Commentary" : "वाणी व्याख्या" },
+      { id: "आध्यात्मिक साधना", label: isEn ? "Spiritual Practice" : "आध्यात्मिक साधना" },
+    ];
+
+    const existingNames = new Set(defaultList.map((d) => d.id));
+    blogs.forEach((b) => {
+      if (b.category && b.category !== "adhyatmik-gyan" && !existingNames.has(b.category)) {
+        defaultList.push({ id: b.category, label: b.category });
+        existingNames.add(b.category);
+      }
+    });
+
+    return defaultList;
+  }, [blogs, isEn]);
 
   const filteredBlogs = blogs.filter((blog) => {
     const matchesCategory =
-      selectedCategory === "all" || blog.category === selectedCategory;
+      selectedCategory === "all" ||
+      blog.category === selectedCategory ||
+      (selectedCategory === "all" && blog.category === "adhyatmik-gyan");
     const title = (isEn ? blog.titleEn || blog.titleHi : blog.titleHi) || "";
     const author = blog.author || "";
+    const summary = (isEn ? blog.summaryEn || blog.summaryHi : blog.summaryHi) || "";
     const q = searchQuery.toLowerCase();
-    const matchesSearch = title.toLowerCase().includes(q) || author.toLowerCase().includes(q);
+    const matchesSearch =
+      title.toLowerCase().includes(q) ||
+      author.toLowerCase().includes(q) ||
+      summary.toLowerCase().includes(q);
     return matchesCategory && matchesSearch;
   });
+
+  const handleShare = async (blog: Article) => {
+    const title = isEn ? blog.titleEn || blog.titleHi : blog.titleHi;
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: isEn ? blog.summaryEn || blog.summaryHi : blog.summaryHi,
+          url,
+        });
+      } catch (e) {
+        // user cancelled
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-surface text-ink">
@@ -98,8 +138,8 @@ export default function AdhyatmikGyanPage() {
 
       {/* Main Content */}
       <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Category Tabs */}
-        <div className="flex items-center justify-center sm:justify-start gap-2 overflow-x-auto pb-4 mb-10 border-b border-line">
+        {/* Dynamic Category Tabs */}
+        <div className="flex items-center justify-start gap-2 overflow-x-auto pb-4 mb-10 border-b border-line scrollbar-thin">
           {categories.map((cat) => (
             <button
               key={cat.id}
@@ -151,6 +191,11 @@ export default function AdhyatmikGyanPage() {
                   <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-surface-2/95 border border-line text-[10px] font-bold text-amber-700 uppercase">
                     {blog.readTime || "5 min read"}
                   </span>
+                  {blog.category && blog.category !== "adhyatmik-gyan" && (
+                    <span className="absolute top-3 right-3 px-2.5 py-0.5 rounded-full bg-gold-gradient text-on-gold text-[10px] font-bold">
+                      {blog.category}
+                    </span>
+                  )}
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -183,25 +228,34 @@ export default function AdhyatmikGyanPage() {
         )}
       </section>
 
-      {/* Full Blog Reader Modal */}
+      {/* Full Blog Reader Modal (Supports Rich HTML Content) */}
       {selectedBlog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim/55 backdrop-blur-xl animate-fade-in">
           <div className="bg-surface-2 border-2 border-gold-400/50 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-10 shadow-2xl relative space-y-6">
-            <button
-              onClick={() => setSelectedBlog(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-gold-500/15 text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="absolute top-5 right-5 flex items-center gap-2">
+              <button
+                onClick={() => handleShare(selectedBlog)}
+                className="p-2 rounded-full bg-gold-500/15 text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors"
+                title={isEn ? "Share Blog" : "साझा करें"}
+              >
+                {copiedLink ? <Check className="w-5 h-5 text-emerald-600" /> : <Share2 className="w-5 h-5" />}
+              </button>
+              <button
+                onClick={() => setSelectedBlog(null)}
+                className="p-2 rounded-full bg-gold-500/15 text-gold-700 hover:bg-gold-500 hover:text-on-gold transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             {/* Header */}
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 text-xs font-bold uppercase tracking-wider mb-3">
                 <Compass className="w-3.5 h-3.5" />
-                <span>{selectedBlog.category}</span>
+                <span>{selectedBlog.category || "तत्व ज्ञान"}</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-0.5 overflow-visible mb-2 pr-16">
                 {isEn ? selectedBlog.titleEn || selectedBlog.titleHi : selectedBlog.titleHi}
               </h2>
 
@@ -216,7 +270,7 @@ export default function AdhyatmikGyanPage() {
 
             {/* Featured Image */}
             {selectedBlog.featuredImage && (
-              <div className="relative h-64 w-full rounded-2xl overflow-hidden border border-line">
+              <div className="relative h-64 sm:h-80 w-full rounded-2xl overflow-hidden border border-line">
                 <Image
                   src={selectedBlog.featuredImage}
                   alt={selectedBlog.titleHi}
@@ -226,10 +280,29 @@ export default function AdhyatmikGyanPage() {
               </div>
             )}
 
-            {/* Content */}
-            <div className="prose prose-invert max-w-none text-xs sm:text-sm text-ink/90 leading-relaxed space-y-4 whitespace-pre-line font-devanagari">
-              {isEn ? selectedBlog.contentEn || selectedBlog.contentHi : selectedBlog.contentHi}
-            </div>
+            {/* Rich HTML Content Body */}
+            {(() => {
+              const content = isEn
+                ? selectedBlog.contentEn || selectedBlog.contentHi
+                : selectedBlog.contentHi;
+
+              const isHtml = /<[a-z][\s\S]*>/i.test(content || "");
+
+              if (isHtml) {
+                return (
+                  <div
+                    className="prose max-w-none text-sm sm:text-base text-ink/90 leading-relaxed font-devanagari prose-headings:font-spiritual-heading prose-headings:text-kumkum-dk prose-blockquote:border-l-4 prose-blockquote:border-gold-400 prose-blockquote:bg-gold-50/40 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-xl prose-a:text-gold-700 prose-a:underline"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                );
+              }
+
+              return (
+                <div className="prose max-w-none text-xs sm:text-sm text-ink/90 leading-relaxed space-y-4 whitespace-pre-line font-devanagari">
+                  {content}
+                </div>
+              );
+            })()}
 
             {/* Tags */}
             {selectedBlog.tags && selectedBlog.tags.length > 0 && (

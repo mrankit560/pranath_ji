@@ -119,9 +119,23 @@ export default function ArticleDetailPage() {
 
         {/* Content Body */}
         <div className="spiritual-glass-card rounded-3xl p-6 sm:p-10 border border-line space-y-6 text-sm sm:text-base text-ink/90 leading-relaxed font-devanagari">
-          <div className="whitespace-pre-line leading-relaxed space-y-4">
-            {language === "hi" ? article.contentHi : article.contentEn}
-          </div>
+          {(() => {
+            const content = language === "hi" ? article.contentHi : article.contentEn || article.contentHi;
+            const isHtml = /<[a-z][\s\S]*>/i.test(content || "");
+            if (isHtml) {
+              return (
+                <div
+                  className="prose max-w-none text-sm sm:text-base text-ink/90 leading-relaxed font-devanagari prose-headings:font-spiritual-heading prose-headings:text-kumkum-dk prose-blockquote:border-l-4 prose-blockquote:border-gold-400 prose-blockquote:bg-gold-50/40 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-xl prose-a:text-gold-700 prose-a:underline"
+                  dangerouslySetInnerHTML={{ __html: content }}
+                />
+              );
+            }
+            return (
+              <div className="whitespace-pre-line leading-relaxed space-y-4">
+                {content}
+              </div>
+            );
+          })()}
 
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (

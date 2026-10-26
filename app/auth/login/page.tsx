@@ -45,7 +45,7 @@ function LoginForm() {
 
     if (isAdmin) {
       store.setAdminSession(true, cleanId);
-      router.push(redirectUrl);
+      window.location.href = redirectUrl;
       return;
     }
 
@@ -148,6 +148,20 @@ function LoginForm() {
             <span>{isSubmitting ? (isEn ? "Verifying..." : "सत्यापन...") : (isEn ? "Sign In" : "लॉगिन करें")}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
+
+          {/* Quick Fill Admin Credentials */}
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIdentifier("admin");
+                setPassword("admin123");
+              }}
+              className="px-3.5 py-1.5 rounded-full bg-gold-500/15 border border-gold-400/40 text-gold-700 text-xs font-semibold hover:bg-gold-500/25 transition-colors"
+            >
+              {isEn ? "⚡ Quick Fill Admin (admin / admin123)" : "⚡ डिफ़ॉल्ट एडमिन क्रेडेंशियल्स भरें (admin / admin123)"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

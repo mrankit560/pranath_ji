@@ -67,11 +67,11 @@ export default function PrannathJiPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-bold uppercase tracking-wider mb-4">
             <Sparkles className="w-3.5 h-3.5 text-gold-700" />
-            {isEn ? "Life, History & Philosophy" : "जीवन चरित्र, बीतक एवं अमर संदेश"}
+            {isEn ? "Divine Brahm Vani & Sacred Life" : "दिव्य ब्रह्मवाणी, जीवन चरित्र एवं बीतक"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
-            {isEn ? "Mahamati Shri Prannath Ji" : "महामति श्री प्राणनाथ जी"}
+            {isEn ? "Divine Brahm Vani — Mahamati Shri Prannath Ji" : "दिव्य ब्रह्मवाणी — महामति श्री प्राणनाथ जी"}
           </h1>
 
           <p className="text-xs sm:text-base text-gold-muted/80 max-w-2xl mx-auto leading-relaxed">

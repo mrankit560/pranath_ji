@@ -58,24 +58,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       icon: Home,
     },
     {
-      name: isEn ? "Divya Brahm Vani" : "दिव्य ब्रह्मवाणी",
+      name: isEn ? "Divine Brahm Vani" : "दिव्य ब्रह्मवाणी",
       href: "/prannath-ji",
       icon: Sparkles,
     },
     {
-      name: isEn ? "Aadhyatmik Gyan" : "आध्यात्मिक ज्ञान",
+      name: isEn ? "Spiritual Wisdom" : "आध्यात्मिक ज्ञान",
       href: "/adhyatmik-gyan",
       icon: Compass,
     },
     {
-      name: isEn ? "Sahitya" : "साहित्य",
+      name: isEn ? "Literature" : "साहित्य",
       href: "/library",
       icon: BookOpen,
       subItems: [
         { name: isEn ? "All Books" : "सभी पुस्तकें", href: "/library" },
-        { name: isEn ? "Shree Bitak Saheb" : "श्री बीतक साहेब", href: "/library?category=bitak_saheb" },
+        { name: isEn ? "Shri Bitak Saheb" : "श्री बीतक साहेब", href: "/library?category=bitak_saheb" },
         { name: isEn ? "Tartam Vani" : "तारतम वाणी", href: "/library?category=tartam_vani" },
-        { name: isEn ? "Other Books" : "अन्य पुस्तकें", href: "/library?category=other" },
+        { name: isEn ? "Other Sacred Books" : "अन्य पुस्तकें", href: "/library?category=other" },
       ],
     },
     {
@@ -112,12 +112,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const mobileNavLinks = [
     ...navLinks,
     {
-      name: isEn ? "About Ashram" : "आश्रम परिचय (About)",
+      name: isEn ? "About Ashram" : "आश्रम परिचय",
       href: "/about",
       icon: Info,
     },
     {
-      name: isEn ? "Contact Us" : "संपर्क (Contact)",
+      name: isEn ? "Contact Us" : "संपर्क",
       href: "/contact",
       icon: Phone,
     },

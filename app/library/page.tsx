@@ -56,10 +56,10 @@ export default function LibraryPage() {
   }, []);
 
   const categories = [
-    { id: "all", label: isEn ? "All Books" : "सभी पुस्तकें" },
-    { id: "bitak_saheb", label: isEn ? "Shree Bitak Saheb" : "श्री बीतक साहेब" },
+    { id: "all", label: isEn ? "All Literature" : "सम्पूर्ण साहित्य" },
+    { id: "bitak_saheb", label: isEn ? "Shri Bitak Saheb" : "श्री बीतक साहेब" },
     { id: "tartam_vani", label: isEn ? "Tartam Vani" : "तारतम वाणी" },
-    { id: "other", label: isEn ? "Other Books" : "अन्य पुस्तकें" },
+    { id: "other", label: isEn ? "Other Sacred Books" : "अन्य पुस्तकें" },
   ];
 
   const filteredBooks = books.filter((book) => {
@@ -86,16 +86,16 @@ export default function LibraryPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-bold uppercase tracking-wider mb-4">
             <BookOpen className="w-3.5 h-3.5 text-gold-700" />
-            {isEn ? "Sacred PDF Digital Library" : "ई-ग्रंथालय एवं पावन साहित्य"}
+            {isEn ? "Literature & Sacred Scriptures" : "पावन साहित्य एवं ई-ग्रंथालय"}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gold-gradient font-spiritual-heading leading-normal py-1 overflow-visible mb-4">
-            {isEn ? "PDF Books & Sacred Literature" : "PDF ग्रंथालय — ऑनलाइन पढ़ें व डाउनलोड करें"}
+            {isEn ? "Sacred Literature & Granths" : "साहित्य — ऑनलाइन पढ़ें व डाउनलोड करें"}
           </h1>
 
           <p className="text-xs sm:text-base text-gold-muted/80 max-w-2xl mx-auto leading-relaxed">
             {isEn
-              ? "Read and download holy scriptures including Shri Bitak Saheb, Tartam Vani commentaries, and spiritual guides."
+              ? "Read and download holy scriptures including Shri Bitak Saheb, Tartam Vani commentaries, and spiritual literature."
               : "श्री बीतक साहेब, तारतम वाणी के १४ ग्रन्थ, टीकाएं, एवं साधना पुस्तकें ऑनलाइन पढ़ें और डाउनलोड करें।"}
           </p>
 

@@ -32,7 +32,7 @@ export const DailyQuoteCard: React.FC = () => {
         {/* Tag */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-400/45 text-gold-700 text-xs font-semibold uppercase tracking-wider mb-4">
           <Sparkles className="w-3.5 h-3.5 text-gold-700" />
-          {t("quote.title", "आज का आध्यात्मिक विचार")}
+          <span>{language === "hi" ? "आज का आध्यात्मिक विचार" : "Today's Spiritual Thought"}</span>
         </div>
 
         {/* Large Quote Mark */}

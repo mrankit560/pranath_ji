@@ -177,14 +177,14 @@ export const HeroSection: React.FC = () => {
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-gold-700 transition-colors">
-                  {language === "hi" ? "दिव्य ब्रह्मवाणी" : "Divya Brahm Vani"}
+                  {language === "hi" ? "दिव्य ब्रह्मवाणी" : "Divine Brahm Vani"}
                 </span>
                 <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "तारतम वाणी" : "Tartam Vani"}
                 </span>
               </Link>
 
-              {/* Card 2: Explore PDFs (Amber/Gold Glass) */}
+              {/* Card 2: Literature / Sahitya */}
               <Link
                 href="/library"
                 className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-amber-500/40 bg-gradient-to-b from-gold-200/85 to-surface-2 backdrop-blur-md hover:border-gold-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-amber-900/15"
@@ -193,10 +193,10 @@ export const HeroSection: React.FC = () => {
                   <FileText className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-gold-700 transition-colors">
-                  {language === "hi" ? "साहित्य" : "Sahitya"}
+                  {language === "hi" ? "साहित्य" : "Literature"}
                 </span>
                 <span className="text-[10px] text-ink/60 mt-0.5">
-                  {language === "hi" ? "ई-बुक्स" : "E-Books"}
+                  {language === "hi" ? "ई-बुक्स" : "E-Books & Granths"}
                 </span>
               </Link>
 
@@ -216,7 +216,7 @@ export const HeroSection: React.FC = () => {
                 </span>
               </Link>
 
-              {/* Card 4: Aadhyatmik Gyan (Royal Purple / Amber Glass) */}
+              {/* Card 4: Spiritual Wisdom / Aadhyatmik Gyan */}
               <Link
                 href="/adhyatmik-gyan"
                 className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-2xl border border-purple-500/40 bg-gradient-to-b from-spiritual-purple/75 to-surface-2 backdrop-blur-md hover:border-purple-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-900/15"
@@ -225,7 +225,7 @@ export const HeroSection: React.FC = () => {
                   <Compass className="w-5 h-5" />
                 </div>
                 <span className="text-xs sm:text-sm font-bold text-ink group-hover:text-purple-700 transition-colors">
-                  {language === "hi" ? "आध्यात्मिक ज्ञान" : "Aadhyatmik Gyan"}
+                  {language === "hi" ? "आध्यात्मिक ज्ञान" : "Spiritual Wisdom"}
                 </span>
                 <span className="text-[10px] text-ink/60 mt-0.5">
                   {language === "hi" ? "सत्संग व विचार" : "Wisdom & Blogs"}

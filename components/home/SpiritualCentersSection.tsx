@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -75,13 +75,14 @@ export const SpiritualCentersSection: React.FC = () => {
   const isEn = language === "en";
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
-  // Auto-slide every 7 seconds unless hovered/interacted
+  // Auto-slide every 6.5 seconds unless hovered/interacted
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % spiritualCenters.length);
-    }, 7000);
+    }, 6500);
     return () => clearInterval(interval);
   }, [isPaused]);
 
@@ -93,6 +94,18 @@ export const SpiritualCentersSection: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + spiritualCenters.length) % spiritualCenters.length);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (diff > 50) handleNext();
+    if (diff < -50) handlePrev();
+    touchStartX.current = null;
+  };
+
   const currentCenter = spiritualCenters[currentIndex];
 
   return (
@@ -101,6 +114,8 @@ export const SpiritualCentersSection: React.FC = () => {
       className="py-16 sm:py-24 bg-surface-2/80 relative border-b border-line scroll-mt-20 overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Ambient background glow */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
@@ -127,15 +142,24 @@ export const SpiritualCentersSection: React.FC = () => {
 
         {/* Center Spotlight Slider Card */}
         <div className="relative bg-surface rounded-3xl border border-gold-400/35 shadow-2xl overflow-hidden backdrop-blur-xl transition-all duration-500">
+          {/* Subtle live progress bar */}
+          <div className="h-1 w-full bg-surface-2 relative overflow-hidden">
+            <div
+              key={currentIndex}
+              className="h-full bg-gold-gradient transition-all duration-[6500ms] ease-linear w-full"
+            />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[440px]">
             {/* Center Image Column */}
-            <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[380px] lg:min-h-[460px] overflow-hidden bg-surface-sunk">
+            <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[380px] lg:min-h-[460px] overflow-hidden bg-surface-sunk group">
               <Image
+                key={currentCenter.image}
                 src={currentCenter.image}
                 alt={isEn ? currentCenter.nameEn : currentCenter.nameHi}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-center transition-all duration-700 hover:scale-105"
+                className="object-cover object-center transition-all duration-700 group-hover:scale-105"
                 priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent lg:hidden" />
@@ -235,13 +259,13 @@ export const SpiritualCentersSection: React.FC = () => {
                   : "border-line bg-surface/60 hover:bg-surface hover:border-gold-300/60"
               }`}
             >
-              <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-line">
+              <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-line bg-surface-sunk relative">
                 <Image
                   src={center.image}
                   alt={isEn ? center.nameEn : center.nameHi}
-                  fill
-                  sizes="56px"
-                  className="object-cover"
+                  width={56}
+                  height={56}
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="min-w-0 flex-1">

@@ -52,7 +52,7 @@ export default function HomePage() {
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-2xl overflow-hidden border border-gold-400/50 shadow-lg shadow-gold-200/50">
                 <Image
                   src="/assets/sadhauli-dham-2.jpg"
-                  alt="श्री निजानंद आश्रम साढौली धाम, हरिद्वार"
+                  alt={isEn ? "Shri Nijanand Ashram Sadhauli Dham, Haridwar" : "श्री निजानंद आश्रम साढौली धाम, हरिद्वार"}
                   fill
                   className="object-cover hover:scale-110 transition-transform duration-500"
                 />

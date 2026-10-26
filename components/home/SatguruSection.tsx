@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
-import { Headphones, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, ExternalLink } from "lucide-react";
 
 const satguruSlides = [
   {
@@ -150,13 +150,19 @@ export const SatguruSection: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
-              <Link
-                href="/media"
-                className="btn-gold inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-bold shadow-md hover:scale-105 transition-transform"
+              <a
+                href="https://youtube.com/@sadhaulidham3424?si=l4lptsMtMc6pKrbC"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold inline-flex items-center gap-2.5 rounded-xl px-6 py-3 text-sm font-bold shadow-md hover:scale-105 transition-transform"
               >
-                <Headphones className="w-4 h-4" />
-                {isEn ? "Listen to Discourses" : "प्रवचन सुनें"}
-              </Link>
+                {/* Official YouTube icon SVG */}
+                <svg className="w-5 h-5 fill-current text-red-600" viewBox="0 0 24 24">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                <span>{isEn ? "Watch Satsang on YouTube" : "यूट्यूब पर सत्संग देखें"}</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+              </a>
 
               <a
                 href="#spiritual-centers"

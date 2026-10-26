@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -74,13 +74,14 @@ export const HolyDhamsSection: React.FC = () => {
   const isEn = language === "en";
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
-  // Auto-slide every 7.5 seconds
+  // Auto-slide every 7 seconds
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sacredDhams.length);
-    }, 7500);
+    }, 7000);
     return () => clearInterval(interval);
   }, [isPaused]);
 
@@ -92,6 +93,18 @@ export const HolyDhamsSection: React.FC = () => {
     setCurrentSlide((prev) => (prev - 1 + sacredDhams.length) % sacredDhams.length);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (diff > 50) nextSlide();
+    if (diff < -50) prevSlide();
+    touchStartX.current = null;
+  };
+
   const activeDham = sacredDhams[currentSlide];
 
   return (
@@ -100,6 +113,8 @@ export const HolyDhamsSection: React.FC = () => {
       className="py-16 sm:py-24 bg-gradient-to-b from-surface via-surface-sunk/60 to-surface relative border-b border-line scroll-mt-20 overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/3 right-1/4 -translate-y-1/2 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
@@ -126,15 +141,24 @@ export const HolyDhamsSection: React.FC = () => {
 
         {/* Dham Spotlight Card with Slider */}
         <div className="relative bg-surface rounded-3xl border border-gold-400/40 shadow-2xl overflow-hidden backdrop-blur-xl">
+          {/* Subtle live progress bar */}
+          <div className="h-1 w-full bg-surface-2 relative overflow-hidden">
+            <div
+              key={currentSlide}
+              className="h-full bg-gold-gradient transition-all duration-[7000ms] ease-linear w-full"
+            />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[440px]">
             {/* Dham Image Column */}
-            <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[380px] lg:min-h-[460px] overflow-hidden bg-surface-sunk">
+            <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[380px] lg:min-h-[460px] overflow-hidden bg-surface-sunk group">
               <Image
+                key={activeDham.image}
                 src={activeDham.image}
                 alt={isEn ? activeDham.nameEn : activeDham.nameHi}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-center transition-all duration-700 hover:scale-105"
+                className="object-cover object-center transition-all duration-700 group-hover:scale-105"
                 priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent lg:hidden" />
@@ -228,13 +252,13 @@ export const HolyDhamsSection: React.FC = () => {
                   : "border-line bg-surface/60 hover:bg-surface hover:border-gold-300/60"
               }`}
             >
-              <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-line">
+              <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-line bg-surface-sunk relative">
                 <Image
                   src={dham.image}
                   alt={isEn ? dham.nameEn : dham.nameHi}
-                  fill
-                  sizes="56px"
-                  className="object-cover"
+                  width={56}
+                  height={56}
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="min-w-0 flex-1">

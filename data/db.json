@@ -536,5 +536,5 @@
     "updatedAt": "2026-08-25T15:57:07.771Z",
     "note": "Password is no longer stored here. Set ADMIN_PASSWORD_HASH in the environment (see scripts/hash-admin-password.mjs)."
   },
-  "updatedAt": "2026-10-26T12:37:18.759Z"
+  "updatedAt": "2026-10-26T12:55:26.505Z"
 }

@@ -370,9 +370,19 @@ export default function MeditationPage() {
             </div>
 
             <div className="p-4 rounded-2xl bg-surface-sunk/80 border border-line text-xs sm:text-sm text-ink/90 leading-relaxed space-y-3 font-devanagari">
-              <p className="whitespace-pre-line">
-                {isEn ? selectedArticle.contentEn || selectedArticle.contentHi : selectedArticle.contentHi}
-              </p>
+              {(() => {
+                const content = isEn ? selectedArticle.contentEn || selectedArticle.contentHi : selectedArticle.contentHi;
+                const isHtml = /<[a-z][\s\S]*>/i.test(content || "");
+                if (isHtml) {
+                  return (
+                    <div
+                      className="prose max-w-none text-sm text-ink/90 leading-relaxed font-devanagari prose-headings:font-spiritual-heading prose-headings:text-kumkum-dk prose-blockquote:border-l-4 prose-blockquote:border-gold-400 prose-blockquote:bg-gold-50/40 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-xl prose-a:text-gold-700 prose-a:underline"
+                      dangerouslySetInnerHTML={{ __html: content }}
+                    />
+                  );
+                }
+                return <p className="whitespace-pre-line">{content}</p>;
+              })()}
             </div>
           </div>
         </div>

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { PdfUploadField } from "@/components/admin/PdfUploadField";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function AdminMeditationPage() {
   const { language } = useI18n();
@@ -429,13 +430,12 @@ export default function AdminMeditationPage() {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gold-700 mb-1">{isEn ? "Content (Hindi) *" : "लेख सामग्री (हिन्दी) *"}</label>
-            <textarea
-              required
-              rows={6}
+            <label className="block text-xs font-semibold text-gold-700 mb-2">{isEn ? "Content (Hindi - Rich Text Editor) *" : "सम्पूर्ण लेख सामग्री (हिन्दी - रिच टेक्स्ट एडिटर) *"}</label>
+            <RichTextEditor
               value={articleForm.contentHi}
-              onChange={(e) => setArticleForm({ ...articleForm, contentHi: e.target.value })}
-              className="w-full p-2.5 rounded-xl bg-field border border-line text-xs text-ink focus:border-gold-400 focus:outline-none font-devanagari"
+              onChange={(html) => setArticleForm({ ...articleForm, contentHi: html })}
+              placeholder="यहाँ विस्तृत ध्यान विधि या चितवनी लेख लिखें..."
+              minHeight="320px"
             />
           </div>
           <div className="flex items-center gap-3 pt-2">

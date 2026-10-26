@@ -225,9 +225,25 @@ export default function PrannathJiPage() {
             )}
 
             {/* Article Content */}
-            <div className="prose prose-invert max-w-none text-xs sm:text-sm text-ink/90 leading-relaxed space-y-4 whitespace-pre-line font-devanagari">
-              {isEn ? selectedArticle.contentEn || selectedArticle.contentHi : selectedArticle.contentHi}
-            </div>
+            {(() => {
+              const content = isEn
+                ? selectedArticle.contentEn || selectedArticle.contentHi
+                : selectedArticle.contentHi;
+              const isHtml = /<[a-z][\s\S]*>/i.test(content || "");
+              if (isHtml) {
+                return (
+                  <div
+                    className="prose max-w-none text-sm sm:text-base text-ink/90 leading-relaxed font-devanagari prose-headings:font-spiritual-heading prose-headings:text-kumkum-dk prose-blockquote:border-l-4 prose-blockquote:border-gold-400 prose-blockquote:bg-gold-50/40 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-xl prose-a:text-gold-700 prose-a:underline"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                );
+              }
+              return (
+                <div className="prose max-w-none text-xs sm:text-sm text-ink/90 leading-relaxed space-y-4 whitespace-pre-line font-devanagari">
+                  {content}
+                </div>
+              );
+            })()}
 
             {/* Tags */}
             {selectedArticle.tags && selectedArticle.tags.length > 0 && (

@@ -9,7 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
-  Phone,
   Building2,
 } from "lucide-react";
 
@@ -23,7 +22,6 @@ interface SpiritualCenter {
   descriptionEn: string;
   image: string;
   mapUrl?: string;
-  phone?: string;
 }
 
 const spiritualCenters: SpiritualCenter[] = [
@@ -214,16 +212,6 @@ export const SpiritualCentersSection: React.FC = () => {
                       <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B87A1E]" />
                       <span>{isEn ? "View on Google Maps" : "गूगल मैप्स"}</span>
                       <span className="text-stone-400 text-[10px] sm:text-xs">↗</span>
-                    </a>
-                  )}
-
-                  {currentCenter.phone && (
-                    <a
-                      href={`tel:${currentCenter.phone.replace(/\s+/g, "")}`}
-                      className="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs lg:text-sm font-semibold text-stone-800 dark:text-stone-200 bg-white dark:bg-surface border border-stone-300 dark:border-stone-700 hover:border-gold-400 hover:bg-stone-50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl shadow-2xs transition-all active:scale-95"
-                    >
-                      <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B87A1E]" />
-                      <span>{currentCenter.phone}</span>
                     </a>
                   )}
                 </div>

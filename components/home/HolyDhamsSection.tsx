@@ -22,6 +22,7 @@ interface SacredDham {
   image: string;
   tagHi: string;
   tagEn: string;
+  mapUrl: string;
 }
 
 const sacredDhams: SacredDham[] = [
@@ -38,6 +39,7 @@ const sacredDhams: SacredDham[] = [
     descriptionEn:
       "Shri 5 Padmavatipuri Dham is the holy Mukti Peeth and divine Leelabhoomi of Mahamati Shri Prannath Ji. Darshan of Shri Gummat Ji fills the heart with supreme love and devotion. It stands as the priceless spiritual heritage of our Nijanand Dharma.",
     image: "/assets/dham-padmavatipuri.jpg",
+    mapUrl: "https://maps.google.com/?q=Panna+Dham+Gummat+Ji",
   },
   {
     id: "dham-navtanpuri",
@@ -52,6 +54,7 @@ const sacredDhams: SacredDham[] = [
     descriptionEn:
       "Shri 5 Navtanpuri Dham is the prime holy seat (Aadya Dharmapeeth) of our Nijanand Sampradaya, where the divine Jagni mission commenced. It is the sacred karma-bhoomi of Satguru Shri Devchandra Ji Maharaj and deeply revered for the manifestation of Mahamati Shri Prannath Ji.",
     image: "/assets/dham-navtanpuri.jpg",
+    mapUrl: "https://maps.google.com/?q=Navtanpuri+Dham+Khijada+Mandir+Jamnagar",
   },
   {
     id: "dham-mahamangalapuri",
@@ -66,6 +69,7 @@ const sacredDhams: SacredDham[] = [
     descriptionEn:
       "Shri 5 Mahamangalapuri Dham is a deeply revered pilgrimage in the Nijanand Sampradaya, sanctified by Mahamati Shri Prannath Ji's Jagni journey and divine leelas. Its sacred memory continuously awakens deep devotion, love, and spiritual reverence in our hearts.",
     image: "/assets/dham-mahamangalapuri.jpg",
+    mapUrl: "https://maps.google.com/?q=Mahamangalapuri+Dham+Surat",
   },
 ];
 
@@ -76,21 +80,26 @@ export const HolyDhamsSection: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
-  // Auto-slide every 7 seconds
+  // Auto-slide every 4.5 seconds with pause capability
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sacredDhams.length);
-    }, 7000);
+    }, 4500);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, currentSlide]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % sacredDhams.length);
+    // Pause briefly for 3s then resume
+    setIsPaused(true);
+    setTimeout(() => setIsPaused(false), 3000);
   };
 
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + sacredDhams.length) % sacredDhams.length);
+    setIsPaused(true);
+    setTimeout(() => setIsPaused(false), 3000);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -100,8 +109,8 @@ export const HolyDhamsSection: React.FC = () => {
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (diff > 50) nextSlide();
-    if (diff < -50) prevSlide();
+    if (diff > 40) nextSlide();
+    if (diff < -40) prevSlide();
     touchStartX.current = null;
   };
 
@@ -110,25 +119,21 @@ export const HolyDhamsSection: React.FC = () => {
   return (
     <section
       id="holy-dhams"
-      className="py-16 sm:py-24 bg-gradient-to-b from-surface via-surface-sunk/60 to-surface relative border-b border-line scroll-mt-20 overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      className="py-10 sm:py-16 bg-gradient-to-b from-surface via-surface-sunk/40 to-surface relative border-b border-line scroll-mt-20 overflow-hidden"
     >
       {/* Background ambient lighting */}
-      <div className="absolute top-1/3 right-1/4 -translate-y-1/2 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 -translate-y-1/2 w-80 h-80 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold-500/15 border border-gold-400/40 text-gold-800 text-xs font-bold uppercase tracking-[0.2em] mb-3">
-            <Landmark className="w-3.5 h-3.5 text-gold-700" />
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-500/15 border border-gold-400/40 text-gold-800 dark:text-gold-300 text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] mb-2 sm:mb-3">
+            <Landmark className="w-3.5 h-3.5 text-gold-700 dark:text-gold-400" />
             <span>{isEn ? "Supreme Dhams" : "परम पावन धाम"}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-gold-gradient font-spiritual-heading leading-tight mb-3">
+          <h2 className="text-2xl sm:text-3xl lg:text-[2.5rem] font-extrabold text-[#781A1A] dark:text-amber-400 font-spiritual-heading leading-tight mb-2 sm:mb-3">
             {isEn ? "Sacred Pilgrimages of Nijanand Sampradaya" : "श्री निजानंद सम्प्रदाय के पावन धाम"}
           </h2>
 
@@ -139,140 +144,138 @@ export const HolyDhamsSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Dham Spotlight Card with Slider */}
-        <div className="relative bg-surface rounded-3xl border border-gold-400/40 shadow-2xl overflow-hidden backdrop-blur-xl">
-          {/* Subtle live progress bar */}
-          <div className="h-1 w-full bg-surface-2 relative overflow-hidden">
+        {/* Responsive Card: Cinematic on Desktop, Sleek & Compact on Mobile */}
+        <div
+          className="relative bg-[#FDFAF6] dark:bg-surface rounded-2xl sm:rounded-3xl border border-[#DFD3C3] dark:border-stone-700 shadow-xl overflow-hidden backdrop-blur-xl transition-all"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Animated Auto-Slide Progress Bar */}
+          <div className="h-1 w-full bg-stone-200/60 dark:bg-stone-800 relative overflow-hidden">
             <div
               key={currentSlide}
-              className="h-full bg-gold-gradient transition-all duration-[7000ms] ease-linear w-full"
+              className="h-full bg-gradient-to-r from-amber-500 to-[#B8860B] transition-all duration-[4500ms] ease-linear w-full"
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[440px]">
-            {/* Dham Image Column */}
-            <div className="lg:col-span-6 relative min-h-[300px] sm:min-h-[380px] lg:min-h-[460px] overflow-hidden bg-surface-sunk group">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-0 lg:min-h-[440px]">
+            {/* Image Column: Compact height on mobile, cinematic full-height on desktop */}
+            <div className="lg:col-span-6 relative h-48 sm:h-56 lg:h-auto min-h-[190px] lg:min-h-[440px] overflow-hidden bg-surface-sunk group">
               <Image
                 key={activeDham.image}
                 src={activeDham.image}
                 alt={isEn ? activeDham.nameEn : activeDham.nameHi}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-center transition-all duration-700 group-hover:scale-105"
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent lg:hidden" />
 
-              {/* Badges on image */}
-              <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface/90 backdrop-blur-md border border-gold-400/50 text-kumkum-dk font-bold text-xs shadow-md">
-                  <MapPin className="w-3.5 h-3.5 text-gold-600" />
+              {/* Floating Pill Badges on image */}
+              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 flex flex-wrap gap-1.5 sm:gap-2">
+                <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-[#FAF3E8]/95 dark:bg-surface/90 backdrop-blur-md border border-amber-300/60 dark:border-stone-600 text-[#781A1A] dark:text-amber-300 font-bold text-[11px] sm:text-xs shadow-xs">
+                  <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B87A1E]" />
                   <span>{isEn ? activeDham.locationEn : activeDham.locationHi}</span>
                 </span>
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-gold-gradient text-on-gold font-bold text-[11px] shadow-sm">
+
+                <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full bg-[#C8922C] text-white font-bold text-[11px] sm:text-xs shadow-xs">
                   {isEn ? activeDham.tagEn : activeDham.tagHi}
                 </span>
               </div>
             </div>
 
-            {/* Dham Details Column */}
-            <div className="lg:col-span-6 p-6 sm:p-8 lg:p-10 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
+            {/* Details Column: Compact on mobile, spacious & luxurious on desktop */}
+            <div className="lg:col-span-6 p-4 sm:p-6 lg:p-9 flex flex-col justify-between space-y-3 sm:space-y-5">
+              <div className="space-y-2 sm:space-y-3.5">
+                {/* Top status line: HOLY DHAM X OF 3 (left) + Location Badge (right) */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gold-700 uppercase tracking-widest">
+                  <span className="text-[11px] sm:text-xs font-bold text-[#8C6D37] dark:text-gold-400 uppercase tracking-wider">
                     {isEn ? `Holy Dham ${currentSlide + 1} of ${sacredDhams.length}` : `पावन धाम ${currentSlide + 1} / ${sacredDhams.length}`}
                   </span>
-                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-gold-100 text-gold-800 font-semibold border border-gold-300/60">
+                  <span className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-[#FAF3E8] dark:bg-surface-sunk text-stone-700 dark:text-gold-300 font-semibold border border-amber-200/80 dark:border-stone-700">
                     {isEn ? activeDham.locationEn : activeDham.locationHi}
                   </span>
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl font-bold font-spiritual-heading text-kumkum-dk leading-snug">
+                {/* Heading in rich spiritual maroon */}
+                <h3 className="text-lg sm:text-xl lg:text-3xl font-bold font-spiritual-heading text-[#781A1A] dark:text-amber-400 leading-snug">
                   {isEn ? activeDham.nameEn : activeDham.nameHi}
                 </h3>
 
-                <p className="text-sm sm:text-base text-ink/80 leading-relaxed text-justify">
+                {/* Description: Clamped on mobile, full rich text on desktop */}
+                <p className="text-xs sm:text-sm lg:text-base text-ink/80 leading-relaxed text-justify line-clamp-3 sm:line-clamp-4 lg:line-clamp-none">
                   {isEn ? activeDham.descriptionEn : activeDham.descriptionHi}
                 </p>
               </div>
 
-              {/* Controls */}
-              <div className="pt-4 border-t border-line/60 flex items-center justify-between gap-4">
-                {/* Dots indicator */}
-                <div className="flex items-center gap-2">
-                  {sacredDhams.map((_, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setCurrentSlide(idx)}
-                      aria-label={`Go to slide ${idx + 1}`}
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
-                        idx === currentSlide
-                          ? "w-8 bg-gold-gradient shadow-sm"
-                          : "w-2.5 bg-line hover:bg-gold-300"
-                      }`}
-                    />
-                  ))}
+              {/* Bottom Bar: Action Buttons (left) + Navigation Controls (right) */}
+              <div className="pt-3 sm:pt-4 border-t border-[#EFE8DF] dark:border-stone-800 flex items-center justify-between gap-2 sm:gap-4">
+                {/* Action Buttons */}
+                <div className="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
+                  <a
+                    href={activeDham.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs lg:text-sm font-semibold text-stone-800 dark:text-stone-200 bg-white dark:bg-surface border border-stone-300 dark:border-stone-700 hover:border-gold-400 hover:bg-stone-50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl shadow-2xs transition-all active:scale-95"
+                  >
+                    <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B87A1E]" />
+                    <span>{isEn ? "View on Google Maps" : "गूगल मैप्स"}</span>
+                    <span className="text-stone-400 text-[10px] sm:text-xs">↗</span>
+                  </a>
+
+                  <a
+                    href="#spiritual-centers"
+                    className="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs lg:text-sm font-semibold text-stone-800 dark:text-stone-200 bg-white dark:bg-surface border border-stone-300 dark:border-stone-700 hover:border-gold-400 hover:bg-stone-50 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl shadow-2xs transition-all active:scale-95"
+                  >
+                    <Landmark className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B87A1E]" />
+                    <span>{isEn ? "Spiritual Centers" : "आश्रम सेवा केंद्र"}</span>
+                  </a>
                 </div>
 
-                {/* Arrow navigation buttons */}
-                <div className="flex items-center gap-2">
+                {/* Navigation Controls: Dots + Arrows */}
+                <div className="flex items-center gap-2 sm:gap-2.5">
+                  {/* Slide Indicator Dots (Desktop) */}
+                  <div className="hidden sm:flex items-center gap-1.5 mr-1">
+                    {sacredDhams.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setCurrentSlide(idx)}
+                        aria-label={`Go to dham ${idx + 1}`}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          idx === currentSlide
+                            ? "w-6 bg-[#B8860B]"
+                            : "w-2 bg-stone-300 dark:bg-stone-700 hover:bg-stone-400"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Circular Prev / Next Arrows */}
                   <button
                     type="button"
                     onClick={prevSlide}
                     aria-label="Previous dham"
-                    className="w-10 h-10 rounded-full border border-gold-300/70 bg-surface hover:bg-gold-50 text-kumkum-dk shadow-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-stone-300 dark:border-stone-700 bg-white dark:bg-surface hover:bg-stone-50 text-stone-700 dark:text-stone-300 shadow-2xs flex items-center justify-center transition-all hover:scale-105 active:scale-95"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#781A1A] dark:text-amber-400" />
                   </button>
                   <button
                     type="button"
                     onClick={nextSlide}
                     aria-label="Next dham"
-                    className="w-10 h-10 rounded-full bg-gold-gradient text-on-gold shadow-md flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#B8860B] hover:bg-[#9E7307] text-white shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Thumbnail Selector Tabs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6">
-          {sacredDhams.map((dham, index) => (
-            <button
-              key={dham.id}
-              type="button"
-              onClick={() => setCurrentSlide(index)}
-              className={`p-3.5 rounded-2xl border text-left transition-all duration-300 flex items-center gap-3.5 ${
-                index === currentSlide
-                  ? "border-gold-500 bg-surface shadow-md ring-2 ring-gold-400/30 scale-[1.02]"
-                  : "border-line bg-surface/60 hover:bg-surface hover:border-gold-300/60"
-              }`}
-            >
-              <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-line bg-surface-sunk relative">
-                <Image
-                  src={dham.image}
-                  alt={isEn ? dham.nameEn : dham.nameHi}
-                  width={56}
-                  height={56}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <span className="block text-xs font-bold text-kumkum-dk truncate">
-                  {isEn ? dham.nameEn : dham.nameHi}
-                </span>
-                <span className="block text-[11px] text-ink/60 truncate mt-0.5">
-                  {isEn ? dham.locationEn : dham.locationHi}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
       </div>
     </section>
   );
 };
+
+
